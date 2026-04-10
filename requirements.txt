@@ -1,14 +1,8 @@
-flask
-gunicorn
+gradio
 numpy
 pandas
-matplotlib
-seaborn
 scikit-learn
 opencv-python-headless
 pillow
-werkzeug
-requests
-python-dotenv
 dill
 pyyaml
