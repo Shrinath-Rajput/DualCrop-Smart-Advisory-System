@@ -10,3 +10,4 @@ requests
 python-dotenv
 dill
 pyyaml
+tensorflow-cpu==2.13.0
