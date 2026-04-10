@@ -12,6 +12,3 @@ requests
 python-dotenv
 dill
 pyyaml
-
-# 🔥 FIXED VERSION
-tensorflow-cpu==2.15.0
