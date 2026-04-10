@@ -1,0 +1,55 @@
+# ================= Python =================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+
+# ================= Virtual Environment =================
+venv/
+venv310/
+venu310/
+env/
+ENV/
+.venv/
+.env
+.env.local
+
+# ================= Dataset & Large Files =================
+data/
+Dataset/
+artifacts/
+downloads/
+uploads/
+
+# ================= Model files =================
+*.h5
+*.keras
+*.pkl
+*.joblib
+*.pth
+
+# ================= Jupyter =================
+.ipynb_checkpoints/
+*.ipyn
+
+# ================= IDE =================
+.vscode/
+.idea/
+
+# ================= OS =================
+.DS_Store
+Thumbs.db
+
+# ================= Logs =================
+logs/
+*.log
+
+# ================= Flask =================
+instance/
+.webassets-cache

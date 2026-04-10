@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DualCrop Smart Advisory{% endblock %}</title>
+    <style>
+        {% block styles %}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-emoji {
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            z-index: 1;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            nav {
+                width: 100%;
+                justify-content: space-around;
+                gap: 10px;
+            }
+
+            nav a {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+        }
+        {% endblock %}
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('home') }}" class="logo">
+            <span class="logo-emoji">🌾</span>
+            <span>DualCrop Advisory</span>
+        </a>
+        <nav>
+            <a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">🏠 Home</a>
+            <a href="{{ url_for('dashboard') }}" class="{% block nav_dashboard %}{% endblock %}">📊 Dashboard</a>
+            <a href="{{ url_for('history') }}" class="{% block nav_history %}{% endblock %}">📋 History</a>
+            <a href="{{ url_for('about') }}" class="{% block nav_about %}{% endblock %}">ℹ️ About</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>🌾 DualCrop Smart Advisory System v1.0.0 | AI-powered Crop Disease Detection</p>
+        <p>© 2026 AgriTech Solutions | Powered by Machine Learning</p>
+    </footer>
+
+    <script>
+        // Highlight active navigation link
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('nav a').forEach(link => {
+                const href = link.getAttribute('href');
+                if ((currentPath === '/' && href === '/') || 
+                    (currentPath !== '/' && href === currentPath)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

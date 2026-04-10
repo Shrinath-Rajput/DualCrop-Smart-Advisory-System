@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Home - DualCrop Smart Advisory{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="header">
+        <h1>🌾 DualCrop Advisory</h1>
+        <p>AI-powered Crop Disease Detection System</p>
+    </div>
+
+    <div class="info-box">
+        📌 Upload leaf image to detect disease
+    </div>
+
+    <!-- Upload -->
+    <div class="section">
+        <div class="section-title">📸 Upload Image</div>
+
+        <input type="file" id="fileInput">
+
+        <br><br>
+        <img id="previewImage" style="max-width:300px; display:none;">
+        <p id="fileName"></p>
+
+        <br>
+        <button id="predictBtn">🔍 Analyze Image</button>
+    </div>
+
+    <!-- Loader -->
+    <p id="loader" style="display:none;">⏳ Analyzing...</p>
+
+    <!-- Result -->
+    <div id="result"></div>
+
+</div>
+
+<script>
+let selectedFile = null;
+
+const fileInput = document.getElementById("fileInput");
+const previewImage = document.getElementById("previewImage");
+const fileName = document.getElementById("fileName");
+const predictBtn = document.getElementById("predictBtn");
+const loader = document.getElementById("loader");
+const result = document.getElementById("result");
+
+// Select file
+fileInput.addEventListener("change", function () {
+    selectedFile = this.files[0];
+
+    if (!selectedFile) return;
+
+    previewImage.src = URL.createObjectURL(selectedFile);
+    previewImage.style.display = "block";
+    fileName.innerText = selectedFile.name;
+});
+
+// Predict
+predictBtn.addEventListener("click", async function () {
+
+    if (!selectedFile) {
+        alert("Upload image first");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    loader.style.display = "block";
+    result.innerHTML = "";
+
+    try {
+        const response = await fetch("/api/predict", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.log("API:", data);
+
+        loader.style.display = "none";
+
+        // ✅ FINAL FIX
+        if (data.prediction) {
+            result.innerHTML = `
+                <h3>🌿 Prediction: ${data.prediction}</h3>
+                <h4>📊 Confidence: ${(data.confidence * 100).toFixed(2)}%</h4>
+            `;
+        } else {
+            result.innerHTML = "❌ Prediction failed";
+        }
+
+    } catch (err) {
+        console.error(err);
+        loader.style.display = "none";
+        result.innerHTML = "❌ Error occurred";
+    }
+});
+</script>
+
+{% endblock %}
