@@ -1,8 +1,12 @@
-gradio
+flask
+gunicorn
 numpy
 pandas
 scikit-learn
 opencv-python-headless
 pillow
+werkzeug
+requests
+python-dotenv
 dill
 pyyaml
