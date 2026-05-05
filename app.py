@@ -109,9 +109,10 @@ def predict():
         print("❌ Prediction Error:", e)
         traceback.print_exc()
         return jsonify({
+            "error": f"Prediction failed: {str(e)}",
             "prediction": "Error",
             "confidence": 0.0
-        })
+        }), 500
 
 
 # ================= ERROR ================= #
@@ -129,5 +130,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=5000,
-        debug=False   
+        debug=True   
     )
