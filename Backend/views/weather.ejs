@@ -138,6 +138,48 @@
                 </div>
             </div>
 
+            <!-- MEDICINE RECOMMENDATIONS -->
+            <div class="row mt-4" id="medicineSection" style="display: none;">
+                <div class="col-md-12">
+                    <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(239, 68, 68, 0.05) 100%);">
+                        <div class="card-header" style="background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-cyan) 100%); color: white;">
+                            <h5 class="mb-0"><i class="fas fa-flask"></i> Weather-Based Medicine Recommendations</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- Brinjal Medicine -->
+                                <div class="col-md-6">
+                                    <div class="card border-left" style="border-left: 4px solid var(--accent-green);">
+                                        <div class="card-body">
+                                            <h6 class="card-title mb-3">
+                                                <i class="fas fa-leaf" style="color: var(--accent-green);"></i> Brinjal (बैंगन)
+                                            </h6>
+                                            <div id="brinjalMedicine" class="small">
+                                                <!-- Medicine details will be populated here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Grapes Medicine -->
+                                <div class="col-md-6">
+                                    <div class="card border-left" style="border-left: 4px solid #8b5cf6;">
+                                        <div class="card-body">
+                                            <h6 class="card-title mb-3">
+                                                <i class="fas fa-wine-glass" style="color: #8b5cf6;"></i> Grapes (अंगूर)
+                                            </h6>
+                                            <div id="grapesMedicine" class="small">
+                                                <!-- Medicine details will be populated here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- FORECAST -->
             <div class="row mt-4">
                 <div class="col-md-12">
@@ -214,14 +256,18 @@
             document.getElementById('weatherError').style.display = 'none';
 
             try {
-                const response = await fetch(`/weather?city=${encodeURIComponent(city)}`);
+                const response = await fetch(`/api/weather`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city: city })
+                });
                 const data = await response.json();
 
                 if (data.success) {
                     displayWeather(data);
                     document.getElementById('weatherDisplay').style.display = 'block';
                 } else {
-                    showWeatherError(data.message || 'Could not fetch weather data');
+                    showWeatherError(data.error || 'Could not fetch weather data');
                 }
             } catch (error) {
                 showWeatherError('Error: ' + error.message);
@@ -236,7 +282,13 @@
             document.getElementById('weatherDescription').textContent = data.description;
             document.getElementById('humidity').textContent = data.humidity + '%';
             document.getElementById('windSpeed').textContent = data.windSpeed + ' m/s';
-            document.getElementById('weatherAdvisory').textContent = data.advisory || 'Monitor weather conditions and adjust farming practices accordingly.';
+            
+            // Display advisory
+            if (Array.isArray(data.advisory)) {
+                document.getElementById('weatherAdvisory').innerHTML = data.advisory.join('<br>');
+            } else {
+                document.getElementById('weatherAdvisory').textContent = data.advisory || 'Monitor weather conditions and adjust farming practices accordingly.';
+            }
 
             const icons = {
                 'Clear': 'fas fa-sun',
@@ -245,8 +297,93 @@
                 'Snow': 'fas fa-snowflake',
                 'Thunderstorm': 'fas fa-bolt'
             };
-            const iconClass = icons[data.main] || 'fas fa-cloud';
+            const iconClass = icons[data.condition] || 'fas fa-cloud';
             document.getElementById('weatherIcon').className = iconClass;
+
+            // Display medicine recommendations
+            if (data.cropMedicines && (data.cropMedicines.Brinjal || data.cropMedicines.Grapes)) {
+                displayMedicineRecommendations(data.cropMedicines);
+                document.getElementById('medicineSection').style.display = 'block';
+            }
+        }
+
+        function displayMedicineRecommendations(cropMedicines) {
+            const brinjalMedicineDiv = document.getElementById('brinjalMedicine');
+            const grapesMedicineDiv = document.getElementById('grapesMedicine');
+
+            // Display Brinjal medicine
+            if (cropMedicines.Brinjal) {
+                const brinjal = cropMedicines.Brinjal;
+                let brinjalHTML = '';
+
+                if (brinjal.description) {
+                    brinjalHTML += `<p class="mb-2"><strong>${brinjal.description}</strong></p>`;
+                }
+
+                if (Array.isArray(brinjal.medicine)) {
+                    brinjalHTML += `<p class="mb-2"><strong>Medicines:</strong><br>${brinjal.medicine.join(', ')}</p>`;
+                } else if (brinjal.medicine) {
+                    brinjalHTML += `<p class="mb-2"><strong>Medicine:</strong> ${brinjal.medicine}</p>`;
+                }
+
+                if (brinjal.dosage) {
+                    brinjalHTML += `<p class="mb-2"><strong>Dosage:</strong> ${brinjal.dosage}</p>`;
+                }
+
+                if (brinjal.spraying_interval) {
+                    brinjalHTML += `<p class="mb-2"><strong>Interval:</strong> ${brinjal.spraying_interval}</p>`;
+                }
+
+                if (brinjal.preventive && Array.isArray(brinjal.preventive)) {
+                    brinjalHTML += '<p class="mb-2"><strong>Preventive Measures:</strong><ul class="mb-0" style="padding-left: 20px;">';
+                    brinjal.preventive.forEach(item => {
+                        brinjalHTML += `<li>${item}</li>`;
+                    });
+                    brinjalHTML += '</ul></p>';
+                }
+
+                brinjalMedicineDiv.innerHTML = brinjalHTML;
+            } else {
+                brinjalMedicineDiv.innerHTML = '<p class="text-secondary">No specific recommendation for current conditions</p>';
+            }
+
+            // Display Grapes medicine
+            if (cropMedicines.Grapes) {
+                const grapes = cropMedicines.Grapes;
+                let grapesHTML = '';
+
+                if (grapes.description) {
+                    grapesHTML += `<p class="mb-2"><strong>${grapes.description}</strong></p>`;
+                }
+
+                if (Array.isArray(grapes.medicine)) {
+                    grapesHTML += `<p class="mb-2"><strong>Medicines:</strong><br>${grapes.medicine.join(', ')}</p>`;
+                } else if (grapes.medicine) {
+                    grapesHTML += `<p class="mb-2"><strong>Medicine:</strong> ${grapes.medicine}</p>`;
+                }
+
+                if (grapes.dosage) {
+                    grapesHTML += `<p class="mb-2"><strong>Dosage:</strong> ${grapes.dosage}</p>`;
+                }
+
+                if (grapes.spraying_interval) {
+                    grapesHTML += `<p class="mb-2"><strong>Interval:</strong> ${grapes.spraying_interval}</p>`;
+                }
+
+                if (grapes.preventive && Array.isArray(grapes.preventive)) {
+                    grapesHTML += '<p class="mb-2"><strong>Preventive Measures:</strong><ul class="mb-0" style="padding-left: 20px;">';
+                    grapes.preventive.forEach(item => {
+                        grapesHTML += `<li>${item}</li>`;
+                    });
+                    grapesHTML += '</ul></p>';
+                }
+
+                grapesHTML += '<p class="text-muted mt-3"><small>💡 Adjust application frequency based on rainfall and climate conditions</small></p>';
+
+                grapesMedicineDiv.innerHTML = grapesHTML;
+            } else {
+                grapesMedicineDiv.innerHTML = '<p class="text-secondary">No specific recommendation for current conditions</p>';
+            }
         }
 
         function showWeatherError(msg) {

@@ -186,7 +186,7 @@
             // Get bot response
             try {
                 const language = languageManager ? languageManager.getCurrentLanguage() : 'en';
-                const response = await fetch('/chatbot', {
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message, language })
@@ -194,7 +194,7 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    addMessage(data.response, 'bot');
+                    addMessage(data.reply, 'bot');
                 } else {
                     addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 }

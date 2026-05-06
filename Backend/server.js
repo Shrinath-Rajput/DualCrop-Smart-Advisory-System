@@ -190,7 +190,7 @@ app.get("/dashboard", async (req, res) => {
     try {
         const connection = await pool.getConnection();
         const [predictions] = await connection.execute(
-            "SELECT id, image, result, confidence, created_at FROM predictions ORDER BY created_at DESC LIMIT 100"
+            "SELECT id, image, result AS prediction, confidence, created_at FROM predictions ORDER BY created_at DESC LIMIT 100"
         );
         connection.release();
 
@@ -511,7 +511,14 @@ app.post("/api/chat", (req, res) => {
         }
 
         const lowerMessage = message.toLowerCase().trim();
-        let reply = getSmartChatbotResponseInLanguage(lowerMessage, language);
+        let reply;
+        
+        // Use English detailed responses, fallback to language-specific for other languages
+        if (language === 'en') {
+            reply = getSmartChatbotResponse(lowerMessage);
+        } else {
+            reply = getSmartChatbotResponseInLanguage(lowerMessage, language);
+        }
 
         res.json({
             success: true,
