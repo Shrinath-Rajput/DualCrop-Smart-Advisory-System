@@ -188,6 +188,14 @@
                                 <p id="advisoryText" class="mb-0"></p>
                             </div>
 
+                            <!-- Medicine Recommendation -->
+                            <div class="alert alert-warning" id="medicineBox" role="alert" style="display: none">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-pills"></i> 💊 Medicine Recommendation
+                                </h6>
+                                <div id="medicineContent"></div>
+                            </div>
+
                             <!-- Action Buttons -->
                             <div class="d-grid gap-2 d-sm-flex">
                                 <button
@@ -310,6 +318,11 @@
                     const advisory = generateAdvisory(data.prediction);
                     document.getElementById("advisoryText").textContent = advisory;
 
+                    // Display medicine recommendation
+                    if (data.medicine) {
+                        displayMedicineRecommendation(data.medicine, data.prediction);
+                    }
+
                     document.getElementById("resultCard").style.display = "block";
                 } else {
                     showError(data.error || "Analysis failed");
@@ -334,6 +347,53 @@
             document.getElementById("resultCard").style.display = "none";
             document.getElementById("errorAlert").style.display = "none";
         }
+
+        // Display medicine recommendation
+        function displayMedicineRecommendation(medicine, disease) {
+            const medicineBox = document.getElementById("medicineBox");
+            const medicineContent = document.getElementById("medicineContent");
+            
+            let html = "";
+            
+            if (medicine.description) {
+                html += `<p class="fw-bold">${medicine.description}</p>`;
+            }
+            
+            if (Array.isArray(medicine.medicine)) {
+                html += `<p><strong>Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
+            } else if (medicine.medicine) {
+                html += `<p><strong>Medicine:</strong> ${medicine.medicine}</p>`;
+            }
+            
+            if (medicine.dosage) {
+                html += `<p><strong>Dosage:</strong> ${medicine.dosage}</p>`;
+            }
+            
+            if (medicine.spraying_interval) {
+                html += `<p><strong>Spraying Interval:</strong> Every ${medicine.spraying_interval}</p>`;
+            }
+            
+            if (medicine.preventive && Array.isArray(medicine.preventive)) {
+                html += `<p><strong>Preventive Measures:</strong></p><ul>`;
+                medicine.preventive.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += `</ul>`;
+            }
+            
+            if (medicine.instructions && Array.isArray(medicine.instructions)) {
+                html += `<p><strong>Instructions:</strong></p><ol>`;
+                medicine.instructions.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += `</ol>`;
+            }
+            
+            medicineContent.innerHTML = html;
+            medicineBox.style.display = "block";
+        }
+
+        // Helper function to reset form
 
         // Generate advisory based on disease
         function generateAdvisory(disease) {

@@ -183,30 +183,44 @@
                                     <button
                                         type="button"
                                         class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('Tell me about crop care')"
+                                        onclick="askQuestion('What is brinjal and how to grow it')"
                                     >
-                                        <i class="fas fa-seedling"></i> Crop Care Tips
+                                        <i class="fas fa-eggplant"></i> About Brinjal
                                     </button>
                                     <button
                                         type="button"
                                         class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('What about disease management')"
+                                        onclick="askQuestion('What are brinjal diseases')"
                                     >
-                                        <i class="fas fa-hospital"></i> Disease Management
+                                        <i class="fas fa-bug"></i> Brinjal Diseases
                                     </button>
                                     <button
                                         type="button"
                                         class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('What fertilizer should I use')"
+                                        onclick="askQuestion('What fertilizer for grapes')"
                                     >
-                                        <i class="fas fa-flask"></i> Fertilizer Guide
+                                        <i class="fas fa-flask"></i> Grapes Fertilizer
                                     </button>
                                     <button
                                         type="button"
                                         class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('How to control pests')"
+                                        onclick="askQuestion('How to treat grape black rot')"
                                     >
-                                        <i class="fas fa-bug"></i> Pest Control
+                                        <i class="fas fa-stethoscope"></i> Grape Black Rot
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary btn-sm text-start"
+                                        onclick="askQuestion('Tell me about grape care')"
+                                    >
+                                        <i class="fas fa-leaf"></i> Grape Care
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary btn-sm text-start"
+                                        onclick="askQuestion('Help')"
+                                    >
+                                        <i class="fas fa-question-circle"></i> Help
                                     </button>
                                 </div>
                             </div>
@@ -273,6 +287,15 @@
             }
         });
 
+        // Format bot response with markdown-style formatting
+        function formatBotResponse(text) {
+            // Convert markdown bold (**text**) to HTML bold
+            text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+            // Convert line breaks to HTML breaks
+            text = text.replace(/\n/g, "<br>");
+            return text;
+        }
+
         // Add message to chat UI
         function addMessage(text, sender) {
             const messageDiv = document.createElement("div");
@@ -280,7 +303,13 @@
 
             const bubbleDiv = document.createElement("div");
             bubbleDiv.className = "bubble";
-            bubbleDiv.innerHTML = text.replace(/\n/g, "<br>");
+            
+            // Apply formatting for bot messages
+            if (sender === "bot") {
+                bubbleDiv.innerHTML = formatBotResponse(text);
+            } else {
+                bubbleDiv.innerHTML = text.replace(/\n/g, "<br>");
+            }
 
             const timestampDiv = document.createElement("div");
             timestampDiv.className = "timestamp";

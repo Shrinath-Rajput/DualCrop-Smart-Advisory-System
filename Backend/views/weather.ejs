@@ -182,6 +182,29 @@
                 <div id="advisoryBox" class="alert alert-warning" role="alert">
                     <ul id="advisoryList" class="mb-0"></ul>
                 </div>
+
+                <!-- CROP-SPECIFIC MEDICINE RECOMMENDATIONS -->
+                <div class="row mt-4">
+                    <!-- BRINJAL MEDICINE -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-2 border-success" id="brinjalMedicineCard" style="display: none">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-pills"></i> 🍆 Brinjal - Medicine Recommendation</h5>
+                            </div>
+                            <div class="card-body" id="brinjalMedicineContent"></div>
+                        </div>
+                    </div>
+
+                    <!-- GRAPES MEDICINE -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-2 border-danger" id="grapesMedicineCard" style="display: none">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0"><i class="fas fa-pills"></i> 🍇 Grapes - Medicine Recommendation</h5>
+                            </div>
+                            <div class="card-body" id="grapesMedicineContent"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- INFO SECTION -->
@@ -262,6 +285,11 @@
                         advisoryList.appendChild(li);
                     });
 
+                    // Display crop-specific medicines
+                    if (data.cropMedicines) {
+                        displayCropMedicines(data.cropMedicines);
+                    }
+
                     document.getElementById("resultCard").style.display = "block";
                     document.getElementById("advisorySection").style.display = "block";
                 } else {
@@ -273,6 +301,80 @@
                 document.getElementById("loadingSpinner").style.display = "none";
             }
         });
+
+        function displayCropMedicines(cropMedicines) {
+            // Display Brinjal Medicine
+            if (cropMedicines.Brinjal) {
+                const brinjalContent = document.getElementById("brinjalMedicineContent");
+                const medicine = cropMedicines.Brinjal;
+                let html = "";
+                
+                if (medicine.description) {
+                    html += `<p class="fw-bold text-success">${medicine.description}</p>`;
+                }
+                
+                if (Array.isArray(medicine.medicine)) {
+                    html += `<p><strong>💊 Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
+                } else if (medicine.medicine) {
+                    html += `<p><strong>💊 Medicine:</strong> ${medicine.medicine}</p>`;
+                }
+                
+                if (medicine.dosage) {
+                    html += `<p><strong>📏 Dosage:</strong> ${medicine.dosage}</p>`;
+                }
+                
+                if (medicine.spraying_interval) {
+                    html += `<p><strong>⏰ Interval:</strong> ${medicine.spraying_interval}</p>`;
+                }
+                
+                if (medicine.preventive && Array.isArray(medicine.preventive)) {
+                    html += `<p class="fw-bold mt-2">🛡️ Preventive Measures:</p><ul class="small">`;
+                    medicine.preventive.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += `</ul>`;
+                }
+                
+                brinjalContent.innerHTML = html;
+                document.getElementById("brinjalMedicineCard").style.display = "block";
+            }
+
+            // Display Grapes Medicine
+            if (cropMedicines.Grapes) {
+                const grapesContent = document.getElementById("grapesMedicineContent");
+                const medicine = cropMedicines.Grapes;
+                let html = "";
+                
+                if (medicine.description) {
+                    html += `<p class="fw-bold text-danger">${medicine.description}</p>`;
+                }
+                
+                if (Array.isArray(medicine.medicine)) {
+                    html += `<p><strong>💊 Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
+                } else if (medicine.medicine) {
+                    html += `<p><strong>💊 Medicine:</strong> ${medicine.medicine}</p>`;
+                }
+                
+                if (medicine.dosage) {
+                    html += `<p><strong>📏 Dosage:</strong> ${medicine.dosage}</p>`;
+                }
+                
+                if (medicine.spraying_interval) {
+                    html += `<p><strong>⏰ Interval:</strong> ${medicine.spraying_interval}</p>`;
+                }
+                
+                if (medicine.preventive && Array.isArray(medicine.preventive)) {
+                    html += `<p class="fw-bold mt-2">🛡️ Preventive Measures:</p><ul class="small">`;
+                    medicine.preventive.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += `</ul>`;
+                }
+                
+                grapesContent.innerHTML = html;
+                document.getElementById("grapesMedicineCard").style.display = "block";
+            }
+        }
 
         function showError(message) {
             document.getElementById("errorMessage").textContent = message;
