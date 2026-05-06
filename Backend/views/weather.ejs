@@ -4,60 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather & Crop Advisory | DualCrop Smart Advisory System</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-leaf"></i> DualCrop Advisory
-            </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-leaf"></i> DualCrop</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analyze"
-                            ><i class="fas fa-microscope"></i> Analyze</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> Weather</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> Dashboard</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/chatbot"
-                            ><i class="fas fa-comments"></i> Chatbot</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about"
-                            ><i class="fas fa-info-circle"></i> About</a
-                        >
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analyze"><i class="fas fa-microscope"></i> Analyze</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i> Language
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -65,163 +40,115 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 py-5">
+    <main class="flex-grow-1 section-padding">
         <div class="container">
-            <h1 class="mb-4 fw-bold">
-                <i class="fas fa-cloud-sun text-info"></i> Weather & Crop Advisory
-            </h1>
-            <p class="text-muted mb-4">
-                Get real-time weather data and personalized crop recommendations based on climate conditions.
-            </p>
+            <div class="text-center mb-5">
+                <h1 class="gradient-text mb-3">🌤️ Weather & Crop Advisory</h1>
+                <p class="text-secondary fs-5">Real-time weather data with personalized crop recommendations</p>
+            </div>
 
             <div class="row g-4">
-                <!-- INPUT SECTION -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0">
+                <!-- SEARCH SECTION -->
+                <div class="col-lg-6">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-4">
                                 <i class="fas fa-map-marker-alt"></i> Search City
                             </h5>
 
                             <form id="weatherForm">
-                                <div class="mb-3">
+                                <div class="mb-4">
                                     <label for="cityInput" class="form-label">Enter City Name</label>
-                                    <input
-                                        type="text"
-                                        class="form-control form-control-lg"
-                                        id="cityInput"
-                                        name="city"
-                                        placeholder="e.g., Delhi, Mumbai, Bangalore"
-                                        required
-                                    />
+                                    <input type="text" class="form-control form-control-lg" id="cityInput" name="city" placeholder="e.g., Delhi, Mumbai, Bangalore" required />
                                 </div>
 
-                                <button type="submit" class="btn btn-info btn-lg w-100">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
                                     <i class="fas fa-search"></i> Get Weather
                                 </button>
                             </form>
 
-                            <!-- Loading Spinner -->
-                            <div id="loadingSpinner" style="display: none" class="text-center mt-4">
-                                <div class="spinner-border text-info" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2 text-muted">Fetching weather data...</p>
-                            </div>
-
-                            <!-- Error Message -->
-                            <div id="errorAlert" class="alert alert-danger mt-4" style="display: none" role="alert">
-                                <h6 class="alert-heading">
-                                    <i class="fas fa-exclamation-circle"></i> Error
-                                </h6>
-                                <p id="errorMessage" class="mb-0"></p>
+                            <!-- Loading State -->
+                            <div id="weatherLoading" style="display: none;" class="text-center mt-4">
+                                <div class="spinner-border text-primary mb-3" role="status"></div>
+                                <p class="text-secondary">Fetching weather data...</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- RESULT SECTION -->
-                <div class="col-md-6">
-                    <div id="resultCard" class="card shadow-sm border-0" style="display: none">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4">
-                                <i class="fas fa-cloud text-info"></i> Weather Information
-                            </h5>
+                <!-- WEATHER RESULTS -->
+                <div class="col-lg-6">
+                    <!-- Error Alert -->
+                    <div id="weatherError" class="alert alert-danger d-flex align-items-start" style="display: none;" role="alert">
+                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.25rem;"></i>
+                        <div>
+                            <h5 class="alert-heading">Error</h5>
+                            <p id="weatherErrorMessage" class="mb-0"></p>
+                        </div>
+                    </div>
 
-                            <!-- Location -->
-                            <div class="mb-3">
-                                <h4 id="cityName" class="fw-bold text-primary"></h4>
-                                <p id="country" class="text-muted"></p>
+                    <!-- Weather Display -->
+                    <div id="weatherDisplay" style="display: none;">
+                        <!-- Current Weather -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4" id="weatherCity"></h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div id="weatherTemp" style="font-size: 3rem; font-weight: bold; color: var(--accent-green);"></div>
+                                        <p id="weatherDescription" class="text-secondary mb-0"></p>
+                                    </div>
+                                    <i id="weatherIcon" style="font-size: 4rem; color: var(--accent-cyan);"></i>
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- Temperature Card -->
-                            <div class="card bg-light mb-3">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-muted">Temperature</p>
-                                            <h3 id="temperature" class="fw-bold text-danger"></h3>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-muted">Feels Like</p>
-                                            <h3 id="feelsLike" class="fw-bold text-warning"></h3>
-                                        </div>
+                        <!-- Weather Details -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-tint" style="font-size: 2rem; color: var(--accent-cyan);"></i>
+                                        <p class="text-secondary small mt-2 mb-1">Humidity</p>
+                                        <p id="humidity" class="fw-bold mb-0">0%</p>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Condition & Details -->
-                            <div class="mb-3">
-                                <p class="text-muted">Condition</p>
-                                <h5 id="condition" class="fw-bold"></h5>
-                                <p id="description" class="text-muted"></p>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-wind" style="font-size: 2rem; color: var(--accent-purple);"></i>
+                                        <p class="text-secondary small mt-2 mb-1">Wind Speed</p>
+                                        <p id="windSpeed" class="fw-bold mb-0">0 m/s</p>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- Humidity & Wind -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <p class="text-muted">Humidity</p>
-                                    <h4 id="humidity" class="fw-bold text-primary"></h4>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="text-muted">Wind Speed</p>
-                                    <h4 id="windSpeed" class="fw-bold text-success"></h4>
-                                </div>
+                        <!-- Advisory -->
+                        <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">
+                                    <i class="fas fa-lightbulb" style="color: var(--accent-green);"></i> Crop Advisory
+                                </h6>
+                                <p id="weatherAdvisory" class="mb-0 small"></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ADVISORY SECTION -->
-            <div id="advisorySection" class="mt-5" style="display: none">
-                <h3 class="fw-bold mb-4">
-                    <i class="fas fa-lightbulb text-warning"></i> Crop Advisory
-                </h3>
-
-                <div id="advisoryBox" class="alert alert-warning" role="alert">
-                    <ul id="advisoryList" class="mb-0"></ul>
-                </div>
-
-                <!-- CROP-SPECIFIC MEDICINE RECOMMENDATIONS -->
-                <div class="row mt-4">
-                    <!-- BRINJAL MEDICINE -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card border-2 border-success" id="brinjalMedicineCard" style="display: none">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="fas fa-pills"></i> 🍆 Brinjal - Medicine Recommendation</h5>
-                            </div>
-                            <div class="card-body" id="brinjalMedicineContent"></div>
-                        </div>
-                    </div>
-
-                    <!-- GRAPES MEDICINE -->
-                    <div class="col-md-6 mb-3">
-                        <div class="card border-2 border-danger" id="grapesMedicineCard" style="display: none">
-                            <div class="card-header bg-danger text-white">
-                                <h5 class="mb-0"><i class="fas fa-pills"></i> 🍇 Grapes - Medicine Recommendation</h5>
-                            </div>
-                            <div class="card-body" id="grapesMedicineContent"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INFO SECTION -->
-            <div class="row mt-5">
+            <!-- FORECAST -->
+            <div class="row mt-4">
                 <div class="col-md-12">
-                    <div class="card bg-light border-0">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-calendar"></i> 5-Day Forecast</h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-info-circle"></i> Weather-Crop Advisory Tips
-                            </h5>
-                            <ul>
-                                <li><strong>High Humidity (&gt;80%):</strong> Increase risk of fungal diseases - Apply fungicides</li>
-                                <li><strong>Low Humidity (&lt;30%):</strong> Increase irrigation frequency to prevent drought stress</li>
-                                <li><strong>Low Temperature (&lt;10°C):</strong> Protect crops from frost damage</li>
-                                <li><strong>Strong Winds (&gt;15 km/h):</strong> Risk of physical damage - Monitor crops</li>
-                                <li><strong>Rainy Season:</strong> Avoid pesticide/fertilizer application, increase drainage</li>
-                            </ul>
+                            <div id="forecastContainer" class="row g-3">
+                                <!-- Forecast cards will be populated here -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -230,155 +157,108 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 shadow">
+    <footer>
         <div class="container">
-            <p class="mb-2">
-                <strong>DualCrop Smart Advisory System</strong> - AI-Based Crop Disease Detection
-            </p>
-            <p class="mb-0">
-                <small>
-                    Built with <i class="fas fa-heart text-danger"></i> using Node.js, Python Flask, and Machine Learning
-                </small>
-            </p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-leaf" style="color: var(--accent-green);"></i> DualCrop</h5>
+                    <p class="small text-muted">AI-powered crop disease detection for modern farmers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/analyze">Analyze</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/analyze">Disease Detection</a></li>
+                        <li><a href="/weather">Weather Advisory</a></li>
+                        <li><a href="/chatbot">AI Chatbot</a></li>
+                        <li><a href="/dashboard">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">
+                    <strong>DualCrop Smart Advisory System</strong> © 2024. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ec4899;"></i> for Modern Agriculture
+                </p>
+            </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/language-manager.js"></script>
+    <script src="/js/main.js"></script>
     <script>
-        document.getElementById("weatherForm").addEventListener("submit", async function (e) {
+        document.getElementById('weatherForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const city = document.getElementById("cityInput").value;
-            document.getElementById("loadingSpinner").style.display = "block";
-            document.getElementById("resultCard").style.display = "none";
-            document.getElementById("errorAlert").style.display = "none";
-            document.getElementById("advisorySection").style.display = "none";
+            const city = document.getElementById('cityInput').value;
+            
+            document.getElementById('weatherLoading').style.display = 'block';
+            document.getElementById('weatherDisplay').style.display = 'none';
+            document.getElementById('weatherError').style.display = 'none';
 
             try {
-                const response = await fetch("/api/weather", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ city: city }),
-                });
-
+                const response = await fetch(`/weather?city=${encodeURIComponent(city)}`);
                 const data = await response.json();
 
                 if (data.success) {
-                    // Display weather information
-                    document.getElementById("cityName").textContent = data.city;
-                    document.getElementById("country").textContent = "Country: " + data.country;
-                    document.getElementById("temperature").textContent = data.temperature + "°C";
-                    document.getElementById("feelsLike").textContent = data.feelsLike + "°C";
-                    document.getElementById("condition").textContent = data.condition;
-                    document.getElementById("description").textContent = data.description;
-                    document.getElementById("humidity").textContent = data.humidity + "%";
-                    document.getElementById("windSpeed").textContent = data.windSpeed + " km/h";
-
-                    // Display advisory
-                    const advisoryList = document.getElementById("advisoryList");
-                    advisoryList.innerHTML = "";
-                    data.advisory.forEach((item) => {
-                        const li = document.createElement("li");
-                        li.textContent = item;
-                        advisoryList.appendChild(li);
-                    });
-
-                    // Display crop-specific medicines
-                    if (data.cropMedicines) {
-                        displayCropMedicines(data.cropMedicines);
-                    }
-
-                    document.getElementById("resultCard").style.display = "block";
-                    document.getElementById("advisorySection").style.display = "block";
+                    displayWeather(data);
+                    document.getElementById('weatherDisplay').style.display = 'block';
                 } else {
-                    showError(data.error || "Failed to fetch weather data");
+                    showWeatherError(data.message || 'Could not fetch weather data');
                 }
             } catch (error) {
-                showError("Error: " + error.message);
+                showWeatherError('Error: ' + error.message);
             } finally {
-                document.getElementById("loadingSpinner").style.display = "none";
+                document.getElementById('weatherLoading').style.display = 'none';
             }
         });
 
-        function displayCropMedicines(cropMedicines) {
-            // Display Brinjal Medicine
-            if (cropMedicines.Brinjal) {
-                const brinjalContent = document.getElementById("brinjalMedicineContent");
-                const medicine = cropMedicines.Brinjal;
-                let html = "";
-                
-                if (medicine.description) {
-                    html += `<p class="fw-bold text-success">${medicine.description}</p>`;
-                }
-                
-                if (Array.isArray(medicine.medicine)) {
-                    html += `<p><strong>💊 Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
-                } else if (medicine.medicine) {
-                    html += `<p><strong>💊 Medicine:</strong> ${medicine.medicine}</p>`;
-                }
-                
-                if (medicine.dosage) {
-                    html += `<p><strong>📏 Dosage:</strong> ${medicine.dosage}</p>`;
-                }
-                
-                if (medicine.spraying_interval) {
-                    html += `<p><strong>⏰ Interval:</strong> ${medicine.spraying_interval}</p>`;
-                }
-                
-                if (medicine.preventive && Array.isArray(medicine.preventive)) {
-                    html += `<p class="fw-bold mt-2">🛡️ Preventive Measures:</p><ul class="small">`;
-                    medicine.preventive.forEach(item => {
-                        html += `<li>${item}</li>`;
-                    });
-                    html += `</ul>`;
-                }
-                
-                brinjalContent.innerHTML = html;
-                document.getElementById("brinjalMedicineCard").style.display = "block";
-            }
+        function displayWeather(data) {
+            document.getElementById('weatherCity').textContent = data.city + ', ' + data.country;
+            document.getElementById('weatherTemp').textContent = Math.round(data.temperature) + '°C';
+            document.getElementById('weatherDescription').textContent = data.description;
+            document.getElementById('humidity').textContent = data.humidity + '%';
+            document.getElementById('windSpeed').textContent = data.windSpeed + ' m/s';
+            document.getElementById('weatherAdvisory').textContent = data.advisory || 'Monitor weather conditions and adjust farming practices accordingly.';
 
-            // Display Grapes Medicine
-            if (cropMedicines.Grapes) {
-                const grapesContent = document.getElementById("grapesMedicineContent");
-                const medicine = cropMedicines.Grapes;
-                let html = "";
-                
-                if (medicine.description) {
-                    html += `<p class="fw-bold text-danger">${medicine.description}</p>`;
-                }
-                
-                if (Array.isArray(medicine.medicine)) {
-                    html += `<p><strong>💊 Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
-                } else if (medicine.medicine) {
-                    html += `<p><strong>💊 Medicine:</strong> ${medicine.medicine}</p>`;
-                }
-                
-                if (medicine.dosage) {
-                    html += `<p><strong>📏 Dosage:</strong> ${medicine.dosage}</p>`;
-                }
-                
-                if (medicine.spraying_interval) {
-                    html += `<p><strong>⏰ Interval:</strong> ${medicine.spraying_interval}</p>`;
-                }
-                
-                if (medicine.preventive && Array.isArray(medicine.preventive)) {
-                    html += `<p class="fw-bold mt-2">🛡️ Preventive Measures:</p><ul class="small">`;
-                    medicine.preventive.forEach(item => {
-                        html += `<li>${item}</li>`;
-                    });
-                    html += `</ul>`;
-                }
-                
-                grapesContent.innerHTML = html;
-                document.getElementById("grapesMedicineCard").style.display = "block";
-            }
+            const icons = {
+                'Clear': 'fas fa-sun',
+                'Clouds': 'fas fa-cloud',
+                'Rain': 'fas fa-cloud-rain',
+                'Snow': 'fas fa-snowflake',
+                'Thunderstorm': 'fas fa-bolt'
+            };
+            const iconClass = icons[data.main] || 'fas fa-cloud';
+            document.getElementById('weatherIcon').className = iconClass;
         }
 
-        function showError(message) {
-            document.getElementById("errorMessage").textContent = message;
-            document.getElementById("errorAlert").style.display = "block";
+        function showWeatherError(msg) {
+            document.getElementById('weatherErrorMessage').textContent = msg;
+            document.getElementById('weatherError').style.display = 'block';
+        }
+
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
+            }
         }
     </script>
 </body>

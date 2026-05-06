@@ -4,69 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Analyze Crop Disease | DualCrop Smart Advisory System</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-leaf"></i> DualCrop Advisory
-            </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-leaf"></i> DualCrop</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> <span data-i18n="home">Home</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/analyze"
-                            ><i class="fas fa-microscope"></i> <span data-i18n="analyze">Analyze</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> <span data-i18n="weather">Weather</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> <span data-i18n="dashboard">Dashboard</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/chatbot"
-                            ><i class="fas fa-comments"></i> <span data-i18n="chatbot">Chatbot</span></a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about"
-                            ><i class="fas fa-info-circle"></i> <span data-i18n="about">About</span></a
-                        >
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/analyze"><i class="fas fa-microscope"></i> Analyze</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-globe"></i> <span data-i18n="language">Language</span>
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i> Language
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en', event)">🇬🇧 English</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi', event)">🇮🇳 हिंदी</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr', event)">🇮🇳 मराठी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -75,187 +40,178 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 py-5">
+    <main class="flex-grow-1 section-padding">
         <div class="container">
-            <h1 class="mb-4 fw-bold">
-                <i class="fas fa-microscope text-primary"></i> Analyze Crop Disease
-            </h1>
-            <p class="text-muted mb-4">
-                Upload an image of a crop leaf to get an AI-powered disease detection report.
-            </p>
+            <div class="text-center mb-5">
+                <h1 class="gradient-text mb-3">🔬 AI Disease Detection</h1>
+                <p class="text-secondary fs-5">Upload a crop leaf image and let our AI analyze it instantly</p>
+            </div>
 
             <div class="row g-4">
                 <!-- UPLOAD SECTION -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm border-0">
+                <div class="col-lg-6">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-4">
-                                <i class="fas fa-upload"></i> Upload Leaf Image
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Leaf Image
                             </h5>
 
-                            <!-- Upload Form -->
                             <form id="uploadForm" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label for="imageInput" class="form-label">
-                                        Select Image (JPEG, PNG, GIF - Max 5MB)
-                                    </label>
-                                    <input
-                                        type="file"
-                                        class="form-control form-control-lg"
-                                        id="imageInput"
-                                        name="image"
-                                        accept="image/*"
-                                        required
-                                    />
-                                    <small class="text-muted"
-                                        >Supported formats: JPEG, PNG, GIF</small
-                                    >
+                                <!-- Drag & Drop Area -->
+                                <div class="upload-area" id="dropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p class="mt-3 mb-2"><strong>Drag & drop your image here</strong></p>
+                                    <p class="text-secondary mb-3">or click to browse</p>
+                                    <input type="file" id="imageInput" class="form-control" name="image" accept="image/*" hidden required />
+                                </div>
+
+                                <!-- File Info -->
+                                <div class="text-center mt-2">
+                                    <small class="text-secondary">
+                                        <i class="fas fa-info-circle"></i> Supported: JPEG, PNG, GIF | Max: 5MB
+                                    </small>
                                 </div>
 
                                 <!-- Image Preview -->
-                                <div id="imagePreview" class="mb-3 text-center" style="display: none">
-                                    <img
-                                        id="previewImg"
-                                        src=""
-                                        alt="Preview"
-                                        class="img-fluid"
-                                        style="max-height: 250px"
-                                    />
+                                <div id="imagePreview" style="display: none;" class="mt-4">
+                                    <p class="text-secondary mb-2">Preview:</p>
+                                    <img id="previewImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: cover;" />
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="clearImage()">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary btn-lg w-100"
-                                    id="submitBtn"
-                                >
+                                <!-- Analyze Button -->
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4" id="submitBtn">
                                     <i class="fas fa-search"></i> Analyze Image
                                 </button>
                             </form>
 
-                            <!-- Loading Spinner -->
-                            <div id="loadingSpinner" style="display: none" class="text-center mt-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Analyzing...</span>
-                                </div>
-                                <p class="mt-2 text-muted">Analyzing your image...</p>
+                            <!-- Loading State -->
+                            <div id="loadingState" style="display: none;" class="text-center mt-4">
+                                <div class="spinner-border text-success mb-3" role="status"></div>
+                                <p class="text-secondary">Analyzing your image with AI...</p>
+                                <small class="text-muted">This usually takes a few seconds</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- RESULT SECTION -->
-                <div class="col-md-6">
-                    <div
-                        id="resultCard"
-                        class="card shadow-sm border-0"
-                        style="display: none"
-                    >
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" data-i18n="result">
-                                <i class="fas fa-check-circle text-success"></i> <span data-i18n="result">Analysis Result</span>
-                            </h5>
-
-                            <!-- Disease Result -->
-                            <div class="mb-4">
-                                <label class="text-muted" id="diseaseLabel">Disease/Crop Detected:</label>
-                                <h3 id="resultDisease" class="text-success fw-bold"></h3>
-                            </div>
-
-                            <!-- Confidence Score -->
-                            <div class="mb-4">
-                                <label class="text-muted" id="confidenceLabel">Confidence Score:</label>
-                                <div class="progress" style="height: 25px">
-                                    <div
-                                        id="confidenceBar"
-                                        class="progress-bar bg-success"
-                                        role="progressbar"
-                                        aria-valuenow="0"
-                                        aria-valuemin="0"
-                                        aria-valuemax="100"
-                                    >
-                                        <span id="confidenceText">0%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Uploaded Image -->
-                            <div class="mb-4">
-                                <label class="text-muted" id="uploadedImgLabel">Uploaded Image:</label>
-                                <img
-                                    id="resultImage"
-                                    src=""
-                                    alt="Result"
-                                    class="img-fluid rounded"
-                                    style="max-height: 200px"
-                                />
-                            </div>
-
-                            <!-- Advisory -->
-                            <div class="alert alert-info" id="advisoryBox" role="alert">
-                                <h6 class="alert-heading" id="advisoryTitle">
-                                    <i class="fas fa-lightbulb"></i> Advisory
-                                </h6>
-                                <p id="advisoryText" class="mb-0"></p>
-                            </div>
-
-                            <!-- Flask Status Badge -->
-                            <div id="flaskStatusBadge" class="mb-3" style="display: none;">
-                                <span id="flaskStatusText" class="badge"></span>
-                            </div>
-
-                            <!-- Medicine Recommendation -->
-                            <div class="alert alert-warning" id="medicineBox" role="alert" style="display: none">
-                                <h6 class="alert-heading">
-                                    <i class="fas fa-pills"></i> 💊 Medicine Recommendation
-                                </h6>
-                                <div id="medicineContent"></div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="d-grid gap-2 d-sm-flex">
-                                <button
-                                    class="btn btn-success me-sm-2"
-                                    onclick="location.href='/dashboard'"
-                                >
-                                    <i class="fas fa-chart-bar"></i> View Dashboard
-                                </button>
-                                <button
-                                    class="btn btn-outline-primary"
-                                    onclick="resetForm()"
-                                >
-                                    <i class="fas fa-redo"></i> Analyze Another
-                                </button>
-                            </div>
+                <!-- RESULTS SECTION -->
+                <div class="col-lg-6">
+                    <!-- Error Alert -->
+                    <div id="errorAlert" class="alert alert-danger d-flex align-items-start" style="display: none;" role="alert">
+                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.25rem;"></i>
+                        <div>
+                            <h5 class="alert-heading">Analysis Error</h5>
+                            <p id="errorMessage" class="mb-0"></p>
                         </div>
                     </div>
 
-                    <!-- Error Message -->
-                    <div id="errorAlert" class="alert alert-danger" style="display: none" role="alert">
-                        <h4 class="alert-heading">
-                            <i class="fas fa-exclamation-circle"></i> Error
-                        </h4>
-                        <p id="errorMessage"></p>
+                    <!-- Success Results -->
+                    <div id="resultCard" style="display: none;">
+                        <!-- Disease Card -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start justify-content-between mb-3">
+                                    <div>
+                                        <p class="text-secondary small mb-1">Disease/Crop Detected</p>
+                                        <h3 id="resultDisease" class="gradient-text"></h3>
+                                    </div>
+                                    <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--accent-green);"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confidence Score -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p class="text-secondary small mb-3">Confidence Score</p>
+                                <div class="progress" style="height: 8px;">
+                                    <div id="confidenceBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span id="confidenceText" class="fw-bold">0%</span>
+                                    <small class="text-secondary">Accuracy</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advisory Section -->
+                        <div class="card mb-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">
+                                    <i class="fas fa-leaf" style="color: var(--accent-green);"></i> Recommendation
+                                </h6>
+                                <p id="advisoryText" class="mb-0"></p>
+                            </div>
+                        </div>
+
+                        <!-- Medicine Recommendation -->
+                        <div id="medicineBox" class="card mb-4" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%); display: none;">
+                            <div class="card-body">
+                                <h6 class="card-title mb-3">
+                                    <i class="fas fa-pills" style="color: var(--accent-purple);"></i> Treatment Guide
+                                </h6>
+                                <div id="medicineContent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Flask Status -->
+                        <div id="flaskStatusBadge" class="mb-4" style="display: none;">
+                            <p class="small text-secondary mb-2">Analysis Method</p>
+                            <span id="flaskStatusText" class="badge"></span>
+                        </div>
+
+                        <!-- Result Image -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <p class="small text-secondary mb-2">Analyzed Image</p>
+                                <img id="resultImage" src="" alt="Analysis" class="img-fluid rounded" style="max-height: 250px; width: 100%; object-fit: cover;" />
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-sm-flex">
+                            <a href="/dashboard" class="btn btn-success flex-grow-1">
+                                <i class="fas fa-chart-bar"></i> View Dashboard
+                            </a>
+                            <button type="button" class="btn btn-outline-primary flex-grow-1" onclick="resetForm()">
+                                <i class="fas fa-redo-alt"></i> Analyze Another
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- INFO SECTION -->
+            <!-- Info Section -->
             <div class="row mt-5">
                 <div class="col-md-12">
-                    <div class="card bg-light border-0">
+                    <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-info-circle"></i> How to Use
+                            <h5 class="card-title mb-4">
+                                <i class="fas fa-lightbulb"></i> Tips for Best Results
                             </h5>
-                            <ul>
-                                <li>Take a clear photo of an affected leaf</li>
-                                <li>Ensure good lighting and focus on the disease symptoms</li>
-                                <li>Upload the image in JPEG, PNG, or GIF format</li>
-                                <li>Wait for the AI model to analyze and provide results</li>
-                                <li>
-                                    View detailed advisory and recommendations for treatment
-                                </li>
-                            </ul>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <h6 class="text-success mb-3">✓ Do's</h6>
+                                    <ul class="small">
+                                        <li>Take clear, focused photos of affected leaves</li>
+                                        <li>Use natural lighting when possible</li>
+                                        <li>Capture the diseased area clearly</li>
+                                        <li>Upload JPEG or PNG format images</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-danger mb-3">✗ Don'ts</h6>
+                                    <ul class="small">
+                                        <li>Avoid blurry or dark images</li>
+                                        <li>Don't upload images larger than 5MB</li>
+                                        <li>Avoid zoomed-out full plant photos</li>
+                                        <li>Don't use heavily filtered images</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -264,18 +220,47 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 shadow">
+    <footer>
         <div class="container">
-            <p class="mb-2">
-                <strong>DualCrop Smart Advisory System</strong> - AI-Based Crop Disease
-                Detection
-            </p>
-            <p class="mb-0">
-                <small>
-                    Built with <i class="fas fa-heart text-danger"></i> using Node.js, Python
-                    Flask, and Machine Learning
-                </small>
-            </p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-leaf" style="color: var(--accent-green);"></i> DualCrop</h5>
+                    <p class="small text-muted">AI-powered crop disease detection for modern farmers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/weather">Weather</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/analyze">Disease Detection</a></li>
+                        <li><a href="/weather">Weather Advisory</a></li>
+                        <li><a href="/chatbot">AI Chatbot</a></li>
+                        <li><a href="/dashboard">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">
+                    <strong>DualCrop Smart Advisory System</strong> © 2024. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ec4899;"></i> for Modern Agriculture
+                </p>
+            </div>
         </div>
     </footer>
 
@@ -283,221 +268,180 @@
     <script src="/js/language-manager.js"></script>
     <script src="/js/main.js"></script>
     <script>
-        // Translate UI labels based on current language
-        function updateResultLabels() {
-            const lang = languageManager ? languageManager.getCurrentLanguage() : 'en';
-            
-            // Create label translations
-            const labels = {
-                'en': {
-                    'disease_label': 'Disease/Crop Detected:',
-                    'confidence_label': 'Confidence Score:',
-                    'medicine_title': 'Medicine Recommendation',
-                    'advisory_title': 'Advisory',
-                    'uploaded_img': 'Uploaded Image'
-                },
-                'hi': {
-                    'disease_label': 'रोग/फसल का पता चला:',
-                    'confidence_label': 'आत्मविश्वास स्कोर:',
-                    'medicine_title': 'दवा की सिफारिश',
-                    'advisory_title': 'सलाह',
-                    'uploaded_img': 'अपलोड की गई छवि'
-                },
-                'mr': {
-                    'disease_label': 'रोग/पिक आढळला:',
-                    'confidence_label': 'आत्मविश्वास स्कोर:',
-                    'medicine_title': 'औषधाची शिफारस',
-                    'advisory_title': 'सल्ला',
-                    'uploaded_img': 'अपलोड केलेली प्रतिमा'
-                }
-            };
-            
-            const currentLabels = labels[lang] || labels['en'];
-            
-            // Update label elements
-            const diseaseLabel = document.querySelector('[id="diseaseLabel"]');
-            if (diseaseLabel) diseaseLabel.textContent = currentLabels.disease_label;
-            
-            const confidenceLabel = document.querySelector('[id="confidenceLabel"]');
-            if (confidenceLabel) confidenceLabel.textContent = currentLabels.confidence_label;
-            
-            const medicineTitle = document.querySelector('[id="medicineTitle"]');
-            if (medicineTitle) medicineTitle.textContent = currentLabels.medicine_title;
-            
-            const advisoryTitle = document.querySelector('[id="advisoryTitle"]');
-            if (advisoryTitle) advisoryTitle.textContent = currentLabels.advisory_title;
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('imageInput');
+
+        // Make upload area clickable
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.add('dragover');
         }
-        
-        // Listen for language changes
-        window.addEventListener('languageChanged', function() {
-            updateResultLabels();
-        });
-        
-        // Image Preview
-        document.getElementById("imageInput").addEventListener("change", function (e) {
-            const file = e.target.files[0];
-            if (file) {
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        }
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = function (event) {
-                    document.getElementById("previewImg").src = event.target.result;
-                    document.getElementById("imagePreview").style.display = "block";
+                reader.onload = (e) => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
-        });
+        }
 
-        // Form Submission
-        document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+        function clearImage() {
+            fileInput.value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const formData = new FormData();
-            const imageFile = document.getElementById("imageInput").files[0];
-
-            if (!imageFile) {
-                const errorMsg = languageManager ? languageManager.t('error') : 'Error';
-                showError(errorMsg + ": " + (languageManager ? languageManager.t('select_file') : 'Please select an image'));
+            const file = fileInput.files[0];
+            if (!file) {
+                showError('Please select an image first');
                 return;
             }
 
-            formData.append("image", imageFile);
-            // Add language parameter
+            const formData = new FormData();
+            formData.append('image', file);
             const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
-            formData.append("language", language);
+            formData.append('language', language);
 
-            // Show loading spinner
-            document.getElementById("loadingSpinner").style.display = "block";
-            document.getElementById("resultCard").style.display = "none";
-            document.getElementById("errorAlert").style.display = "none";
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
 
             try {
-                const response = await fetch("/analyze", {
-                    method: "POST",
-                    body: formData,
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    // Show result
-                    document.getElementById("resultDisease").textContent = data.prediction;
-                    document.getElementById("confidenceBar").style.width = data.confidence + "%";
-                    document.getElementById("confidenceBar").setAttribute("aria-valuenow", data.confidence);
-                    document.getElementById("confidenceText").textContent = Math.round(data.confidence) + "%";
-                    document.getElementById("resultImage").src = "/uploads/" + data.image;
+                    document.getElementById('resultDisease').textContent = data.prediction;
+                    document.getElementById('confidenceBar').style.width = data.confidence + '%';
+                    document.getElementById('confidenceText').textContent = Math.round(data.confidence) + '%';
+                    document.getElementById('resultImage').src = '/uploads/' + data.image;
 
-                    // Show Flask status badge
-                    const flaskStatusBadge = document.getElementById("flaskStatusBadge");
-                    const flaskStatusText = document.getElementById("flaskStatusText");
-                    
+                    // Flask status
+                    const badge = document.getElementById('flaskStatusBadge');
+                    const text = document.getElementById('flaskStatusText');
                     if (data.flaskAvailable) {
-                        flaskStatusText.textContent = "✅ AI Model (Flask) - Live Prediction";
-                        flaskStatusText.className = "badge bg-success";
+                        text.textContent = '✅ AI Model (Flask) - Live';
+                        text.className = 'badge bg-success';
                     } else {
-                        flaskStatusText.textContent = "⚠️ Fallback Mode - Flask Unavailable";
-                        flaskStatusText.className = "badge bg-warning text-dark";
+                        text.textContent = '⚠️ Fallback Mode';
+                        text.className = 'badge bg-warning text-dark';
                     }
-                    flaskStatusBadge.style.display = "block";
+                    badge.style.display = 'block';
 
-                    // Generate advisory based on prediction
                     const advisory = generateAdvisory(data.prediction);
-                    document.getElementById("advisoryText").textContent = advisory;
+                    document.getElementById('advisoryText').textContent = advisory;
 
-                    // Display medicine recommendation
                     if (data.medicine) {
-                        displayMedicineRecommendation(data.medicine, data.prediction);
+                        displayMedicineRecommendation(data.medicine);
                     }
 
-                    document.getElementById("resultCard").style.display = "block";
+                    document.getElementById('resultCard').style.display = 'block';
                 } else {
-                    showError(data.error || "Analysis failed. Please try again.");
+                    showError(data.error || 'Analysis failed');
                 }
             } catch (error) {
-                showError("Error: " + error.message);
+                showError('Error: ' + error.message);
             } finally {
-                document.getElementById("loadingSpinner").style.display = "none";
+                document.getElementById('loadingState').style.display = 'none';
             }
         });
 
-        // Helper function to show error
-        function showError(message) {
-            document.getElementById("errorMessage").textContent = message;
-            document.getElementById("errorAlert").style.display = "block";
+        function showError(msg) {
+            document.getElementById('errorMessage').textContent = msg;
+            document.getElementById('errorAlert').style.display = 'block';
         }
 
-        // Helper function to reset form
         function resetForm() {
-            document.getElementById("uploadForm").reset();
-            document.getElementById("imagePreview").style.display = "none";
-            document.getElementById("resultCard").style.display = "none";
-            document.getElementById("errorAlert").style.display = "none";
+            document.getElementById('uploadForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
         }
 
-        // Display medicine recommendation
-        function displayMedicineRecommendation(medicine, disease) {
-            const medicineBox = document.getElementById("medicineBox");
-            const medicineContent = document.getElementById("medicineContent");
+        function generateAdvisory(prediction) {
+            const advisories = {
+                'healthy': 'Your crop appears healthy! Continue regular monitoring and maintain good agricultural practices.',
+                'disease': 'A disease has been detected. Follow the treatment guide below and consult a local agricultural expert if needed.'
+            };
+            return advisories[prediction.toLowerCase()] || advisories['disease'];
+        }
+
+        function displayMedicineRecommendation(medicine) {
+            const box = document.getElementById('medicineBox');
+            const content = document.getElementById('medicineContent');
             
-            let html = "";
+            let html = '<div class="small">';
             
             if (medicine.description) {
-                html += `<p class="fw-bold">${medicine.description}</p>`;
+                html += `<p class="mb-2"><strong>${medicine.description}</strong></p>`;
             }
             
             if (Array.isArray(medicine.medicine)) {
-                html += `<p><strong>Medicines:</strong> ${medicine.medicine.join(", ")}</p>`;
+                html += `<p class="mb-2"><strong>Medicines:</strong><br>${medicine.medicine.join(', ')}</p>`;
             } else if (medicine.medicine) {
-                html += `<p><strong>Medicine:</strong> ${medicine.medicine}</p>`;
+                html += `<p class="mb-2"><strong>Medicine:</strong> ${medicine.medicine}</p>`;
             }
             
             if (medicine.dosage) {
-                html += `<p><strong>Dosage:</strong> ${medicine.dosage}</p>`;
+                html += `<p class="mb-2"><strong>Dosage:</strong> ${medicine.dosage}</p>`;
             }
             
             if (medicine.spraying_interval) {
-                html += `<p><strong>Spraying Interval:</strong> Every ${medicine.spraying_interval}</p>`;
+                html += `<p class="mb-2"><strong>Spraying Interval:</strong> Every ${medicine.spraying_interval}</p>`;
             }
             
             if (medicine.preventive && Array.isArray(medicine.preventive)) {
-                html += `<p><strong>Preventive Measures:</strong></p><ul>`;
+                html += '<p class="mb-2"><strong>Preventive Measures:</strong><ul class="mb-0">';
                 medicine.preventive.forEach(item => {
                     html += `<li>${item}</li>`;
                 });
-                html += `</ul>`;
+                html += '</ul></p>';
             }
             
-            if (medicine.instructions && Array.isArray(medicine.instructions)) {
-                html += `<p><strong>Instructions:</strong></p><ol>`;
-                medicine.instructions.forEach(item => {
-                    html += `<li>${item}</li>`;
-                });
-                html += `</ol>`;
-            }
-            
-            medicineContent.innerHTML = html;
-            medicineBox.style.display = "block";
+            html += '</div>';
+            content.innerHTML = html;
+            box.style.display = 'block';
         }
 
-        // Helper function to reset form
-
-        // Generate advisory based on disease
-        function generateAdvisory(disease) {
-            const advisories = {
-                "healthy": "Your crop looks healthy! Continue regular maintenance and monitoring.",
-                "blight": "Leaf blight detected. Apply fungicides immediately and improve air circulation.",
-                "mildew": "Powdery mildew detected. Use sulfur-based fungicides and reduce humidity.",
-                "rust": "Rust disease detected. Remove affected leaves and apply copper-based fungicides.",
-                "rot": "Rot detected. Ensure proper drainage and reduce watering frequency.",
-                "yellowing": "Yellowing observed. Check for nutrient deficiency or pest damage.",
-                "spot": "Leaf spot detected. Remove infected leaves and apply appropriate fungicides.",
-            };
-
-            for (const key in advisories) {
-                if (disease.toLowerCase().includes(key)) {
-                    return advisories[key];
-                }
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
             }
-
-            return "Please consult with a local agricultural expert for detailed recommendations on: " + disease;
         }
     </script>
 </body>

@@ -4,60 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | DualCrop Smart Advisory System</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-leaf"></i> DualCrop Advisory
-            </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-leaf"></i> DualCrop</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analyze"
-                            ><i class="fas fa-microscope"></i> Analyze</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> Weather</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> Dashboard</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/chatbot"
-                            ><i class="fas fa-comments"></i> Chatbot</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about"
-                            ><i class="fas fa-info-circle"></i> About</a
-                        >
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analyze"><i class="fas fa-microscope"></i> Analyze</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i> Language
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -65,135 +40,104 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 py-5">
+    <main class="flex-grow-1 section-padding">
         <div class="container">
-            <h1 class="mb-4 fw-bold">
-                <i class="fas fa-chart-bar text-primary"></i> Dashboard
-            </h1>
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="gradient-text mb-2">📊 Analytics Dashboard</h1>
+                    <p class="text-secondary">Your prediction history and statistics</p>
+                </div>
+                <a href="/analyze" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> New Analysis
+                </a>
+            </div>
 
             <!-- STATS SECTION -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm border-0">
-                        <div class="card-body">
-                            <i class="fas fa-file-upload text-primary" style="font-size: 2rem"></i>
-                            <h3 class="mt-3"><%= count %></h3>
-                            <p class="text-muted">Total Analyses</p>
-                        </div>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);">
+                        <i class="fas fa-file-upload" style="color: var(--accent-green);"></i>
                     </div>
+                    <div class="stat-card-value"><%= count %></div>
+                    <div class="stat-card-label">Total Analyses</div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm border-0">
-                        <div class="card-body">
-                            <i
-                                class="fas fa-check-circle text-success"
-                                style="font-size: 2rem"
-                            ></i>
-                            <h3 class="mt-3" id="healthyCount">0</h3>
-                            <p class="text-muted">Healthy Crops</p>
-                        </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);">
+                        <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
                     </div>
+                    <div class="stat-card-value" id="healthyCount">0</div>
+                    <div class="stat-card-label">Healthy Crops</div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm border-0">
-                        <div class="card-body">
-                            <i class="fas fa-exclamation-circle text-warning" style="font-size: 2rem"></i>
-                            <h3 class="mt-3" id="diseaseCount">0</h3>
-                            <p class="text-muted">Diseases Detected</p>
-                        </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);">
+                        <i class="fas fa-exclamation-circle" style="color: #dc2626;"></i>
                     </div>
+                    <div class="stat-card-value" id="diseaseCount">0</div>
+                    <div class="stat-card-label">Diseases Detected</div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm border-0">
-                        <div class="card-body">
-                            <i
-                                class="fas fa-percentage text-info"
-                                style="font-size: 2rem"
-                            ></i>
-                            <h3 class="mt-3" id="avgConfidence">0%</h3>
-                            <p class="text-muted">Avg. Confidence</p>
-                        </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-icon" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);">
+                        <i class="fas fa-percentage" style="color: var(--accent-purple);"></i>
                     </div>
+                    <div class="stat-card-value" id="avgConfidence">0%</div>
+                    <div class="stat-card-label">Avg. Confidence</div>
                 </div>
             </div>
 
             <!-- ERROR MESSAGE -->
             <% if (typeof error !== 'undefined' && error) { %>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle"></i>
-                <%= error %>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"
-                ></button>
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert">
+                <i class="fas fa-exclamation-triangle me-3 mt-1" style="font-size: 1.25rem;"></i>
+                <div>
+                    <strong>Error</strong>
+                    <p class="mb-0"><%= error %></p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <% } %>
 
             <!-- PREDICTIONS TABLE -->
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="fas fa-table"></i> Recent Predictions
-                    </h5>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-history"></i> Recent Predictions</h5>
+                        <small class="text-secondary">Latest analyses</small>
+                    </div>
                 </div>
                 <div class="card-body">
                     <% if (predictions && predictions.length > 0) { %>
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
-                                    <th>
-                                        <i class="fas fa-image"></i> Image
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-stethoscope"></i> Prediction
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-percentage"></i> Confidence
-                                    </th>
-                                    <th>
-                                        <i class="fas fa-calendar"></i> Date
-                                    </th>
+                                    <th><i class="fas fa-image"></i> Image</th>
+                                    <th><i class="fas fa-leaf"></i> Prediction</th>
+                                    <th><i class="fas fa-percentage"></i> Confidence</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% predictions.forEach((pred) => { %>
+                                <% predictions.forEach(prediction => { %>
                                 <tr>
                                     <td>
-                                        <div style="width: 50px; height: 50px; border-radius: 5px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                            <img
-                                                src="/uploads/<%= pred.image %>"
-                                                alt="<%= pred.result %>"
-                                                style="max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 5px;"
-                                                class="dashboard-prediction-image"
-                                                data-filename="<%= pred.image %>"
-                                                onerror="handleImageError(this)"
-                                            />
-                                        </div>
-                                    </td>
-                                    <td class="fw-bold"><%= pred.result %></td>
-                                    <td>
-                                        <div class="progress" style="width: 150px; height: 20px">
-                                            <div
-                                                class="progress-bar bg-success"
-                                                role="progressbar"
-                                                style="width: <%= pred.confidence %>%"
-                                                aria-valuenow="<%= pred.confidence %>"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
-                                            >
-                                                <%= Math.round(pred.confidence) %>%
-                                            </div>
-                                        </div>
+                                        <img src="/uploads/<%= prediction.image_path %>" alt="Thumbnail" style="width: 50px; height: 50px; border-radius: 0.5rem; object-fit: cover;" />
                                     </td>
                                     <td>
-                                        <small class="text-muted">
-                                            <%= new Date(pred.created_at).toLocaleDateString() %>
-                                            <br />
-                                            <%= new Date(pred.created_at).toLocaleTimeString() %>
-                                        </small>
+                                        <span class="badge" style="<% if (prediction.prediction.toLowerCase().includes('healthy')) { %>background: linear-gradient(135deg, var(--accent-green) 0%, #06b6d4 100%);<% } else { %>background: linear-gradient(135deg, #ef4444 0%, var(--accent-purple) 100%);<% } %> color: white;">
+                                            <%= prediction.prediction %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar" style="width: <%= prediction.confidence %>%; background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-cyan) 100%);"></div>
+                                        </div>
+                                        <small class="text-secondary"><%= Math.round(prediction.confidence) %>%</small>
+                                    </td>
+                                    <td>
+                                        <small class="text-secondary"><%= new Date(prediction.created_at).toLocaleDateString() %></small>
                                     </td>
                                 </tr>
                                 <% }); %>
@@ -201,74 +145,100 @@
                         </table>
                     </div>
                     <% } else { %>
-                    <div class="alert alert-info" role="alert">
-                        <i class="fas fa-info-circle"></i> No predictions yet. Start by
-                        <a href="/analyze" class="alert-link">analyzing an image</a>.
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-secondary); opacity: 0.5;"></i>
+                        <p class="mt-3 text-secondary">No predictions yet. <a href="/analyze">Start your first analysis</a></p>
                     </div>
                     <% } %>
                 </div>
-            </div>
-
-            <!-- ACTION BUTTONS -->
-            <div class="mt-4 d-flex gap-2">
-                <a href="/analyze" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> New Analysis
-                </a>
-                <button class="btn btn-outline-secondary" onclick="location.reload()">
-                    <i class="fas fa-redo"></i> Refresh
-                </button>
             </div>
         </div>
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 shadow">
+    <footer>
         <div class="container">
-            <p class="mb-2">
-                <strong>DualCrop Smart Advisory System</strong> - AI-Based Crop Disease
-                Detection
-            </p>
-            <p class="mb-0">
-                <small>
-                    Built with <i class="fas fa-heart text-danger"></i> using Node.js, Python
-                    Flask, and Machine Learning
-                </small>
-            </p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-leaf" style="color: var(--accent-green);"></i> DualCrop</h5>
+                    <p class="small text-muted">AI-powered crop disease detection for modern farmers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/analyze">Analyze</a></li>
+                        <li><a href="/weather">Weather</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/analyze">Disease Detection</a></li>
+                        <li><a href="/weather">Weather Advisory</a></li>
+                        <li><a href="/chatbot">AI Chatbot</a></li>
+                        <li><a href="/dashboard">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">
+                    <strong>DualCrop Smart Advisory System</strong> © 2024. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ec4899;"></i> for Modern Agriculture
+                </p>
+            </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/language-manager.js"></script>
+    <script src="/js/main.js"></script>
     <script>
-        // Handle image loading errors
-        function handleImageError(img) {
-            const parentDiv = img.parentElement;
-            parentDiv.innerHTML = '<i class="fas fa-image" style="font-size: 1.5rem; color: #ccc;"></i>';
+        // Calculate statistics
+        function updateStatistics() {
+            const rows = document.querySelectorAll('table tbody tr');
+            let healthy = 0, disease = 0, totalConfidence = 0;
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 3) {
+                    const prediction = cells[1].textContent.toLowerCase();
+                    const confidenceText = cells[2].querySelector('small') || cells[2];
+                    const confidence = parseFloat(confidenceText.textContent) || 0;
+                    
+                    if (prediction.includes('healthy')) {
+                        healthy++;
+                    } else {
+                        disease++;
+                    }
+                    totalConfidence += confidence;
+                }
+            });
+
+            document.getElementById('healthyCount').textContent = healthy;
+            document.getElementById('diseaseCount').textContent = disease;
+            const avgConfidence = rows.length > 0 ? Math.round(totalConfidence / rows.length) : 0;
+            document.getElementById('avgConfidence').textContent = avgConfidence + '%';
         }
 
-        // Calculate statistics
-        document.addEventListener("DOMContentLoaded", function () {
-            const predictions = <%- JSON.stringify(predictions) %>;
-            
-            if (predictions && predictions.length > 0) {
-                let healthyCount = 0;
-                let diseaseCount = 0;
-                let totalConfidence = 0;
+        updateStatistics();
 
-                predictions.forEach((pred) => {
-                    if (pred.result.toLowerCase().includes("healthy")) {
-                        healthyCount++;
-                    } else {
-                        diseaseCount++;
-                    }
-                    totalConfidence += pred.confidence;
-                });
-
-                document.getElementById("healthyCount").textContent = healthyCount;
-                document.getElementById("diseaseCount").textContent = diseaseCount;
-                const avgConfidence = Math.round(totalConfidence / predictions.length);
-                document.getElementById("avgConfidence").textContent = avgConfidence + "%";
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
             }
-        });
+        }
     </script>
 </body>
 </html>

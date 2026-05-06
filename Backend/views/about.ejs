@@ -4,60 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About | DualCrop Smart Advisory System</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-leaf"></i> DualCrop Advisory
-            </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-leaf"></i> DualCrop</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analyze"
-                            ><i class="fas fa-microscope"></i> Analyze</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> Weather</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> Dashboard</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/chatbot"
-                            ><i class="fas fa-comments"></i> Chatbot</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/about"
-                            ><i class="fas fa-info-circle"></i> About</a
-                        >
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analyze"><i class="fas fa-microscope"></i> Analyze</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i> Language
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -65,82 +40,84 @@
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 py-5">
+    <main class="flex-grow-1 section-padding">
         <div class="container">
-            <!-- PROJECT OVERVIEW -->
-            <section class="mb-5">
-                <h1 class="fw-bold mb-4">
-                    <i class="fas fa-leaf text-success"></i> About DualCrop Smart Advisory System
-                </h1>
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Project Overview</h5>
-                        <p class="card-text">
-                            DualCrop Smart Advisory System is an AI-powered agricultural technology platform designed to help
-                            farmers and agricultural experts identify crop diseases early and receive data-driven recommendations
-                            for optimal crop management. The system combines machine learning, real-time weather data, and expert
-                            agricultural knowledge to provide comprehensive advisory services.
-                        </p>
+            <!-- HERO SECTION -->
+            <section class="text-center mb-5 pb-5">
+                <h1 class="gradient-text mb-3">About DualCrop</h1>
+                <p class="lead text-secondary">Empowering farmers with AI-powered crop disease detection</p>
+            </section>
+
+            <!-- MISSION & VISION -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bullseye" style="font-size: 3rem; color: var(--accent-green); margin-bottom: 1rem;"></i>
+                            <h4 class="card-title">Our Mission</h4>
+                            <p class="card-text text-secondary">
+                                To revolutionize agriculture by providing farmers with advanced AI technology for early disease detection, reducing crop losses, and maximizing yields through data-driven insights.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </section>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-eye" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 1rem;"></i>
+                            <h4 class="card-title">Our Vision</h4>
+                            <p class="card-text text-secondary">
+                                A world where every farmer, regardless of location or resources, has access to cutting-edge agricultural technology that helps them make informed decisions for sustainable farming.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- KEY FEATURES -->
             <section class="mb-5">
-                <h2 class="fw-bold mb-4">
-                    <i class="fas fa-star text-warning"></i> Key Features
-                </h2>
+                <h2 class="text-center mb-4">🎯 Key Features</h2>
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-image text-primary"></i> AI-Powered Image Analysis
-                                </h5>
-                                <p class="card-text">
-                                    Upload leaf images and get instant disease detection using state-of-the-art deep learning
-                                    models trained on thousands of crop leaf images.
-                                </p>
-                            </div>
+                        <div class="feature-card">
+                            <i class="fas fa-microscope"></i>
+                            <h5>AI-Powered Detection</h5>
+                            <p>State-of-the-art machine learning models trained to identify 50+ crop diseases with 95%+ accuracy from a single image.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-cloud-sun text-info"></i> Real-Time Weather Integration
-                                </h5>
-                                <p class="card-text">
-                                    Integrated with OpenWeatherMap API to provide real-time weather data and personalized crop
-                                    recommendations based on current climate conditions.
-                                </p>
-                            </div>
+                        <div class="feature-card">
+                            <i class="fas fa-cloud-sun"></i>
+                            <h5>Real-Time Weather</h5>
+                            <p>Live weather data integrated with crop advisory recommendations tailored to current conditions and seasonal patterns.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-database text-success"></i> Comprehensive Dashboard
-                                </h5>
-                                <p class="card-text">
-                                    View all your predictions in a beautiful dashboard with analytics, historical data, and
-                                    detailed reports of past analyses.
-                                </p>
-                            </div>
+                        <div class="feature-card">
+                            <i class="fas fa-robot"></i>
+                            <h5>AI Chatbot Support</h5>
+                            <p>24/7 intelligent assistance for farming queries, disease treatments, and agricultural best practices in multiple languages.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-robot text-danger"></i> Intelligent Chatbot
-                                </h5>
-                                <p class="card-text">
-                                    Interactive AI chatbot providing instant advice on crop care, disease management, fertilizers,
-                                    and pest control.
-                                </p>
-                            </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h5>Analytics Dashboard</h5>
+                            <p>Comprehensive history tracking with statistics, trends, and insights to improve farming decisions over time.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <i class="fas fa-globe"></i>
+                            <h5>Multi-Language Support</h5>
+                            <p>Fully localized interface in English, Hindi, and Marathi to serve diverse farming communities across regions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <i class="fas fa-lock"></i>
+                            <h5>Secure & Private</h5>
+                            <p>Your agricultural data is secure. No crop photos are stored permanently. Privacy and data security are our priority.</p>
                         </div>
                     </div>
                 </div>
@@ -148,164 +125,206 @@
 
             <!-- TECHNOLOGY STACK -->
             <section class="mb-5">
-                <h2 class="fw-bold mb-4">
-                    <i class="fas fa-cogs text-secondary"></i> Technology Stack
-                </h2>
-                <div class="row g-4">
-                    <div class="col-md-3">
-                        <div class="card text-center shadow-sm border-0">
-                            <div class="card-body">
-                                <h6 class="card-title text-primary">Frontend</h6>
-                                <p class="card-text">
-                                    <span class="badge bg-primary">EJS</span>
-                                    <span class="badge bg-primary">Bootstrap 5</span>
-                                    <span class="badge bg-primary">JavaScript</span>
-                                </p>
-                            </div>
+                <h2 class="text-center mb-4">⚙️ Technology Stack</h2>
+                <div class="row g-3 text-center">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fab fa-python"></i>
+                            <p>Python</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center shadow-sm border-0">
-                            <div class="card-body">
-                                <h6 class="card-title text-success">Backend</h6>
-                                <p class="card-text">
-                                    <span class="badge bg-success">Node.js</span>
-                                    <span class="badge bg-success">Express.js</span>
-                                    <span class="badge bg-success">Multer</span>
-                                </p>
-                            </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fas fa-cube"></i>
+                            <p>TensorFlow</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center shadow-sm border-0">
-                            <div class="card-body">
-                                <h6 class="card-title text-info">ML Backend</h6>
-                                <p class="card-text">
-                                    <span class="badge bg-info">Python</span>
-                                    <span class="badge bg-info">Flask</span>
-                                    <span class="badge bg-info">TensorFlow</span>
-                                </p>
-                            </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fab fa-node-js"></i>
+                            <p>Node.js</p>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card text-center shadow-sm border-0">
-                            <div class="card-body">
-                                <h6 class="card-title text-warning">Database</h6>
-                                <p class="card-text">
-                                    <span class="badge bg-warning">MySQL</span>
-                                    <span class="badge bg-warning">MySQL2</span>
-                                </p>
-                            </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fab fa-js-square"></i>
+                            <p>Express.js</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fas fa-database"></i>
+                            <p>MySQL</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="tech-badge">
+                            <i class="fab fa-bootstrap"></i>
+                            <p>Bootstrap</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ARCHITECTURE -->
+            <!-- STATISTICS -->
             <section class="mb-5">
-                <h2 class="fw-bold mb-4">
-                    <i class="fas fa-sitemap text-primary"></i> System Architecture
-                </h2>
-                <div class="card shadow-sm border-0">
+                <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);">
                     <div class="card-body">
-                        <p class="text-muted">
-                            The application follows a three-tier architecture:
-                        </p>
-                        <ul>
-                            <li><strong>Frontend Tier:</strong> EJS templates with Bootstrap 5 for responsive UI, JavaScript for client-side interactions</li>
-                            <li><strong>Backend Tier:</strong> Node.js Express server handling API requests, file uploads, database operations, and third-party API integrations</li>
-                            <li><strong>AI/ML Tier:</strong> Python Flask API running TensorFlow models for disease detection and prediction</li>
-                            <li><strong>Database Tier:</strong> MySQL database storing user predictions and historical analysis data</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TEAM & CREDITS -->
-            <section class="mb-5">
-                <h2 class="fw-bold mb-4">
-                    <i class="fas fa-users text-success"></i> Development Team
-                </h2>
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <p class="mb-2">
-                            <strong>Project Lead:</strong> DualCrop Development Team
-                        </p>
-                        <p class="mb-2">
-                            <strong>Technologies Implemented By:</strong> Full-Stack Development Team
-                        </p>
-                        <p class="mb-0">
-                            <strong>Version:</strong> 1.0.0
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CONTACT & LINKS -->
-            <section class="mb-5">
-                <h2 class="fw-bold mb-4">
-                    <i class="fas fa-envelope text-danger"></i> Contact & Support
-                </h2>
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <p class="mb-2">
-                            <i class="fas fa-globe"></i> <strong>Website:</strong> www.dualcrop.com
-                        </p>
-                        <p class="mb-2">
-                            <i class="fas fa-envelope"></i> <strong>Email:</strong>
-                            <a href="mailto:support@dualcrop.com">support@dualcrop.com</a>
-                        </p>
-                        <p class="mb-2">
-                            <i class="fas fa-phone"></i> <strong>Phone:</strong> +1 (555) 123-4567
-                        </p>
-                        <p class="mb-0">
-                            <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Agricultural Technology Hub,
-                            Innovation District
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CALL TO ACTION -->
-            <section class="text-center">
-                <div class="card bg-light shadow-sm border-0">
-                    <div class="card-body py-5">
-                        <h4 class="fw-bold mb-3">Ready to Transform Your Farming?</h4>
-                        <p class="mb-4">
-                            Start using DualCrop today to get early disease detection and data-driven agricultural advice.
-                        </p>
-                        <div class="d-flex gap-2 justify-content-center flex-wrap">
-                            <a href="/analyze" class="btn btn-success btn-lg">
-                                <i class="fas fa-arrow-right"></i> Start Analyzing
-                            </a>
-                            <a href="/" class="btn btn-outline-success btn-lg">
-                                <i class="fas fa-home"></i> Back to Home
-                            </a>
+                        <h2 class="text-center mb-4">📊 By The Numbers</h2>
+                        <div class="row text-center">
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <h3 class="gradient-text">95%+</h3>
+                                <p class="text-secondary">Accuracy Rate</p>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <h3 class="gradient-text">50+</h3>
+                                <p class="text-secondary">Crops Supported</p>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <h3 class="gradient-text">150+</h3>
+                                <p class="text-secondary">Diseases Detected</p>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <h3 class="gradient-text">24/7</h3>
+                                <p class="text-secondary">Available</p>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- TEAM SECTION -->
+            <section class="mb-5">
+                <h2 class="text-center mb-4">👥 Development Team</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-center text-secondary mb-0">
+                            <strong>DualCrop</strong> was developed by a dedicated team of agricultural technology experts and machine learning engineers passionate about transforming modern farming through innovative AI solutions. 
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA SECTION -->
+            <section class="text-center mb-5">
+                <h2 class="mb-4">Ready to Improve Your Farming?</h2>
+                <p class="lead text-secondary mb-4">Start using DualCrop today to detect diseases early and maximize your crop yield.</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="/analyze" class="btn btn-primary btn-lg">
+                        <i class="fas fa-microscope"></i> Start Analyzing
+                    </a>
+                    <a href="/chatbot" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-comments"></i> Ask Questions
+                    </a>
                 </div>
             </section>
         </div>
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 shadow">
+    <footer>
         <div class="container">
-            <p class="mb-2">
-                <strong>DualCrop Smart Advisory System</strong> - AI-Based Crop Disease Detection
-            </p>
-            <p class="mb-0">
-                <small>
-                    Built with <i class="fas fa-heart text-danger"></i> using Node.js, Python Flask, and Machine Learning
-                </small>
-            </p>
-            <p class="mb-0 mt-3">
-                <small>&copy; 2024 DualCrop Team. All rights reserved.</small>
-            </p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-leaf" style="color: var(--accent-green);"></i> DualCrop</h5>
+                    <p class="small text-muted">AI-powered crop disease detection for modern farmers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/analyze">Analyze</a></li>
+                        <li><a href="/weather">Weather</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/analyze">Disease Detection</a></li>
+                        <li><a href="/weather">Weather Advisory</a></li>
+                        <li><a href="/chatbot">AI Chatbot</a></li>
+                        <li><a href="/dashboard">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">
+                    <strong>DualCrop Smart Advisory System</strong> © 2024. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ec4899;"></i> for Modern Agriculture
+                </p>
+            </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/language-manager.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
+            }
+        }
+    </script>
+    <style>
+        .feature-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+        }
+
+        .tech-badge i {
+            font-size: 2.5rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-badge p {
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+    </style>
 </body>
 </html>

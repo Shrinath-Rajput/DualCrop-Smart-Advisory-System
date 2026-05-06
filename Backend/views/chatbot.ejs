@@ -3,236 +3,117 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chatbot | DualCrop Smart Advisory System</title>
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <title>AI Chatbot | DualCrop Smart Advisory System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
-    <style>
-        .chat-container {
-            height: 500px;
-            overflow-y: auto;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            animation: slideIn 0.3s ease-in-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message.bot {
-            justify-content: flex-start;
-        }
-
-        .bubble {
-            max-width: 70%;
-            padding: 12px 15px;
-            border-radius: 12px;
-            word-wrap: break-word;
-            line-height: 1.4;
-        }
-
-        .user .bubble {
-            background-color: #007bff;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .bot .bubble {
-            background-color: #e9ecef;
-            color: #333;
-            border-bottom-left-radius: 4px;
-        }
-
-        .timestamp {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 5px;
-        }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-leaf"></i> DualCrop Advisory
-            </a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-leaf"></i> DualCrop</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/analyze"
-                            ><i class="fas fa-microscope"></i> Analyze</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> Weather</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> Dashboard</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/chatbot"
-                            ><i class="fas fa-comments"></i> Chatbot</a
-                        >
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about"
-                            ><i class="fas fa-info-circle"></i> About</a
-                        >
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/analyze"><i class="fas fa-microscope"></i> Analyze</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/weather"><i class="fas fa-cloud-sun"></i> Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/chatbot"><i class="fas fa-comments"></i> Chatbot</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><i class="fas fa-info-circle"></i> About</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-globe"></i> Language
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
                             <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी (Hindi)</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी (Marathi)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी</a></li>
                         </ul>
                     </li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow-1 py-5">
+    <main class="flex-grow-1 section-padding">
         <div class="container">
-            <h1 class="mb-4 fw-bold">
-                <i class="fas fa-robot text-primary"></i> DualCrop AI Assistant
-            </h1>
-            <p class="text-muted mb-4">
-                Chat with our AI-powered agricultural assistant for instant advice on crops, diseases, fertilizers, and more.
-            </p>
+            <div class="text-center mb-4">
+                <h1 class="gradient-text mb-2">🤖 AI Agriculture Assistant</h1>
+                <p class="text-secondary">Ask anything about crops, diseases, and farming practices</p>
+            </div>
 
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div class="card shadow-sm border-0">
+            <div class="row g-4">
+                <!-- CHAT SECTION -->
+                <div class="col-lg-8">
+                    <div class="chat-container" id="chatContainer">
+                        <div class="message bot">
+                            <div class="bubble">
+                                <strong>Welcome!</strong> 👋 I'm your AI agriculture assistant. Ask me anything about crops, diseases, treatments, weather impact, or farming advice. How can I help you today?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="card mt-3">
                         <div class="card-body">
-                            <!-- Chat Box -->
-                            <div id="chatContainer" class="chat-container mb-4">
-                                <!-- Welcome Message -->
-                                <div class="message bot">
-                                    <div>
-                                        <div class="bubble">
-                                            <strong>Welcome! 👋</strong><br />
-                                            I'm your DualCrop AI Assistant. Ask me about:
-                                            <ul class="mt-2 mb-0" style="font-size: 0.9rem">
-                                                <li>🌾 Crop care and management</li>
-                                                <li>🦠 Disease identification and treatment</li>
-                                                <li>🌱 Fertilizer recommendations</li>
-                                                <li>🚫 Pesticide and pest control</li>
-                                                <li>🌦️ Weather-based advice</li>
-                                            </ul>
-                                        </div>
-                                        <div class="timestamp">Just now</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Input Area -->
-                            <form id="chatForm" class="mt-4">
-                                <div class="input-group input-group-lg">
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="messageInput"
-                                        placeholder="Type your question..."
-                                        autocomplete="off"
-                                    />
-                                    <button class="btn btn-primary" type="submit" id="sendBtn">
-                                        <i class="fas fa-paper-plane"></i> Send
-                                    </button>
-                                </div>
+                            <form id="chatForm" class="chat-input-group">
+                                <input type="text" id="userInput" class="form-control" placeholder="Type your question here..." required />
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
                             </form>
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- Quick Actions -->
-                            <div class="mt-3">
-                                <small class="text-muted">Quick questions:</small>
-                                <div class="btn-group-vertical d-grid gap-2 mt-2" role="group">
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('What is brinjal and how to grow it')"
-                                    >
-                                        <i class="fas fa-eggplant"></i> About Brinjal
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('What are brinjal diseases')"
-                                    >
-                                        <i class="fas fa-bug"></i> Brinjal Diseases
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('What fertilizer for grapes')"
-                                    >
-                                        <i class="fas fa-flask"></i> Grapes Fertilizer
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('How to treat grape black rot')"
-                                    >
-                                        <i class="fas fa-stethoscope"></i> Grape Black Rot
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('Tell me about grape care')"
-                                    >
-                                        <i class="fas fa-leaf"></i> Grape Care
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-secondary btn-sm text-start"
-                                        onclick="askQuestion('Help')"
-                                    >
-                                        <i class="fas fa-question-circle"></i> Help
-                                    </button>
-                                </div>
+                <!-- SUGGESTIONS SECTION -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-lightbulb"></i> Quick Questions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('What are common crop diseases?')">
+                                    <i class="fas fa-leaf"></i> Common Diseases
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('How do I prevent crop diseases?')">
+                                    <i class="fas fa-shield-alt"></i> Prevention Tips
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('What fertilizers should I use?')">
+                                    <i class="fas fa-flask"></i> Fertilizers
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('How does weather affect crops?')">
+                                    <i class="fas fa-cloud"></i> Weather Impact
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('Best farming practices')">
+                                    <i class="fas fa-seedling"></i> Farm Practices
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm text-start" onclick="askQuestion('How to use DualCrop?')">
+                                    <i class="fas fa-question-circle"></i> How to Use
+                                </button>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-info-circle"></i> About the Bot</h5>
+                        </div>
+                        <div class="card-body small">
+                            <p>This AI chatbot is trained to answer questions about:</p>
+                            <ul class="mb-0">
+                                <li>Crop diseases & treatment</li>
+                                <li>Weather advisory</li>
+                                <li>Fertilizer recommendations</li>
+                                <li>Farming best practices</li>
+                                <li>System usage & features</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -241,16 +122,47 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center py-4 mt-5 shadow">
+    <footer>
         <div class="container">
-            <p class="mb-2">
-                <strong>DualCrop Smart Advisory System</strong> - AI-Based Crop Disease Detection
-            </p>
-            <p class="mb-0">
-                <small>
-                    Built with <i class="fas fa-heart text-danger"></i> using Node.js, Python Flask, and Machine Learning
-                </small>
-            </p>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-leaf" style="color: var(--accent-green);"></i> DualCrop</h5>
+                    <p class="small text-muted">AI-powered crop disease detection for modern farmers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/analyze">Analyze</a></li>
+                        <li><a href="/weather">Weather</a></li>
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/analyze">Disease Detection</a></li>
+                        <li><a href="/weather">Weather Advisory</a></li>
+                        <li><a href="/chatbot">AI Chatbot</a></li>
+                        <li><a href="/dashboard">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Follow</h5>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="text-center">
+                <p class="footer-text mb-0">
+                    <strong>DualCrop Smart Advisory System</strong> © 2024. All rights reserved. | Built with <i class="fas fa-heart" style="color: #ec4899;"></i> for Modern Agriculture
+                </p>
+            </div>
         </div>
     </footer>
 
@@ -258,127 +170,63 @@
     <script src="/js/language-manager.js"></script>
     <script src="/js/main.js"></script>
     <script>
-        const chatContainer = document.getElementById("chatContainer");
-        const messageInput = document.getElementById("messageInput");
-        const chatForm = document.getElementById("chatForm");
+        const chatContainer = document.getElementById('chatContainer');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
 
-        // Handle message submission
-        chatForm.addEventListener("submit", async function (e) {
+        chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const message = messageInput.value.trim();
+            const message = userInput.value.trim();
             if (!message) return;
 
-            // Add user message to chat
-            addMessage(message, "user");
-            messageInput.value = "";
+            // Add user message
+            addMessage(message, 'user');
+            userInput.value = '';
 
-            // Send to backend with language parameter
+            // Get bot response
             try {
-                const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
-                const response = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ message: message, language: language }),
+                const language = languageManager ? languageManager.getCurrentLanguage() : 'en';
+                const response = await fetch('/chatbot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, language })
                 });
 
                 const data = await response.json();
-
                 if (data.success) {
-                    // Add bot reply with slight delay for better UX
-                    setTimeout(() => {
-                        addMessage(data.reply, "bot");
-                    }, 500);
+                    addMessage(data.response, 'bot');
                 } else {
-                    const errorMsg = language === 'hi' ? "क्षमा करें, मैं वह प्रक्रिया नहीं कर सका। कृपया फिर से प्रयास करें।" : 
-                                   language === 'mr' ? "माफ करा, मैं ते प्रक्रिया करू शकत नाही। कृपया पुन्हा प्रयत्न करा।" :
-                                   "Sorry, I couldn't process that. Please try again.";
-                    addMessage(errorMsg, "bot");
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 }
             } catch (error) {
-                addMessage("Error: " + error.message, "bot");
+                addMessage('Error: ' + error.message, 'bot');
             }
         });
 
-        // Format bot response with markdown-style formatting
-        function formatBotResponse(text) {
-            // Convert markdown bold (**text**) to HTML bold
-            text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-            // Convert line breaks to HTML breaks
-            text = text.replace(/\n/g, "<br>");
-            return text;
-        }
-
-        // Add message to chat UI
         function addMessage(text, sender) {
-            const messageDiv = document.createElement("div");
-            messageDiv.className = "message " + sender;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender;
 
-            const bubbleDiv = document.createElement("div");
-            bubbleDiv.className = "bubble";
-            
-            // Apply formatting for bot messages
-            if (sender === "bot") {
-                bubbleDiv.innerHTML = formatBotResponse(text);
-            } else {
-                bubbleDiv.innerHTML = text.replace(/\n/g, "<br>");
-            }
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = text;
 
-            const timestampDiv = document.createElement("div");
-            timestampDiv.className = "timestamp";
-            timestampDiv.textContent = new Date().toLocaleTimeString();
-
-            messageDiv.appendChild(bubbleDiv);
-            messageDiv.appendChild(timestampDiv);
+            messageDiv.appendChild(bubble);
             chatContainer.appendChild(messageDiv);
-
-            // Auto scroll to bottom
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
-            // Focus on input
-            if (sender === "bot") {
-                messageInput.focus();
+        function askQuestion(question) {
+            userInput.value = question;
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
             }
         }
-
-        // Quick question handler
-        function askQuestion(question) {
-            messageInput.value = question;
-            chatForm.dispatchEvent(new Event("submit"));
-        }
-
-        // Focus on input when page loads
-        messageInput.focus();
-    </script>
-            const now = new Date();
-            timestampDiv.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-            const wrapper = document.createElement("div");
-            wrapper.appendChild(bubbleDiv);
-            wrapper.appendChild(timestampDiv);
-
-            messageDiv.appendChild(wrapper);
-            chatContainer.appendChild(messageDiv);
-
-            // Auto scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // Focus on input
-            if (sender === "bot") {
-                messageInput.focus();
-            }
-        }
-
-        // Quick question handler
-        function askQuestion(question) {
-            messageInput.value = question;
-            chatForm.dispatchEvent(new Event("submit"));
-        }
-
-        // Focus on input when page loads
-        messageInput.focus();
     </script>
 </body>
 </html>
