@@ -32,32 +32,42 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/"><i class="fas fa-home"></i> Home</a>
+                        <a class="nav-link active" href="/"><i class="fas fa-home"></i> <span data-i18n="home">Home</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/analyze"
-                            ><i class="fas fa-microscope"></i> Analyze</a
+                            ><i class="fas fa-microscope"></i> <span data-i18n="analyze">Analyze</span></a
                         >
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/weather"
-                            ><i class="fas fa-cloud-sun"></i> Weather</a
+                            ><i class="fas fa-cloud-sun"></i> <span data-i18n="weather">Weather</span></a
                         >
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard"
-                            ><i class="fas fa-chart-bar"></i> Dashboard</a
+                            ><i class="fas fa-chart-bar"></i> <span data-i18n="dashboard">Dashboard</span></a
                         >
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/chatbot"
-                            ><i class="fas fa-comments"></i> Chatbot</a
+                            ><i class="fas fa-comments"></i> <span data-i18n="chatbot">Chatbot</span></a
                         >
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/about"
-                            ><i class="fas fa-info-circle"></i> About</a
+                            ><i class="fas fa-info-circle"></i> <span data-i18n="about">About</span></a
                         >
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i> <span data-i18n="language">Language</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en'); return false;">🇬🇧 English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('hi'); return false;">🇮🇳 हिंदी (Hindi)</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('mr'); return false;">🇮🇳 मराठी (Marathi)</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -237,6 +247,15 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/language-manager.js"></script>
     <script src="/js/main.js"></script>
+    <script>
+        function changeLanguage(lang) {
+            if (languageManager) {
+                languageManager.setLanguage(lang);
+                languageManager.applyTranslations();
+            }
+        }
+    </script>
 </body>
 </html>

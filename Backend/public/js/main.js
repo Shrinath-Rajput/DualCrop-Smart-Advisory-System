@@ -13,7 +13,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Set active navbar link
     setActiveNavLink();
+
+    // Listen for language changes
+    window.addEventListener('languageChanged', function(event) {
+        console.log('Language changed to:', event.detail.language);
+        // Reload page to apply language changes to all content
+        // location.reload();
+    });
 });
+
+// ========== LANGUAGE SWITCHING ==========
+function changeLanguage(lang, event) {
+    event.preventDefault();
+    if (languageManager) {
+        languageManager.setLanguage(lang);
+        console.log('Language changed to:', lang);
+        // Update all dynamic content
+        updateDynamicContent();
+    }
+}
+
+// Update dynamic content when language changes
+function updateDynamicContent() {
+    // This function can be extended to update any dynamic content
+    console.log('Dynamic content updated for language:', languageManager.getCurrentLanguage());
+}
 
 // ========== TOOLTIP INITIALIZATION ==========
 function initializeTooltips() {
@@ -53,18 +77,32 @@ function setActiveNavLink() {
 
 // ========== UTILITY FUNCTIONS ==========
 
-// Format date
-function formatDate(date) {
-    return new Date(date).toLocaleDateString("en-US", {
+// Format date based on language
+function formatDate(date, lang = 'en') {
+    const dateObj = new Date(date);
+    const locales = {
+        'en': 'en-US',
+        'hi': 'hi-IN',
+        'mr': 'mr-IN'
+    };
+    
+    return dateObj.toLocaleDateString(locales[lang] || 'en-US', {
         year: "numeric",
         month: "long",
         day: "numeric",
     });
 }
 
-// Format time
-function formatTime(date) {
-    return new Date(date).toLocaleTimeString("en-US", {
+// Format time based on language
+function formatTime(date, lang = 'en') {
+    const dateObj = new Date(date);
+    const locales = {
+        'en': 'en-US',
+        'hi': 'hi-IN',
+        'mr': 'mr-IN'
+    };
+    
+    return dateObj.toLocaleTimeString(locales[lang] || 'en-US', {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",

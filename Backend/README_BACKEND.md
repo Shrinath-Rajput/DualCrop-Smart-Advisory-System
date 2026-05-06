@@ -158,7 +158,7 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=dualcrop_db
-OPENWEATHER_API_KEY=a6fd3a3e90a4af21c891b1b76eae85eb
+
 ```
 
 ### 5️⃣ Start Services

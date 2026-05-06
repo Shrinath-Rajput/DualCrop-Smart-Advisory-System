@@ -10,6 +10,7 @@ const multer = require("multer");
 const axios = require("axios");
 const fs = require("fs");
 const pool = require("./db");
+const { getSmartChatbotResponseInLanguage } = require("./language-responses");
 
 const app = express();
 
@@ -158,14 +159,8 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
             // Continue anyway, database is optional for prediction
         }
 
-        // Clean up uploaded file
-        try {
-            if (fs.existsSync(req.file.path)) {
-                fs.unlinkSync(req.file.path);
-            }
-        } catch (cleanupError) {
-            console.warn("⚠️ File cleanup failed:", cleanupError.message);
-        }
+        // ✅ Keep uploaded file for dashboard display
+        console.log("✅ Image saved to: /uploads/" + req.file.filename);
 
         // Return JSON response with medicine recommendation
         res.json({
@@ -180,15 +175,6 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
 
     } catch (error) {
         console.error("❌ Critical Error:", error.message);
-        
-        // Clean up uploaded file
-        try {
-            if (req.file && fs.existsSync(req.file.path)) {
-                fs.unlinkSync(req.file.path);
-            }
-        } catch (cleanupError) {
-            console.warn("⚠️ File cleanup failed:", cleanupError.message);
-        }
 
         res.status(500).json({
             success: false,
@@ -516,283 +502,605 @@ app.get("/chatbot", (req, res) => {
     res.render("chatbot", { title: "AI Chatbot Assistant" });
 });
 
-// 8️⃣ CHATBOT API
+// 8️⃣ CHATBOT API - ADVANCED AI RESPONSE ENGINE
 app.post("/api/chat", (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, language = 'en' } = req.body;
         if (!message) {
             return res.status(400).json({ error: "Message is required" });
         }
 
-        const lowerMessage = message.toLowerCase();
-        let reply = "I'm not sure about that. Please ask about crops, diseases, or fertilizers.";
-
-        // ===== BRINJAL-SPECIFIC RESPONSES =====
-        if (lowerMessage.includes("brinjal")) {
-            if (
-                lowerMessage.includes("disease") ||
-                lowerMessage.includes("pest") ||
-                lowerMessage.includes("sick")
-            ) {
-                reply =
-                    "🍆 **Brinjal Common Diseases & Treatment:**\n\n" +
-                    "🔸 **Shoot and Fruit Borer:**\n" +
-                    "- Medicine: Spinosad 45% SC\n" +
-                    "- Dosage: 0.5 ml/liter\n" +
-                    "- Interval: 7-10 days\n\n" +
-                    "🔸 **Leaf Spot:**\n" +
-                    "- Medicine: Mancozeb 75% WP\n" +
-                    "- Dosage: 2 gm/liter\n" +
-                    "- Interval: 10-14 days\n\n" +
-                    "🔸 **Yellow Mosaic Virus:**\n" +
-                    "- Control vector (whitefly) with Neem oil\n" +
-                    "- Dosage: 3-5 ml/liter\n" +
-                    "- Remove infected plants immediately";
-            } else if (lowerMessage.includes("care") || lowerMessage.includes("grow")) {
-                reply =
-                    "🍆 **Brinjal Care Guide:**\n\n" +
-                    "🌡️ **Temperature:** 20-30°C\n" +
-                    "💧 **Watering:** Daily in summer, alternate days in winter\n" +
-                    "🌱 **Spacing:** 60cm x 45cm\n" +
-                    "🛟 **Soil:** Well-drained, fertile loam\n" +
-                    "🌾 **Fertilizer:** NPK 12-32-16 (initial), 10-10-10 (maintenance)\n" +
-                    "⏱️ **Harvest:** 70-90 days after transplanting\n\n" +
-                    "💡 **Tips:**\n" +
-                    "- Mulch to retain moisture\n" +
-                    "- Stake for support\n" +
-                    "- Prune regularly for better yield";
-            } else if (lowerMessage.includes("fertilizer")) {
-                reply =
-                    "🍆 **Brinjal Fertilizer Recommendations:**\n\n" +
-                    "🌱 **Initial Stage:**\n" +
-                    "- NPK 12-32-16 (50 kg/hectare)\n\n" +
-                    "📈 **Maintenance (after 45 days):**\n" +
-                    "- NPK 10-10-10 every 2-3 weeks\n" +
-                    "- Urea 46% N (20 kg/hectare) for boost\n\n" +
-                    "🌿 **Organic Options:**\n" +
-                    "- Vermicompost 5 tons/hectare\n" +
-                    "- Neem cake 1 ton/hectare\n\n" +
-                    "💧 **Application:** Apply after irrigation for better absorption";
-            } else {
-                reply =
-                    "🍆 **About Brinjal:**\n" +
-                    "Brinjal (Eggplant) is a warm-season vegetable crop with high market demand.\n\n" +
-                    "Ask me about:\n" +
-                    "- 🦠 Diseases & pests\n" +
-                    "- 🌱 Care & cultivation\n" +
-                    "- 🧪 Fertilizer recommendations";
-            }
-        }
-        // ===== GRAPES-SPECIFIC RESPONSES =====
-        else if (lowerMessage.includes("grape")) {
-            if (
-                lowerMessage.includes("black rot") ||
-                (lowerMessage.includes("rot") && lowerMessage.includes("grape"))
-            ) {
-                reply =
-                    "🍇 **Grapes Black Rot Treatment:**\n\n" +
-                    "🔸 **Symptoms:**\n" +
-                    "- Brown/black spots on berries\n" +
-                    "- Concentric rings on fruit\n" +
-                    "- Mummified berries\n\n" +
-                    "💊 **Medicine:**\n" +
-                    "- Bordeaux Mixture 1% (CuSO4 + CaOH)\n" +
-                    "- Mancozeb 75% WP\n\n" +
-                    "📋 **Application:**\n" +
-                    "- Dosage: 1.5 gm/liter\n" +
-                    "- Interval: 7-10 days\n" +
-                    "- Start from flowering stage\n\n" +
-                    "✂️ **Management:**\n" +
-                    "1. Remove infected berries & leaves\n" +
-                    "2. Improve air circulation by pruning\n" +
-                    "3. Apply Bordeaux paste to pruned wounds";
-            } else if (
-                lowerMessage.includes("esca") ||
-                lowerMessage.includes("black measles")
-            ) {
-                reply =
-                    "🍇 **Grapes Esca (Black Measles) Treatment:**\n\n" +
-                    "⚠️ **Warning:** No effective spray treatment\n\n" +
-                    "🔸 **Symptoms:**\n" +
-                    "- Wilting of shoots\n" +
-                    "- Dark streaks in wood\n" +
-                    "- Slow decline\n\n" +
-                    "💊 **Treatment (Mostly Preventive):**\n" +
-                    "- Sodium Hypochlorite 5%\n" +
-                    "- Apply to cut wounds (neat)\n\n" +
-                    "✂️ **Management:**\n" +
-                    "1. Prune infected branches (30cm below symptoms)\n" +
-                    "2. Disinfect pruning tools between cuts\n" +
-                    "3. Apply Sodium Hypochlorite to cuts\n" +
-                    "4. Remove & burn infected wood\n" +
-                    "5. Maintain vine vigor";
-            } else if (lowerMessage.includes("leaf blight")) {
-                reply =
-                    "🍇 **Grapes Leaf Blight Treatment:**\n\n" +
-                    "🔸 **Symptoms:**\n" +
-                    "- Brown spots with yellow halo\n" +
-                    "- Premature leaf fall\n" +
-                    "- Berries cracked\n\n" +
-                    "💊 **Medicine:**\n" +
-                    "- Chlorothalonil 75% WP\n" +
-                    "- Mancozeb 75% WP\n" +
-                    "- Triadimefon\n\n" +
-                    "📋 **Application:**\n" +
-                    "- Dosage: 2 gm/liter (Chlorothalonil) or 1.5 gm/liter (Mancozeb)\n" +
-                    "- Interval: 10-14 days\n" +
-                    "- Start from fruit set stage\n\n" +
-                    "💡 **Tips:**\n" +
-                    "- Improve canopy management\n" +
-                    "- Alternate fungicides to prevent resistance\n" +
-                    "- Continue until harvest";
-            } else if (lowerMessage.includes("care") || lowerMessage.includes("grow")) {
-                reply =
-                    "🍇 **Grapes Care Guide:**\n\n" +
-                    "🌡️ **Temperature:** 10-30°C\n" +
-                    "💧 **Watering:** Drip irrigation recommended, 50-60 liters/day per plant\n" +
-                    "🌱 **Spacing:** 2m x 2m (trellised), 1.5m x 2m (pergola)\n" +
-                    "🛟 **Soil:** Well-drained loam, pH 6.5-7.5\n" +
-                    "🌾 **Fertilizer:** NPK 12-8-10\n" +
-                    "⏱️ **Yield:** Fruit set at 2-3 years\n\n" +
-                    "💡 **Tips:**\n" +
-                    "- Pruning essential for quality\n" +
-                    "- Thinning of berries improves size\n" +
-                    "- Avoid overhead irrigation";
-            } else if (lowerMessage.includes("fertilizer")) {
-                reply =
-                    "🍇 **Grapes Fertilizer Recommendations:**\n\n" +
-                    "🌱 **Young Vines (1-3 years):**\n" +
-                    "- NPK 12-8-10\n" +
-                    "- 200g per vine per month\n\n" +
-                    "📈 **Bearing Vines (>3 years):**\n" +
-                    "- NPK 12-8-10\n" +
-                    "- 500-1000g per vine per season\n\n" +
-                    "🌿 **Split Application:**\n" +
-                    "- Start: After budbreak\n" +
-                    "- During bloom: N only\n" +
-                    "- After fruit set: Full NPK\n\n" +
-                    "💧 **Application Method:**\n" +
-                    "- Fertigation through drip system\n" +
-                    "- Soil application for annual vines";
-            } else if (lowerMessage.includes("healthy")) {
-                reply =
-                    "🍇 **Grapes Healthy Maintenance:**\n\n" +
-                    "✅ **Preventive Measures:**\n" +
-                    "- Sulfur powder spray every 10-14 days\n" +
-                    "- Dosage: 2.5-3 gm/liter\n" +
-                    "- Best for powdery mildew prevention\n\n" +
-                    "🛡️ **Disease Prevention:**\n" +
-                    "- Bordeaux mixture 1% for general protection\n" +
-                    "- Copper Sulfate for fungal issues\n\n" +
-                    "💡 **Key Practices:**\n" +
-                    "- Maintain good air circulation\n" +
-                    "- Remove diseased leaves promptly\n" +
-                    "- Monitor regularly for pests";
-            } else {
-                reply =
-                    "🍇 **About Grapes:**\n" +
-                    "Grapes are premium fruit crops with diverse varieties and uses.\n\n" +
-                    "Ask me about:\n" +
-                    "- 🦠 Diseases: Black Rot, Esca, Leaf Blight\n" +
-                    "- 🌱 Care & cultivation\n" +
-                    "- 🧪 Fertilizer recommendations\n" +
-                    "- 💪 Healthy plant maintenance";
-            }
-        }
-        // ===== GENERAL RESPONSES =====
-        else if (lowerMessage.includes("crop") && !lowerMessage.includes("brinjal") && !lowerMessage.includes("grape")) {
-            reply =
-                "🌾 **Crop Care Tips:**\n" +
-                "- Water regularly (morning or evening)\n" +
-                "- Use nitrogen-rich fertilizers\n" +
-                "- Maintain soil pH 6.0-7.0\n" +
-                "- Rotate crops annually\n\n" +
-                "🎯 **Specific Crops:**\n" +
-                "- Ask about **Brinjal** care\n" +
-                "- Ask about **Grapes** cultivation";
-        } else if (lowerMessage.includes("disease")) {
-            reply =
-                "🦠 **Disease Management Tips:**\n" +
-                "- Identify symptoms early\n" +
-                "- Use fungicides for fungal diseases\n" +
-                "- Apply insecticides for pests\n" +
-                "- Remove infected leaves\n\n" +
-                "🎯 **Specific Diseases:**\n" +
-                "- Ask about **Brinjal** diseases\n" +
-                "- Ask about **Grapes** diseases (Black Rot, Esca, Leaf Blight)";
-        } else if (lowerMessage.includes("fertilizer")) {
-            reply =
-                "🌱 **Fertilizer Guide:**\n" +
-                "- NPK (Nitrogen-Phosphorus-Potassium) ratio for general crops: 10-10-10\n" +
-                "- Apply every 2-3 weeks\n" +
-                "- Use compost for organic farming\n\n" +
-                "🎯 **Crop-Specific:**\n" +
-                "- Ask about **Brinjal** fertilizer\n" +
-                "- Ask about **Grapes** fertilizer";
-        } else if (lowerMessage.includes("pesticide") || lowerMessage.includes("pest")) {
-            reply =
-                "🚫 **Pest Control:**\n" +
-                "- Neem oil for common pests\n" +
-                "- Pyrethrin-based sprays for insects\n" +
-                "- Copper sulfate for fungal issues\n" +
-                "- Use as per label instructions\n\n" +
-                "💡 **Tips:**\n" +
-                "- Spray early morning or late evening\n" +
-                "- Avoid spraying in rain\n" +
-                "- Wear protective gear";
-        } else if (
-            lowerMessage.includes("hello") ||
-            lowerMessage.includes("hi") ||
-            lowerMessage.includes("hey")
-        ) {
-            reply =
-                "👋 Hello! I'm the DualCrop AI Assistant.\n\n" +
-                "I can help you with:\n" +
-                "🍆 **Brinjal** - care, diseases, fertilizers\n" +
-                "🍇 **Grapes** - care, diseases, fertilizers\n" +
-                "🦠 Disease identification & treatment\n" +
-                "🌱 Crop care & management\n" +
-                "🧪 Fertilizer recommendations\n\n" +
-                "What would you like to know?";
-        } else if (
-            lowerMessage.includes("weather") ||
-            lowerMessage.includes("rain") ||
-            lowerMessage.includes("temperature")
-        ) {
-            reply =
-                "🌦️ **Weather Advisory:**\n" +
-                "- Check weather before spraying\n" +
-                "- Avoid spray during rain\n" +
-                "- Morning/evening is best for application\n" +
-                "- Temperature >35°C: Increase irrigation\n" +
-                "- Humidity >80%: Risk of fungal disease\n\n" +
-                "💡 **Crop-Specific:**\n" +
-                "- Brinjal: 20-30°C optimal\n" +
-                "- Grapes: 10-30°C optimal";
-        } else if (lowerMessage.includes("help")) {
-            reply =
-                "📖 **How to use DualCrop AI Assistant:**\n\n" +
-                "Ask questions about:\n" +
-                "🍆 **Brinjal** - diseases, care, fertilizers\n" +
-                "🍇 **Grapes** - Black Rot, Esca, Leaf Blight\n" +
-                "🌾 General crop care tips\n" +
-                "💊 Medicine & treatment recommendations\n\n" +
-                "Example questions:\n" +
-                "- What about brinjal diseases?\n" +
-                "- How to treat grape black rot?\n" +
-                "- What fertilizer for grapes?";
-        }
+        const lowerMessage = message.toLowerCase().trim();
+        let reply = getSmartChatbotResponseInLanguage(lowerMessage, language);
 
         res.json({
             success: true,
             message: message,
             reply: reply,
+            language: language
         });
     } catch (error) {
         console.error("❌ Error in chatbot:", error.message);
         res.status(500).json({ error: "Chatbot error occurred" });
     }
 });
+
+// ===== SMART CHATBOT RESPONSE FUNCTION =====
+function getSmartChatbotResponse(message) {
+    // Extract keywords
+    const words = message.split(/[\s,?!.]+/).filter(w => w.length > 0);
+    
+    // Detect crop type
+    const isBrinjal = hasBrinjalKeyword(message);
+    const isGrape = hasGrapeKeyword(message);
+    
+    // Detect question type - improved detection
+    const isWhyQuestion = message.includes("why") || message.includes("importance") || message.includes("benefit");
+    const isUseQuestion = message.includes("use") || message.includes("uses") || message.includes("purpose");
+    const isHowQuestion = message.includes("how") || message.includes("can i") || message.includes("should i") || message.includes("grow") || message.includes("cultivate");
+    const isWhatQuestion = message.includes("what") || message.includes("which") || message.includes("tell");
+    const isWhenQuestion = message.includes("when") || message.includes("time") || message.includes("best time");
+    
+    // Detect topics
+    const isDiseaseQuestion = hasKeyword(message, ["disease", "pest", "rot", "blight", "spot", "virus", "yellowing", "wilting", "affected", "sick", "problem", "damage", "infected", "treatment", "medicine"]);
+    const isCareQuestion = hasKeyword(message, ["care", "grow", "growing", "cultivate", "plant", "plantation", "maintain", "management", "farming", "how to grow", "how to plant", "cultivation"]);
+    const isFertilizerQuestion = hasKeyword(message, ["fertilizer", "fertilise", "npk", "nutrient", "nutrition", "feed", "feeding", "manure", "compost", "fertilization"]);
+    const isYieldQuestion = hasKeyword(message, ["yield", "production", "harvest", "crop yield", "profit", "income", "economics"]);
+    const isTemperatureQuestion = hasKeyword(message, ["temperature", "temp", "heat", "weather", "climate", "cold", "frost", "celsius"]);
+    const isWaterQuestion = hasKeyword(message, ["water", "irrigation", "watering", "rain", "moisture", "dry", "drought"]);
+    
+    // Greeting
+    if (hasKeyword(message, ["hello", "hi", "hey", "greetings", "namaste", "good morning", "good afternoon", "good evening"])) {
+        return "👋 **Hello!** Welcome to DualCrop AI Assistant.\n\n" +
+            "I'm here to help you with:\n" +
+            "🍆 **Brinjal** - Growing, diseases, fertilizers\n" +
+            "🍇 **Grapes** - Cultivation, diseases, care\n\n" +
+            "What would you like to know today?";
+    }
+
+    // Help request
+    if (hasKeyword(message, ["help", "guide", "tutorial", "how to use", "explain"])) {
+        return "📖 **DualCrop AI Assistant Guide:**\n\n" +
+            "🍆 **Ask about Brinjal:**\n" +
+            "- How to grow brinjal?\n" +
+            "- What diseases affect brinjal?\n" +
+            "- What fertilizer for brinjal?\n" +
+            "- Why grow brinjal?\n" +
+            "- What is use of brinjal?\n\n" +
+            "🍇 **Ask about Grapes:**\n" +
+            "- How to cultivate grapes?\n" +
+            "- Tell me about grape diseases\n" +
+            "- What fertilizer for grapes?\n" +
+            "- Best time to plant grapes?\n" +
+            "- Why grow grapes?\n\n" +
+            "💡 **Other Topics:**\n" +
+            "- Weather advisory\n" +
+            "- Pest control methods\n" +
+            "- Irrigation techniques";
+    }
+
+    // ===== BRINJAL RESPONSES =====
+    if (isBrinjal) {
+        // Why/Importance/Use questions
+        if (isWhyQuestion || isUseQuestion) {
+            return "🍆 **Why Grow Brinjal? Uses & Benefits:**\n\n" +
+                "✅ **Economic Benefits:**\n" +
+                "- High market demand & good prices\n" +
+                "- Multiple harvests per year (6-8 months)\n" +
+                "- Good profit margin (₹3-5 lakh per hectare)\n" +
+                "- Year-round availability in markets\n" +
+                "- Quick returns on investment\n\n" +
+                "✅ **Agricultural Benefits:**\n" +
+                "- Warm-season vegetable crop\n" +
+                "- Suitable for diverse climates\n" +
+                "- Good soil improvement potential\n" +
+                "- Companion planting benefits\n" +
+                "- Less pest pressure than other crops\n\n" +
+                "✅ **Nutritional & Health Benefits:**\n" +
+                "- Rich in vitamins (A, B, C)\n" +
+                "- Minerals: Potassium, Manganese, Copper\n" +
+                "- Low calories (25 cal/100g)\n" +
+                "- High dietary fiber\n" +
+                "- Antioxidants & anti-inflammatory properties\n" +
+                "- Good for digestion & heart health\n\n" +
+                "✅ **Industrial Uses:**\n" +
+                "- Food industry (fresh & processed)\n" +
+                "- Pickle & preserve production\n" +
+                "- Export market for fresh produce";
+        }
+        // Disease questions
+        else if (isDiseaseQuestion) {
+            return "🍆 **Brinjal Common Diseases & Treatment:**\n\n" +
+                "🔴 **Shoot and Fruit Borer** (Most Common)\n" +
+                "- Symptom: Holes in fruits & shoots\n" +
+                "- Medicine: Spinosad 45% SC (0.5 ml/L)\n" +
+                "- Spray: Every 7-10 days\n" +
+                "- Best Time: Early morning or evening\n\n" +
+                "🔴 **Leaf Spot Disease**\n" +
+                "- Symptom: Brown/gray spots on leaves\n" +
+                "- Medicine: Mancozeb 75% WP (2 gm/L)\n" +
+                "- Spray: Every 10-14 days\n" +
+                "- Prevention: Remove infected leaves\n\n" +
+                "🔴 **Yellow Mosaic Virus**\n" +
+                "- Symptom: Yellow patterns on leaves\n" +
+                "- Cause: Whitefly transmission\n" +
+                "- Control: Remove whiteflies with Neem oil (3-5 ml/L)\n" +
+                "- Prevention: Destroy infected plants immediately\n" +
+                "- Vector Control: Spray for whiteflies\n\n" +
+                "🔴 **Damping Off (Seedling)**\n" +
+                "- Symptom: Seedlings wilt at soil level\n" +
+                "- Medicine: Trichoderma (bio-fungicide)\n" +
+                "- Prevention: Use sterile soil, proper drainage\n\n" +
+                "💡 **Prevention Tips:**\n" +
+                "- Use healthy, certified seeds\n" +
+                "- Maintain field hygiene\n" +
+                "- Regular monitoring (weekly)\n" +
+                "- Remove diseased plants immediately\n" +
+                "- Crop rotation (2-3 years)";
+        }
+        // Care/Growing questions
+        else if (isCareQuestion || isHowQuestion) {
+            return "🍆 **How to Grow Brinjal - Complete Guide:**\n\n" +
+                "🌡️ **Climate & Temperature:**\n" +
+                "- Optimal: 20-30°C\n" +
+                "- Requires warmth & sunlight\n" +
+                "- Avoid frost areas\n" +
+                "- Min: 15°C, Max: 35°C\n\n" +
+                "🌱 **Planting Guide:**\n" +
+                "- Sowing: June-August\n" +
+                "- Spacing: 60cm x 45cm (Row x Plant)\n" +
+                "- Transplanting: 30-40 days after sowing\n" +
+                "- Seeds per hectare: 500-600g\n" +
+                "- Seed rate: 400-500g/hectare\n" +
+                "- Depth: 2-3 cm\n\n" +
+                "💧 **Watering Schedule:**\n" +
+                "- Summer: Daily or alternate days\n" +
+                "- Winter: Every 3-4 days\n" +
+                "- Total requirement: 600-800mm per season\n" +
+                "- 25-35 irrigations needed\n" +
+                "- Drip irrigation recommended\n\n" +
+                "🛟 **Soil Requirements:**\n" +
+                "- Well-drained loamy soil\n" +
+                "- pH: 5.5-7.5\n" +
+                "- Good organic matter (5-10 tons/hectare)\n" +
+                "- Avoid waterlogged areas\n\n" +
+                "⏱️ **Harvest Time:**\n" +
+                "- 70-90 days after transplanting\n" +
+                "- Pick when glossy, before maturity\n" +
+                "- Multiple pickings for 6-8 months\n" +
+                "- Yield: 25-30 tons/hectare\n\n" +
+                "💡 **Additional Care:**\n" +
+                "- Mulching helps retain moisture\n" +
+                "- Staking for support in windy areas\n" +
+                "- Pruning for better yield\n" +
+                "- Regular weeding (4-5 times)";
+        }
+        // Fertilizer questions
+        else if (isFertilizerQuestion) {
+            return "🍆 **Brinjal Fertilizer Schedule:**\n\n" +
+                "📋 **Initial Application (At Planting):**\n" +
+                "- FYM: 20-25 tons/hectare\n" +
+                "- Neem cake: 1-2 tons/hectare\n" +
+                "- NPK 12-32-16: 50 kg/hectare\n" +
+                "- Bone meal: 500 kg/hectare\n\n" +
+                "📈 **Maintenance Fertilizer (Monthly):**\n" +
+                "- NPK 10-10-10: Every 2-3 weeks\n" +
+                "- Urea 46% N: 20 kg/hectare\n" +
+                "- Potash: 15 kg/hectare\n" +
+                "- Micronutrients: Zn, B, Fe as needed\n\n" +
+                "🌿 **Organic Approach:**\n" +
+                "- Vermicompost: 5 tons/hectare\n" +
+                "- Bio-fertilizers (Azospirillum)\n" +
+                "- Foliar spray: 2-3 times during season\n" +
+                "- Cow dung compost: 10 tons/hectare\n\n" +
+                "💡 **Application Tips:**\n" +
+                "- Apply fertilizer after irrigation\n" +
+                "- Avoid direct contact with stems\n" +
+                "- Best time: Early morning or evening\n" +
+                "- Split applications for better absorption\n" +
+                "- Liquid fertilizers work faster";
+        }
+        // Yield/profit questions
+        else if (isYieldQuestion) {
+            return "🍆 **Brinjal Yield & Economics:**\n\n" +
+                "📊 **Expected Yield:**\n" +
+                "- Per hectare: 25-30 tons fresh fruit\n" +
+                "- Per plant: 2-3 kg over season\n" +
+                "- Multiple harvests: 6-8 months duration\n" +
+                "- Harvesting period: 4-5 pickings\n\n" +
+                "💰 **Economics (Per Hectare):**\n" +
+                "- Total investment: ₹80,000-1,00,000\n" +
+                "- Annual revenue: ₹3-5 lakhs\n" +
+                "- Net profit: ₹2-4 lakhs\n" +
+                "- ROI: 200-300%\n" +
+                "- Payback period: 6-8 months\n\n" +
+                "📈 **Profit Factors:**\n" +
+                "- Market timing (peak season = higher prices)\n" +
+                "- Quality of produce (size, color, freshness)\n" +
+                "- Proper disease management\n" +
+                "- Irrigation efficiency\n" +
+                "- Transportation & storage\n\n" +
+                "💹 **Market Prices:**\n" +
+                "- Peak season: ₹15-25 per kg\n" +
+                "- Off-season: ₹25-40 per kg\n" +
+                "- Average: ₹20 per kg\n\n" +
+                "🎯 **To Maximize Yield:**\n" +
+                "- Use quality seeds\n" +
+                "- Proper spacing & pruning\n" +
+                "- Timely disease management\n" +
+                "- Regular monitoring & care\n" +
+                "- Use drip irrigation";
+        }
+        // Water/irrigation questions
+        else if (isWaterQuestion) {
+            return "🍆 **Brinjal Water Management:**\n\n" +
+                "💧 **Irrigation Schedule:**\n" +
+                "- **Summer:** Daily or alternate days\n" +
+                "- **Winter:** Every 3-4 days\n" +
+                "- **Monsoon:** Only if drought\n" +
+                "- **Frequency:** 25-35 irrigations per season\n\n" +
+                "📊 **Water Requirements:**\n" +
+                "- Total per season: 600-800mm\n" +
+                "- 50-60 liters per plant per day (summer)\n" +
+                "- Critical stages: Flowering & fruiting\n\n" +
+                "🌊 **Irrigation Methods:**\n" +
+                "- **Drip Irrigation:** Most efficient (50-60% water saving)\n" +
+                "- **Furrow:** Traditional, 40-50% saving\n" +
+                "- **Sprinkler:** 25-30% water saving\n" +
+                "- **Manual:** 10-20% water saving\n\n" +
+                "⏰ **Best Timing:**\n" +
+                "- Early morning: 4-7 AM (best)\n" +
+                "- Late evening: 4-6 PM (acceptable)\n" +
+                "- Avoid: Midday irrigation\n" +
+                "- Reduce: During rainy season\n\n" +
+                "⚠️ **Signs of Water Stress:**\n" +
+                "- Wilting during day\n" +
+                "- Leaf yellowing\n" +
+                "- Flower/fruit drop\n" +
+                "- Stunted growth";
+        }
+        // Temperature questions
+        else if (isTemperatureQuestion) {
+            return "🍆 **Brinjal Temperature Management:**\n\n" +
+                "🌡️ **Optimal Temperature:**\n" +
+                "- Growing: 20-30°C (ideal)\n" +
+                "- Minimum: 15°C\n" +
+                "- Maximum: 35°C\n" +
+                "- Frost: Kills the plant\n\n" +
+                "🔥 **Heat Stress Management:**\n" +
+                "- Temperature >32°C: Provide shade\n" +
+                "- Increase irrigation frequency\n" +
+                "- Use mulching (5-10 cm)\n" +
+                "- Avoid excessive pruning\n" +
+                "- Plant windbreaks\n\n" +
+                "❄️ **Cold/Frost Management:**\n" +
+                "- Avoid frost-prone areas\n" +
+                "- Sow in appropriate season\n" +
+                "- Use plastic mulch\n" +
+                "- Avoid early sowing\n\n" +
+                "🌤️ **Weather Impact:**\n" +
+                "- High humidity: Disease risk\n" +
+                "- Low humidity: Pest risk\n" +
+                "- Strong winds: Damage crops";
+        }
+        // Default brinjal response
+        else {
+            return "🍆 **All About Brinjal Cultivation:**\n\n" +
+                "**Quick Information:**\n" +
+                "- Growing season: 6-8 months\n" +
+                "- Optimal temperature: 20-30°C\n" +
+                "- Yield: 25-30 tons per hectare\n" +
+                "- Profit: ₹2-4 lakhs per hectare\n" +
+                "- ROI: 200-300%\n\n" +
+                "**Ask me about:**\n" +
+                "✅ What is use of brinjal?\n" +
+                "✅ How to grow brinjal?\n" +
+                "✅ Brinjal diseases & treatment?\n" +
+                "✅ Fertilizer requirements?\n" +
+                "✅ Water & temperature management?\n" +
+                "✅ Expected yield & profit?";
+        }
+    }
+
+    // ===== GRAPES RESPONSES =====
+    else if (isGrape) {
+        // Why/Importance/Use questions
+        if (isWhyQuestion || isUseQuestion) {
+            return "🍇 **Why Grow Grapes? Uses & Benefits:**\n\n" +
+                "✅ **Economic Benefits:**\n" +
+                "- Premium fruit with high value\n" +
+                "- Multiple uses: Fresh, Wine, Juice, Raisins\n" +
+                "- Excellent export market\n" +
+                "- Sustained income for 30-40 years\n" +
+                "- Profit: ₹5-8 lakhs per hectare\n" +
+                "- Long-term asset\n\n" +
+                "✅ **Agricultural Benefits:**\n" +
+                "- Perennial crop (long-term investment)\n" +
+                "- Suitable for various climates\n" +
+                "- Good land utilization\n" +
+                "- Minimal pest/disease issues (with care)\n" +
+                "- Improves soil quality over time\n\n" +
+                "✅ **Nutritional & Health Benefits:**\n" +
+                "- Rich in antioxidants\n" +
+                "- Contains resveratrol (heart health)\n" +
+                "- Good source of vitamins & minerals\n" +
+                "- Improve eye health\n" +
+                "- Anti-cancer properties\n" +
+                "- Boosts immunity\n\n" +
+                "✅ **Industrial & Commercial Uses:**\n" +
+                "- Wine production\n" +
+                "- Juice & beverage industry\n" +
+                "- Raisins & dried fruit\n" +
+                "- Fresh market\n" +
+                "- Export to premium markets\n" +
+                "- Cosmetics & health products";
+        }
+        // Disease questions
+        else if (isDiseaseQuestion) {
+            return "🍇 **Grape Diseases Management:**\n\n" +
+                "🔴 **Black Rot** (Most Serious)\n" +
+                "- Symptoms: Dark spots on berries, concentric rings\n" +
+                "- Medicine: Bordeaux Mixture 1% + Mancozeb 75% WP\n" +
+                "- Dosage: 1.5 gm/liter\n" +
+                "- Spray: Every 7-10 days from flowering\n" +
+                "- Management: Remove infected berries\n\n" +
+                "🔴 **Esca (Black Measles)**\n" +
+                "- Symptoms: Wilting shoots, slow decline\n" +
+                "- Prevention: No spray effective\n" +
+                "- Treatment: Remove & burn infected parts\n" +
+                "- Control: Maintain vine vigor\n" +
+                "- Prune 30cm below visible symptoms\n\n" +
+                "🔴 **Leaf Blight**\n" +
+                "- Symptoms: Brown spots with yellow halo\n" +
+                "- Medicine: Chlorothalonil 75% WP\n" +
+                "- Dosage: 2 gm/liter\n" +
+                "- Spray: Every 10-14 days\n" +
+                "- Best: Start from fruit set stage\n\n" +
+                "🔴 **Powdery Mildew**\n" +
+                "- Symptoms: White powder on leaves & berries\n" +
+                "- Medicine: Sulfur 80% WP\n" +
+                "- Dosage: 2.5-3 gm/liter\n" +
+                "- Spray: Every 10-14 days\n\n" +
+                "💡 **Prevention:**\n" +
+                "- Good canopy management\n" +
+                "- Proper pruning & spacing\n" +
+                "- Remove diseased leaves promptly\n" +
+                "- Avoid overhead irrigation";
+        }
+        // Care/Growing questions
+        else if (isCareQuestion || isHowQuestion) {
+            return "🍇 **How to Cultivate Grapes - Complete Guide:**\n\n" +
+                "🌡️ **Climate Requirements:**\n" +
+                "- Optimal: 10-30°C\n" +
+                "- Rainfall: 500-1000mm annually\n" +
+                "- Avoid excessive humidity\n" +
+                "- Sunny location (12+ hours)\n\n" +
+                "🌱 **Planting Guide:**\n" +
+                "- Season: December-February\n" +
+                "- Spacing: 2m x 2m (trellis) or 1.5m x 2m (pergola)\n" +
+                "- Cuttings or rooted vines\n" +
+                "- Plant in trenches 60x60x60cm\n" +
+                "- Depth: 40-50 cm\n\n" +
+                "💧 **Irrigation Requirements:**\n" +
+                "- Drip irrigation recommended: 50-60 L/plant/day\n" +
+                "- Frequency: Every 2-3 days in summer\n" +
+                "- Total: 600-1000mm per season\n" +
+                "- Reduce during monsoon\n\n" +
+                "🛟 **Soil Requirements:**\n" +
+                "- Well-drained loamy soil\n" +
+                "- pH: 6.5-7.5\n" +
+                "- Good drainage essential\n" +
+                "- Organic matter: 5-10 tons/hectare\n\n" +
+                "✂️ **Pruning & Training:**\n" +
+                "- Essential for quality & yield\n" +
+                "- Main pruning: January-February\n" +
+                "- Green pruning: May-June\n" +
+                "- Remove weak/diseased shoots\n" +
+                "- Train on trellis or pergola\n\n" +
+                "⏱️ **Yield Timeline:**\n" +
+                "- Fruit setting: 2-3 years\n" +
+                "- Full production: 5-7 years\n" +
+                "- Production period: 30-40 years\n" +
+                "- Mature yield: 30-50 tons/hectare";
+        }
+        // Fertilizer questions
+        else if (isFertilizerQuestion) {
+            return "🍇 **Grapes Fertilizer & Nutrition:**\n\n" +
+                "📋 **Initial Application (At Planting):**\n" +
+                "- FYM: 25-30 tons/hectare\n" +
+                "- Bone meal: 500 kg/hectare\n" +
+                "- NPK 12-8-10: Initial dose\n\n" +
+                "📈 **Young Vines (1-3 years):**\n" +
+                "- NPK 12-8-10: 200g per vine per month\n" +
+                "- Split in 3-4 applications\n" +
+                "- Focus on vegetative growth\n" +
+                "- Reduce flowering for vine establishment\n\n" +
+                "📈 **Bearing Vines (>3 years):**\n" +
+                "- NPK 12-8-10: 500-1000g per vine per season\n" +
+                "- Split Applications:\n" +
+                "  • After budbreak: Full NPK\n" +
+                "  • At flowering: N only\n" +
+                "  • After fruit set: NPK\n\n" +
+                "🌿 **Organic Options:**\n" +
+                "- Vermicompost: 5-10 tons/hectare\n" +
+                "- Neem cake: 1-2 tons/hectare\n" +
+                "- Bio-fertilizers: Azospirillum, Phosphobacteria\n" +
+                "- Cow dung: 10-15 tons/hectare\n\n" +
+                "💡 **Application Method:**\n" +
+                "- Fertigation through drip system (Best)\n" +
+                "- Soil application for traditional vineyards\n" +
+                "- Foliar spray for micronutrients";
+        }
+        // Yield/profit questions
+        else if (isYieldQuestion) {
+            return "🍇 **Grapes Yield & Profitability:**\n\n" +
+                "📊 **Expected Yield:**\n" +
+                "- Per hectare: 30-50 tons fresh grapes\n" +
+                "- Per vine: 10-15 kg annually\n" +
+                "- Full production: 5-7 years\n" +
+                "- Peak production: Year 7-40\n\n" +
+                "💰 **Economics (Per Hectare):**\n" +
+                "- Initial investment: ₹2-3 lakhs\n" +
+                "- Annual revenue (mature): ₹6-10 lakhs\n" +
+                "- Annual costs: ₹1-2 lakhs\n" +
+                "- Net profit: ₹5-8 lakhs per year\n" +
+                "- ROI: 250-300%\n" +
+                "- Payback period: 3-5 years\n\n" +
+                "📈 **Production Timeline:**\n" +
+                "- Year 1-2: Establishment (no yield)\n" +
+                "- Year 3: Light yield (5-10%)\n" +
+                "- Year 4-5: Partial yield (30-50%)\n" +
+                "- Year 6+: Full production (30-50 tons)\n\n" +
+                "💹 **Market Prices:**\n" +
+                "- Peak season: ₹25-40 per kg\n" +
+                "- Off-season: ₹40-60 per kg\n" +
+                "- Export quality: ₹60-100 per kg\n\n" +
+                "🎯 **Maximize Profitability:**\n" +
+                "- Choose good market-oriented varieties\n" +
+                "- Proper canopy management\n" +
+                "- Disease prevention\n" +
+                "- Timely harvesting\n" +
+                "- Drip irrigation efficiency";
+        }
+        // Temperature questions
+        else if (isTemperatureQuestion) {
+            return "🍇 **Grapes & Temperature Management:**\n\n" +
+                "🌡️ **Optimal Temperature Range:**\n" +
+                "- Growing season: 10-30°C\n" +
+                "- Ideal: 20-25°C\n" +
+                "- Too hot (>35°C): Berry cracking\n" +
+                "- Too cold (<10°C): Growth stops\n\n" +
+                "❄️ **Winter (Dormancy Period):**\n" +
+                "- Chilling hours needed: 100-400 hours\n" +
+                "- Below 15°C: Vine goes dormant\n" +
+                "- Helps fruit ripening\n" +
+                "- Break dormancy: Requires cold\n\n" +
+                "🔥 **Heat Stress Management:**\n" +
+                "- Temperature >35°C: Provide shade\n" +
+                "- Increase irrigation (drip system)\n" +
+                "- Mulching helps regulate soil\n" +
+                "- Prune to improve air circulation\n" +
+                "- Berry shading cloth\n\n" +
+                "❄️ **Frost Protection:**\n" +
+                "- Avoid frost-prone areas\n" +
+                "- Use frost-hardy rootstocks\n" +
+                "- Plant on elevated areas\n" +
+                "- Overhead sprinkling if frost imminent";
+        }
+        // When to plant
+        else if (isWhenQuestion) {
+            return "🍇 **Best Time to Plant Grapes:**\n\n" +
+                "📅 **Planting Season:**\n" +
+                "- **Best Time:** December to February\n" +
+                "- Reason: Winter dormancy, good establishment\n" +
+                "- Temperature: 15-20°C ideal\n" +
+                "- Avoid: Summer & monsoon planting\n\n" +
+                "🌱 **Growth Timeline:**\n" +
+                "- Dormancy: October-December\n" +
+                "- Budbreak: February-March\n" +
+                "- Flowering: April-May\n" +
+                "- Fruit set: May-June\n" +
+                "- Harvest: August-October\n\n" +
+                "📊 **Production Timeline:**\n" +
+                "- Year 1: Establishment only\n" +
+                "- Year 2: Light flowering\n" +
+                "- Year 3: First harvest (5-10%)\n" +
+                "- Year 4-5: Partial production\n" +
+                "- Year 6+: Full production\n\n" +
+                "💡 **Tips:**\n" +
+                "- Avoid planting during hot months\n" +
+                "- Rain before planting helps establishment\n" +
+                "- Prepare land 1-2 months before";
+        }
+        // Default grape response
+        else {
+            return "🍇 **All About Grape Cultivation:**\n\n" +
+                "**Quick Information:**\n" +
+                "- Perennial crop (30-40 years productive)\n" +
+                "- Optimal temp: 10-30°C\n" +
+                "- Yield: 30-50 tons per hectare\n" +
+                "- Profit: ₹5-8 lakhs per hectare\n" +
+                "- ROI: 250-300%\n" +
+                "- Full production: 5-7 years\n\n" +
+                "**Ask me about:**\n" +
+                "✅ What is use of grapes?\n" +
+                "✅ How to cultivate grapes?\n" +
+                "✅ Grape diseases & treatment?\n" +
+                "✅ Fertilizer requirements?\n" +
+                "✅ When to plant grapes?\n" +
+                "✅ Expected yield & profit?";
+        }
+    }
+
+    // ===== GENERAL RESPONSES =====
+    else if (hasKeyword(message, ["fertilizer", "npk", "nutrient"])) {
+        return "🌱 **Fertilizer Guide:**\n\n" +
+            "📋 **Common NPK Ratios:**\n" +
+            "- General crops: 10-10-10\n" +
+            "- Vegetable crops: 12-32-16 (initial)\n" +
+            "- Fruit crops: 12-8-10\n\n" +
+            "💡 **What NPK Means:**\n" +
+            "- **N (Nitrogen):** Leaf & stem growth\n" +
+            "- **P (Phosphorus):** Root & flower development\n" +
+            "- **K (Potassium):** Fruit quality & disease resistance\n\n" +
+            "🎯 **For Brinjal & Grapes:**\n" +
+            "- Ask: \"What fertilizer for brinjal?\"\n" +
+            "- Ask: \"What fertilizer for grapes?\"";
+    }
+    else if (hasKeyword(message, ["disease", "pest", "problem", "sick", "damage", "treatment"])) {
+        return "🦠 **Disease Management Guide:**\n\n" +
+            "📋 **Common Steps:**\n" +
+            "1. Identify the disease/pest\n" +
+            "2. Remove infected parts\n" +
+            "3. Apply appropriate fungicide/insecticide\n" +
+            "4. Follow spraying schedule\n\n" +
+            "🎯 **For Specific Crops:**\n" +
+            "- Ask: \"What diseases affect brinjal?\"\n" +
+            "- Ask: \"Tell me about grape diseases\"\n" +
+            "- Ask: \"How to treat grape black rot?\"";
+    }
+    else if (hasKeyword(message, ["water", "irrigation", "rain", "watering"])) {
+        return "💧 **Water Management Guide:**\n\n" +
+            "📋 **General Irrigation Tips:**\n" +
+            "- Water early morning or evening\n" +
+            "- Avoid watering in peak heat\n" +
+            "- Check soil moisture before watering\n" +
+            "- Drip irrigation is most efficient\n\n" +
+            "🎯 **Crop-Specific:**\n" +
+            "- Ask: \"Water management for brinjal\"\n" +
+            "- Ask: \"How much water do grapes need?\"";
+    }
+
+    // Default fallback
+    return "🤔 I'm not sure about that. Let me help you better!\n\n" +
+        "**Try asking:**\n\n" +
+        "🍆 **Brinjal:**\n" +
+        "- What is use of brinjal?\n" +
+        "- How to grow brinjal?\n" +
+        "- Brinjal diseases?\n" +
+        "- Fertilizer requirements?\n\n" +
+        "🍇 **Grapes:**\n" +
+        "- Why grow grapes?\n" +
+        "- How to cultivate grapes?\n" +
+        "- Grape diseases?\n" +
+        "- When to plant grapes?\n\n" +
+        "💡 **Or type:** Help for more options";
+}
+
+// ===== HELPER FUNCTIONS =====
+function hasBrinjalKeyword(text) {
+    const keywords = ["brinjal", "binjal", "eggplant", "baingan", "aubergine", "eggplan"];
+    return keywords.some(k => text.includes(k));
+}
+
+function hasGrapeKeyword(text) {
+    const keywords = ["grape", "grapes", "wine", "vineyard", "vine", "angur", "drakshasava"];
+    return keywords.some(k => text.includes(k));
+}
+
+function hasKeyword(text, keywords) {
+    return keywords.some(k => text.includes(k));
+}
 
 // 9️⃣ ABOUT PAGE
 app.get("/about", (req, res) => {
