@@ -276,9 +276,7 @@
         const dropArea = document.getElementById('dropArea');
         const fileInput = document.getElementById('imageInput');
 
-        // Make upload area clickable
-        dropArea.addEventListener('click', () => fileInput.click());
-
+        // Define all functions FIRST
         function handleDragOver(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -302,8 +300,6 @@
                 handleFileSelect();
             }
         }
-
-        fileInput.addEventListener('change', handleFileSelect);
 
         function handleFileSelect() {
             const file = fileInput.files[0];
@@ -352,72 +348,6 @@
             fileInput.value = '';
             document.getElementById('imagePreview').style.display = 'none';
         }
-
-        // Form submission
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const file = fileInput.files[0];
-            if (!file) {
-                alert('Please select an image first');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('image', file);
-            const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
-            formData.append('language', language);
-
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('resultCard').style.display = 'none';
-
-            try {
-                const response = await fetch('/analyze', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Get language and translate disease name
-                    const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
-                    const translatedDisease = translateDisease(data.prediction, language);
-                    
-                    document.getElementById('resultDisease').textContent = translatedDisease;
-                    document.getElementById('confidenceBar').style.width = data.confidence + '%';
-                    document.getElementById('confidenceText').textContent = Math.round(data.confidence) + '%';
-                    document.getElementById('resultImage').src = '/uploads/' + data.image;
-
-                    // Flask status
-                    const badge = document.getElementById('flaskStatusBadge');
-                    const text = document.getElementById('flaskStatusText');
-                    if (data.flaskAvailable) {
-                        text.textContent = '✅ AI Model (Flask) - Live';
-                        text.className = 'badge bg-success';
-                    } else {
-                        text.textContent = '⚠️ Fallback Mode';
-                        text.className = 'badge bg-warning text-dark';
-                    }
-                    badge.style.display = 'block';
-
-                    const advisory = generateAdvisory(data.prediction, language);
-                    document.getElementById('advisoryText').textContent = advisory;
-
-                    if (data.medicine) {
-                        displayMedicineRecommendation(data.medicine, language);
-                    }
-
-                    document.getElementById('resultCard').style.display = 'block';
-                } else {
-                    alert(data.error || 'Analysis failed');
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                document.getElementById('loadingState').style.display = 'none';
-            }
-        });
 
         function resetForm() {
             document.getElementById('uploadForm').reset();
@@ -485,7 +415,6 @@
         function translateDisease(prediction, language = 'en') {
             return diseaseTranslations[prediction]?.[language] || prediction;
         }
-        }
 
         function displayMedicineRecommendation(medicine) {
             const box = document.getElementById('medicineBox');
@@ -530,6 +459,82 @@
                 languageManager.applyTranslations();
             }
         }
+
+        // NOW attach event listeners AFTER functions are defined
+        // Make upload area clickable
+        dropArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop events
+        dropArea.addEventListener('ondrop', handleDrop);
+        dropArea.addEventListener('ondragover', handleDragOver);
+        dropArea.addEventListener('ondragleave', handleDragLeave);
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select an image first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+            const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
+            formData.append('language', language);
+
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('resultCard').style.display = 'none';
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Get language and translate disease name
+                    const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
+                    const translatedDisease = translateDisease(data.prediction, language);
+                    
+                    document.getElementById('resultDisease').textContent = translatedDisease;
+                    document.getElementById('confidenceBar').style.width = data.confidence + '%';
+                    document.getElementById('confidenceText').textContent = Math.round(data.confidence) + '%';
+                    document.getElementById('resultImage').src = '/uploads/' + data.image;
+
+                    // Flask status
+                    const badge = document.getElementById('flaskStatusBadge');
+                    const text = document.getElementById('flaskStatusText');
+                    if (data.flaskAvailable) {
+                        text.textContent = '✅ AI Model (Flask) - Live';
+                        text.className = 'badge bg-success';
+                    } else {
+                        text.textContent = '⚠️ Fallback Mode';
+                        text.className = 'badge bg-warning text-dark';
+                    }
+                    badge.style.display = 'block';
+
+                    const advisory = generateAdvisory(data.prediction, language);
+                    document.getElementById('advisoryText').textContent = advisory;
+
+                    if (data.medicine) {
+                        displayMedicineRecommendation(data.medicine, language);
+                    }
+
+                    document.getElementById('resultCard').style.display = 'block';
+                } else {
+                    alert(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
