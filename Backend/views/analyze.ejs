@@ -99,12 +99,17 @@
 
                 <!-- RESULTS SECTION -->
                 <div class="col-lg-6">
-                    <!-- Error Alert -->
-                    <div id="errorAlert" class="alert alert-danger d-flex align-items-start" style="display: none;" role="alert">
-                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.25rem;"></i>
-                        <div>
-                            <h5 class="alert-heading">Analysis Error</h5>
-                            <p id="errorMessage" class="mb-0"></p>
+                    <!-- Image Gallery -->
+                    <div id="imageGallery" style="display: none;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4">
+                                    <i class="fas fa-images"></i> Uploaded Images
+                                </h5>
+                                <div id="galleryContainer" class="row g-3">
+                                    <!-- Images will be added here -->
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -307,8 +312,39 @@
                 reader.onload = (e) => {
                     document.getElementById('previewImg').src = e.target.result;
                     document.getElementById('imagePreview').style.display = 'block';
+                    addImageToGallery(e.target.result, file.name);
                 };
                 reader.readAsDataURL(file);
+            }
+        }
+
+        function addImageToGallery(imageData, fileName) {
+            const gallery = document.getElementById('imageGallery');
+            const container = document.getElementById('galleryContainer');
+            
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'col-md-6 col-lg-4';
+            galleryItem.innerHTML = `
+                <div class="card h-100">
+                    <img src="${imageData}" class="card-img-top" alt="${fileName}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <p class="card-text text-secondary small">${fileName}</p>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFromGallery(this)">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(galleryItem);
+            gallery.style.display = 'block';
+        }
+
+        function removeFromGallery(button) {
+            button.closest('.col-md-6').remove();
+            const container = document.getElementById('galleryContainer');
+            if (container.children.length === 0) {
+                document.getElementById('imageGallery').style.display = 'none';
             }
         }
 
@@ -323,7 +359,7 @@
 
             const file = fileInput.files[0];
             if (!file) {
-                showError('Please select an image first');
+                alert('Please select an image first');
                 return;
             }
 
@@ -334,7 +370,6 @@
 
             document.getElementById('loadingState').style.display = 'block';
             document.getElementById('resultCard').style.display = 'none';
-            document.getElementById('errorAlert').style.display = 'none';
 
             try {
                 const response = await fetch('/analyze', {
@@ -375,25 +410,21 @@
 
                     document.getElementById('resultCard').style.display = 'block';
                 } else {
-                    showError(data.error || 'Analysis failed');
+                    alert(data.error || 'Analysis failed');
                 }
             } catch (error) {
-                showError('Error: ' + error.message);
+                alert('Error: ' + error.message);
             } finally {
                 document.getElementById('loadingState').style.display = 'none';
             }
         });
 
-        function showError(msg) {
-            document.getElementById('errorMessage').textContent = msg;
-            document.getElementById('errorAlert').style.display = 'block';
-        }
-
         function resetForm() {
             document.getElementById('uploadForm').reset();
             document.getElementById('imagePreview').style.display = 'none';
             document.getElementById('resultCard').style.display = 'none';
-            document.getElementById('errorAlert').style.display = 'none';
+            document.getElementById('imageGallery').style.display = 'none';
+            document.getElementById('galleryContainer').innerHTML = '';
         }
 
         function generateAdvisory(prediction, language = 'en') {
