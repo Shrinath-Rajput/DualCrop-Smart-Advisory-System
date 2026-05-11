@@ -65,7 +65,13 @@
     "dosage": "Dosage",
     "spray_interval": "Spraying Interval",
     "preventive_measures": "Preventive Measures",
-    "treatment": "Treatment"
+    "treatment": "Treatment",
+    "brinjal_healthy_leaf": "Brinjal Healthy Leaf",
+    "grapes_healthy": "Grapes Healthy",
+    "grapes_black_rot": "Grapes Black Rot",
+    "grapes_esca_black_measles": "Grapes Esca (Black Measles)",
+    "grapes_leaf_blight": "Grapes Leaf Blight",
+    "unknown_disease": "Unknown"
   },
   "hi": {
     "home": "होम",
@@ -133,7 +139,13 @@
     "dosage": "खुराक",
     "spray_interval": "छिड़काव अंतराल",
     "preventive_measures": "निवारक उपाय",
-    "treatment": "उपचार"
+    "treatment": "उपचार",
+    "brinjal_healthy_leaf": "बैंगन स्वस्थ पत्र",
+    "grapes_healthy": "अंगूर स्वस्थ",
+    "grapes_black_rot": "अंगूर काला सड़",
+    "grapes_esca_black_measles": "अंगूर एस्का (काले धब्बे)",
+    "grapes_leaf_blight": "अंगूर पत्ती झुलसा",
+    "unknown_disease": "अज्ञात"
   },
   "mr": {
     "home": "होम",
@@ -195,7 +207,13 @@
     "healthy": "निरोगी",
     "disease": "रोग",
     "help": "मदत",
-    "information": "माहिती",
+    "information": "माहि,
+    "brinjal_healthy_leaf": "वारी निरोगी पत्र",
+    "grapes_healthy": "द्राक्षे निरोगी",
+    "grapes_black_rot": "द्राक्षे काळा सड",
+    "grapes_esca_black_measles": "द्राक्षे एस्का (काले धब्बे)",
+    "grapes_leaf_blight": "द्राक्षे पत्र झुलसा",
+    "unknown_disease": "अज्ञात"ती",
     "medicines": "औषधे",
     "medicine_label": "औषध",
     "dosage": "औषध प्रमाण",

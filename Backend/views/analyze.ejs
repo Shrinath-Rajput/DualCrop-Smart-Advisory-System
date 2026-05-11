@@ -100,11 +100,11 @@
                 <!-- RESULTS SECTION -->
                 <div class="col-lg-6">
                     <!-- Error Alert -->
-                    <div id="errorAlert" class="alert alert-danger d-flex align-items-start" style="display: none;" role="alert">
-                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.25rem;"></i>
-                        <div>
-                            <h5 class="alert-heading">Analysis Error</h5>
-                            <p id="errorMessage" class="mb-0"></p>
+                    <div id="errorAlert" class="alert alert-danger d-flex align-items-start" style="display: none; background-color: #f8d7da; border: 2px solid #dc3545; border-radius: 8px;" role="alert">
+                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.5rem; color: #dc3545;"></i>
+                        <div style="flex: 1;">
+                            <h5 class="alert-heading" style="color: #721c24; font-weight: 600;">⚠️ Analysis Error</h5>
+                            <p id="errorMessage" class="mb-0" style="color: #721c24; font-size: 0.95rem;"></p>
                         </div>
                     </div>
 
@@ -345,7 +345,11 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    document.getElementById('resultDisease').textContent = data.prediction;
+                    // Get language and translate disease name
+                    const language = languageManager ? languageManager.getCurrentLanguage() : localStorage.getItem('language') || 'en';
+                    const translatedDisease = translateDisease(data.prediction, language);
+                    
+                    document.getElementById('resultDisease').textContent = translatedDisease;
                     document.getElementById('confidenceBar').style.width = data.confidence + '%';
                     document.getElementById('confidenceText').textContent = Math.round(data.confidence) + '%';
                     document.getElementById('resultImage').src = '/uploads/' + data.image;
@@ -362,11 +366,11 @@
                     }
                     badge.style.display = 'block';
 
-                    const advisory = generateAdvisory(data.prediction);
+                    const advisory = generateAdvisory(data.prediction, language);
                     document.getElementById('advisoryText').textContent = advisory;
 
                     if (data.medicine) {
-                        displayMedicineRecommendation(data.medicine);
+                        displayMedicineRecommendation(data.medicine, language);
                     }
 
                     document.getElementById('resultCard').style.display = 'block';
@@ -392,12 +396,64 @@
             document.getElementById('errorAlert').style.display = 'none';
         }
 
-        function generateAdvisory(prediction) {
+        function generateAdvisory(prediction, language = 'en') {
             const advisories = {
-                'healthy': 'Your crop appears healthy! Continue regular monitoring and maintain good agricultural practices.',
-                'disease': 'A disease has been detected. Follow the treatment guide below and consult a local agricultural expert if needed.'
+                'en': {
+                    'healthy': 'Your crop appears healthy! Continue regular monitoring and maintain good agricultural practices.',
+                    'disease': 'A disease has been detected. Follow the treatment guide below and consult a local agricultural expert if needed.'
+                },
+                'hi': {
+                    'healthy': 'आपकी फसल स्वस्थ दिखाई देती है! नियमित निगरानी जारी रखें और अच्छी कृषि प्रथाओं को बनाए रखें।',
+                    'disease': 'एक बीमारी का पता चला है। नीचे दिए गए उपचार गाइड का पालन करें और आवश्यकता पड़ने पर स्थानीय कृषि विशेषज्ञ से परामर्श लें।'
+                },
+                'mr': {
+                    'healthy': 'आपली पिक निरोगी दिसते आहे! नियमित निरीक्षण सुरू ठेवा आणि चांगल्या कृषी पद्धतीचे पालन करा।',
+                    'disease': 'एक रोग आढळला आहे। खाली दिलेल्या उपचार मार्गदर्शकाचे पालन करा आणि आवश्यकतेनुसार स्थानिक कृषी तज्ञांचा सल्ला घ्या।'
+                }
             };
-            return advisories[prediction.toLowerCase()] || advisories['disease'];
+            
+            const isHealthy = prediction.toLowerCase().includes('healthy');
+            const key = isHealthy ? 'healthy' : 'disease';
+            return advisories[language]?.[key] || advisories['en'][key];
+        }
+
+        // Translation mapping for disease names
+        const diseaseTranslations = {
+            'Brinjal Healthy Leaf': {
+                'en': 'Brinjal Healthy Leaf',
+                'hi': 'बैंगन स्वस्थ पत्र',
+                'mr': 'वारी निरोगी पत्र'
+            },
+            'Grapes Healthy': {
+                'en': 'Grapes Healthy',
+                'hi': 'अंगूर स्वस्थ',
+                'mr': 'द्राक्षे निरोगी'
+            },
+            'Grapes Black Rot': {
+                'en': 'Grapes Black Rot',
+                'hi': 'अंगूर काला सड़',
+                'mr': 'द्राक्षे काळा सड'
+            },
+            'Grapes Esca (Black Measles)': {
+                'en': 'Grapes Esca (Black Measles)',
+                'hi': 'अंगूर एस्का (काले धब्बे)',
+                'mr': 'द्राक्षे एस्का (काले धब्बे)'
+            },
+            'Grapes Leaf Blight': {
+                'en': 'Grapes Leaf Blight',
+                'hi': 'अंगूर पत्ती झुलसा',
+                'mr': 'द्राक्षे पत्र झुलसा'
+            },
+            'Unknown': {
+                'en': 'Unknown',
+                'hi': 'अज्ञात',
+                'mr': 'अज्ञात'
+            }
+        };
+
+        function translateDisease(prediction, language = 'en') {
+            return diseaseTranslations[prediction]?.[language] || prediction;
+        }
         }
 
         function displayMedicineRecommendation(medicine) {
