@@ -170,6 +170,9 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
         // Get medicine recommendation using raw prediction name
         const medicineRec = medicineRecommendations[prediction] || medicineRecommendations["Unknown"];
 
+        // Generate detailed comprehensive recommendation
+        const detailedRec = generateDetailedRecommendation(prediction, confidence);
+
         // Convert raw prediction to display name for UI
         const displayPrediction = getDisplayName(prediction);
 
@@ -189,7 +192,7 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
         // ✅ Keep uploaded file for dashboard display
         console.log("✅ Image saved to: /uploads/" + req.file.filename);
 
-        // Return JSON response with medicine recommendation
+        // Return JSON response with detailed recommendations
         res.json({
             success: true,
             image: req.file.filename,
@@ -197,6 +200,7 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
             rawPrediction: prediction,       // Keep raw prediction for debugging
             confidence: confidence,
             medicine: medicineRec,
+            recommendation: detailedRec,     // NEW: Comprehensive recommendation
             flaskAvailable: flaskAvailable,
             note: flaskAvailable ? "Prediction from Flask AI Model" : "Prediction from fallback system"
         });
@@ -338,6 +342,311 @@ const medicineRecommendations = {
         ]
     }
 };
+
+// ========== ENHANCED RECOMMENDATION ENGINE ==========
+// Generate detailed, comprehensive recommendations based on disease
+function generateDetailedRecommendation(prediction, confidence) {
+    const recommendations = {
+        "brinjal_Healthy Leaf": {
+            status: "✅ HEALTHY",
+            severity: "LOW",
+            color: "success",
+            summary: "Your brinjal crop is in excellent condition",
+            detailed_analysis: "The plant shows no signs of major diseases. Maintain current care practices.",
+            treatment: {
+                immediate: "No immediate treatment required",
+                prevention: [
+                    "🛡️ Apply Neem oil spray every 15 days for pest prevention",
+                    "💧 Maintain consistent irrigation (daily in summer)",
+                    "🌿 Use organic NPK 10-10-10 fertilizer every 30 days",
+                    "🧹 Remove fallen leaves and debris to prevent fungal growth"
+                ],
+                organic_alternatives: [
+                    "Spray solution: Mix 5% Neem oil with 1% Potassium soap",
+                    "Biological control: Release Trichoderma fungi",
+                    "Manual control: Hand-pick any visible pests daily"
+                ],
+                cost_effective: [
+                    "Use local cow dung compost instead of fertilizer",
+                    "Mix crushed garlic and chili with water for pest spray",
+                    "Save seeds for next season from healthy plants"
+                ]
+            },
+            fertilizer: {
+                type: "Balanced NPK",
+                recommendation: "Apply 10-10-10 NPK every 30 days",
+                amount: "500-600g per plant",
+                timing: "Every 4 weeks throughout growing season"
+            },
+            irrigation: {
+                frequency: "Daily in summer, alternate days in monsoon",
+                method: "Drip or soaker hose",
+                amount: "20-25 liters per plant per day",
+                best_time: "Early morning or evening"
+            },
+            companion_plants: [
+                "🌿 Marigold - Repels pests",
+                "🌿 Basil - Improves plant vigor",
+                "🌿 Garlic - Natural pest deterrent"
+            ],
+            expected_yield: "4-5 kg per plant (60-70 tons per hectare)",
+            harvest_ready: "In 70-90 days from transplanting"
+        },
+        "Grapes_Grape": {
+            status: "✅ HEALTHY",
+            severity: "LOW",
+            color: "success",
+            summary: "Your grapes are in excellent health",
+            detailed_analysis: "No disease symptoms detected. Excellent condition for fruit development.",
+            treatment: {
+                immediate: "No treatment needed",
+                prevention: [
+                    "🛡️ Apply sulfur powder spray every 10-14 days",
+                    "💧 Drip irrigation - 50-60 liters per plant daily",
+                    "🌿 Balanced NPK 12-8-10 fertilizer every 20 days",
+                    "✂️ Prune excess shoots for air circulation"
+                ],
+                organic_alternatives: [
+                    "Sulfur powder mixed with water spray",
+                    "Bordeaux mixture (1%) as preventive",
+                    "Beneficial insects like ladybugs"
+                ],
+                cost_effective: [
+                    "Use composted grape waste for fertilizer",
+                    "Water mulching with dried leaves to retain moisture",
+                    "Share pest management resources with neighboring farmers"
+                ]
+            },
+            fertilizer: {
+                type: "High Potassium blend",
+                recommendation: "NPK 12-8-10, apply every 20 days",
+                amount: "2-3 kg per mature plant",
+                timing: "During growing and fruiting season"
+            },
+            irrigation: {
+                frequency: "Daily drip irrigation",
+                method: "Drip irrigation system (RECOMMENDED)",
+                amount: "50-60 liters per plant daily",
+                best_time: "Early morning (4-6 AM)"
+            },
+            trellising: [
+                "🌳 Maintain grape trellis at 6-8 feet height",
+                "🌳 Proper canopy management for light exposure",
+                "🌳 Remove excess lateral shoots monthly"
+            ],
+            expected_yield: "8-10 kg per plant (25-30 tons per hectare)",
+            harvest_ready: "In 5-7 years from planting"
+        },
+        "Grapes_Grape___healthy": {
+            status: "✅ HEALTHY",
+            severity: "LOW",
+            color: "success",
+            summary: "Your grapes are in excellent health",
+            detailed_analysis: "No disease symptoms detected. Excellent condition for fruit development.",
+            treatment: {
+                immediate: "No treatment needed",
+                prevention: [
+                    "🛡️ Apply sulfur powder spray every 10-14 days",
+                    "💧 Drip irrigation - 50-60 liters per plant daily",
+                    "🌿 Balanced NPK 12-8-10 fertilizer every 20 days"
+                ],
+                organic_alternatives: [
+                    "Sulfur powder spray for fungal prevention",
+                    "Bordeaux mixture every 15 days"
+                ],
+                cost_effective: [
+                    "Use composted organic matter",
+                    "Water mulching technique",
+                    "Community pest management"
+                ]
+            },
+            fertilizer: {
+                type: "High Potassium blend",
+                recommendation: "NPK 12-8-10",
+                amount: "2-3 kg per plant",
+                timing: "Every 20 days during season"
+            },
+            irrigation: {
+                frequency: "Daily drip irrigation",
+                amount: "50-60 liters per plant",
+                best_time: "Early morning"
+            },
+            expected_yield: "8-10 kg per plant",
+            harvest_ready: "In 5-7 years"
+        },
+        "Grapes_Grape___Black_rot": {
+            status: "🔴 DISEASED",
+            severity: "HIGH",
+            color: "danger",
+            summary: "Black Rot infection detected - Immediate action required",
+            detailed_analysis: "Black rot is a serious fungal disease that affects berries and leaves. It thrives in humid conditions. Quick action is essential to prevent crop loss.",
+            treatment: {
+                immediate: [
+                    "🚨 Remove all infected berries and leaves immediately",
+                    "🚨 Cut affected branches 30cm below visible symptoms",
+                    "🚨 Burn or bury removed parts (DO NOT compost)",
+                    "🚨 Disinfect pruning tools with bleach solution (1:10 ratio)"
+                ],
+                chemical: {
+                    medicine: ["Bordeaux Mixture 1% (CuSO4 + CaOH)", "Mancozeb 75% WP", "Copper Hydroxide 77%"],
+                    dosage: "1-1.5 gm per liter",
+                    spraying_interval: "Every 7-10 days",
+                    duration: "Continue for 4-6 weeks or until harvest"
+                },
+                organic_alternatives: [
+                    "Bordeaux mixture (1% solution) - Most effective",
+                    "Copper sulfate spray - Every 7 days",
+                    "Bacillus subtilis biological fungicide"
+                ],
+                preventive: [
+                    "✋ Reduce humidity through proper pruning",
+                    "✋ Improve canopy air circulation",
+                    "✋ Remove fallen leaves and debris daily",
+                    "✋ Avoid overhead irrigation (use drip)",
+                    "✋ Space plants properly for air flow"
+                ]
+            },
+            application_schedule: {
+                week_1: "Bordeaux Mixture - 3 sprays (days 1, 4, 7)",
+                week_2: "Mancozeb - 2 sprays (days 10, 14)",
+                week_3_onwards: "Alternate between Bordeaux and Mancozeb every 7 days"
+            },
+            irrigation: {
+                change: "Use drip irrigation (mandatory)",
+                timing: "Only early morning, never evening",
+                frequency: "40-50 liters per plant daily"
+            },
+            cost_effective: [
+                "Use Bordeaux mixture (cheaper than synthetic)",
+                "Buy fungicides in bulk with neighboring farmers",
+                "Make own Bordeaux: CuSO4 (1kg) + CaOH (1.5kg) per 100L water"
+            ],
+            cost_estimate: "₹800-1200 per plant for full treatment",
+            expected_recovery: "2-3 weeks with proper application",
+            yield_impact: "30-50% loss if untreated"
+        },
+        "Grapes_Grape___Esca_(Black_Measles)": {
+            status: "🟠 SERIOUS",
+            severity: "CRITICAL",
+            color: "danger",
+            summary: "Esca (Black Measles) detected - Very serious condition",
+            detailed_analysis: "Esca is a wood-rotting disease that is very difficult to treat. Once infected, the plant may decline slowly. Prevention and early removal are key.",
+            treatment: {
+                immediate: [
+                    "⚠️ This disease is HARD to cure - focus on PREVENTION",
+                    "⚠️ Remove infected branches (cut 50cm below symptoms)",
+                    "⚠️ Apply wound dressing immediately after cutting",
+                    "⚠️ Maintain overall plant health through good irrigation"
+                ],
+                chemical: {
+                    note: "No effective chemical cure available",
+                    option1: "Sodium Hypochlorite 5% - Apply to cut wounds",
+                    option2: "Benomyl (if available in your region)",
+                    option3: "Trichoderma fungi - Biological control"
+                },
+                cultural_control: [
+                    "🌳 Remove diseased vines completely if heavily infected",
+                    "🌳 Apply wound sealant (paint/paste) to all cuts",
+                    "🌳 Maintain high plant vigor through nutrition",
+                    "🌳 Avoid any wounding of the plant",
+                    "🌳 Don't propagate from infected vines"
+                ],
+                preventive: [
+                    "Proper drainage to prevent root stress",
+                    "Balanced irrigation - not too much water",
+                    "Avoid physical damage to trunk and branches",
+                    "Sterilize all pruning tools between plants",
+                    "Use disease-free planting material"
+                ]
+            },
+            long_term_strategy: [
+                "Monitor plant for symptom progression",
+                "Keep infected plant in isolation (don't spread)",
+                "If decline continues, consider replanting",
+                "Plant resistant or tolerant varieties next time",
+                "Maintain distance between plantings"
+            ],
+            cost_effective: [
+                "Focus on prevention rather than cure",
+                "Proper spacing saves money on treatment",
+                "Good hygiene costs less than fungicides",
+                "Share equipment sterilization with other farmers"
+            ],
+            prognosis: "50-70% of infected plants show slow decline",
+            timeline: "Symptoms may take 2-5 years to manifest completely"
+        },
+        "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+            status: "🟡 MODERATE",
+            severity: "MEDIUM",
+            color: "warning",
+            summary: "Leaf Blight detected - Needs prompt treatment",
+            detailed_analysis: "Leaf blight affects grape foliage, reducing photosynthesis and weakening the plant. Can be controlled with regular fungicide sprays.",
+            treatment: {
+                immediate: [
+                    "🔧 Remove all heavily infected leaves",
+                    "🔧 Thin out canopy to improve air circulation",
+                    "🔧 Clean up fallen leaves and debris",
+                    "🔧 Increase spacing between vines if needed"
+                ],
+                chemical: {
+                    primary: ["Chlorothalonil 75% WP", "Mancozeb 75% WP"],
+                    alternate: ["Triadimefon 25% EC", "Propiconazole 25% EC"],
+                    dosage: "2 gm per liter (Chlorothalonil) or 1.5 gm per liter (Mancozeb)",
+                    spraying_interval: "Every 10-14 days",
+                    duration: "Continue from fruit set until harvest"
+                },
+                application_schedule: {
+                    phase1: "First 2 weeks: Spray every 7 days (heavy infection)",
+                    phase2: "Weeks 3-8: Spray every 10 days (maintenance)",
+                    phase3: "Weeks 9-onwards: Spray every 14 days (preventive)"
+                },
+                organic_alternatives: [
+                    "Sulfur powder spray - Every 10 days",
+                    "Copper-based fungicide (Copper Hydroxide)",
+                    "Bacillus subtilis - Biological control",
+                    "Neem oil + Potassium soap mix"
+                ],
+                preventive: [
+                    "✅ Proper canopy management - Remove excess growth",
+                    "✅ Space plants 2-2.5m apart for air flow",
+                    "✅ Use drip irrigation (avoid wetting leaves)",
+                    "✅ Remove infected leaves as they appear",
+                    "✅ Don't work in wet vineyard to prevent spread"
+                ]
+            },
+            seasonal_variation: {
+                monsoon: "HIGH RISK - Spray every 7 days",
+                summer: "MEDIUM RISK - Spray every 10 days",
+                winter: "LOW RISK - Spray every 14 days"
+            },
+            cost_estimate: "₹400-600 per plant for full season treatment",
+            expected_recovery: "1-2 weeks after starting treatment",
+            yield_protection: "Prevent 30-40% yield loss with timely treatment"
+        }
+    };
+
+    const rec = recommendations[prediction];
+    if (rec) {
+        rec.confidence = confidence.toFixed(1);
+        rec.confidence_level = confidence > 85 ? "Very High" : confidence > 70 ? "High" : confidence > 50 ? "Medium" : "Low";
+        rec.recommendation_generated_at = new Date().toISOString();
+    }
+    
+    return rec || {
+        status: "❓ UNKNOWN",
+        severity: "UNKNOWN",
+        summary: "Unable to identify the condition. Please provide a clearer image.",
+        treatment: {
+            immediate: "Please upload a clear image with proper lighting",
+            prevention: [
+                "🔍 Take close-up photo of affected area",
+                "🔍 Ensure good natural lighting",
+                "🔍 Include both healthy and diseased parts",
+                "🔍 Keep image in focus"
+            ]
+        }
+    };
+}
 
 // Create aliases for raw class names by pointing to display name keys
 medicineRecommendations["brinjal_Healthy Leaf"] = medicineRecommendations["Brinjal Healthy Leaf"];

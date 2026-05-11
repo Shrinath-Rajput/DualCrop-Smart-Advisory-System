@@ -453,6 +453,160 @@
             box.style.display = 'block';
         }
 
+        // Display comprehensive recommendations
+        function displayComprehensiveRecommendation(rec) {
+            const resultCard = document.getElementById('resultCard');
+            let html = '';
+
+            if (!rec) return;
+
+            // Severity badge
+            const severityColor = rec.severity === 'LOW' ? 'success' : 
+                                 rec.severity === 'MEDIUM' ? 'warning' : 'danger';
+            
+            html += `
+                <div class="card mb-4" style="border-left: 4px solid var(--accent-${rec.color});">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="card-subtitle text-secondary">Disease Status & Severity</h6>
+                                <h4>${rec.status}</h4>
+                            </div>
+                            <span class="badge bg-${severityColor}">${rec.severity}</span>
+                        </div>
+                        <p class="text-muted">${rec.summary}</p>
+                        <small class="text-secondary">${rec.detailed_analysis}</small>
+                    </div>
+                </div>
+            `;
+
+            // Treatment section
+            if (rec.treatment) {
+                html += `<div class="card mb-4" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3"><i class="fas fa-prescription-bottle"></i> Treatment Plan</h6>
+                        <div class="small">`;
+
+                if (rec.treatment.immediate) {
+                    if (Array.isArray(rec.treatment.immediate)) {
+                        html += '<p class="mb-2"><strong>🚨 Immediate Actions:</strong><ul class="mb-0">';
+                        rec.treatment.immediate.forEach(item => {
+                            html += `<li>${item}</li>`;
+                        });
+                        html += '</ul></p>';
+                    } else {
+                        html += `<p class="mb-2"><strong>🚨 Immediate Action:</strong> ${rec.treatment.immediate}</p>`;
+                    }
+                }
+
+                if (rec.treatment.prevention && Array.isArray(rec.treatment.prevention)) {
+                    html += '<p class="mb-2"><strong>🛡️ Prevention Measures:</strong><ul class="mb-0">';
+                    rec.treatment.prevention.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += '</ul></p>';
+                }
+
+                if (rec.treatment.chemical) {
+                    html += '<p class="mb-2"><strong>💊 Chemical Treatment:</strong><ul class="mb-0">';
+                    if (rec.treatment.chemical.medicine) {
+                        html += `<li><strong>Medicines:</strong> ${Array.isArray(rec.treatment.chemical.medicine) ? rec.treatment.chemical.medicine.join(', ') : rec.treatment.chemical.medicine}</li>`;
+                    }
+                    if (rec.treatment.chemical.dosage) {
+                        html += `<li><strong>Dosage:</strong> ${rec.treatment.chemical.dosage}</li>`;
+                    }
+                    if (rec.treatment.chemical.spraying_interval) {
+                        html += `<li><strong>Interval:</strong> ${rec.treatment.chemical.spraying_interval}</li>`;
+                    }
+                    html += '</ul></p>';
+                }
+
+                if (rec.treatment.organic_alternatives && Array.isArray(rec.treatment.organic_alternatives)) {
+                    html += '<p class="mb-2"><strong>🌿 Organic Alternatives:</strong><ul class="mb-0">';
+                    rec.treatment.organic_alternatives.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += '</ul></p>';
+                }
+
+                if (rec.treatment.cost_effective && Array.isArray(rec.treatment.cost_effective)) {
+                    html += '<p class="mb-2"><strong>💰 Cost-Effective Solutions:</strong><ul class="mb-0">';
+                    rec.treatment.cost_effective.forEach(item => {
+                        html += `<li>${item}</li>`;
+                    });
+                    html += '</ul></p>';
+                }
+
+                html += '</div></div></div>';
+            }
+
+            // Irrigation & Fertilizer section
+            if (rec.irrigation || rec.fertilizer) {
+                html += `<div class="card mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3"><i class="fas fa-water"></i> Care Instructions</h6>
+                        <div class="row g-3">`;
+
+                if (rec.irrigation) {
+                    html += `<div class="col-md-6">
+                        <p class="small mb-1"><strong>💧 Irrigation:</strong></p>
+                        <ul class="small mb-0">
+                            <li>${rec.irrigation.frequency}</li>
+                            <li>${rec.irrigation.method}</li>
+                            <li>${rec.irrigation.amount}</li>
+                            <li>Best time: ${rec.irrigation.best_time}</li>
+                        </ul>
+                    </div>`;
+                }
+
+                if (rec.fertilizer) {
+                    html += `<div class="col-md-6">
+                        <p class="small mb-1"><strong>🌿 Fertilizer:</strong></p>
+                        <ul class="small mb-0">
+                            <li>Type: ${rec.fertilizer.type}</li>
+                            <li>${rec.fertilizer.recommendation}</li>
+                            <li>Amount: ${rec.fertilizer.amount}</li>
+                            <li>Timing: ${rec.fertilizer.timing}</li>
+                        </ul>
+                    </div>`;
+                }
+
+                html += '</div></div></div>';
+            }
+
+            // Expected yield and timeline
+            if (rec.expected_yield || rec.harvest_ready) {
+                html += `<div class="card mb-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);">
+                    <div class="card-body">
+                        <h6 class="card-title mb-2"><i class="fas fa-chart-line"></i> Expected Outcomes</h6>`;
+                if (rec.expected_yield) {
+                    html += `<p class="small mb-2">📊 <strong>Expected Yield:</strong> ${rec.expected_yield}</p>`;
+                }
+                if (rec.harvest_ready) {
+                    html += `<p class="small mb-2">🎯 <strong>Timeline:</strong> ${rec.harvest_ready}</p>`;
+                }
+                if (rec.expected_recovery) {
+                    html += `<p class="small mb-2">⏱️ <strong>Recovery Time:</strong> ${rec.expected_recovery}</p>`;
+                }
+                if (rec.cost_estimate) {
+                    html += `<p class="small mb-0">💵 <strong>Treatment Cost:</strong> ${rec.cost_estimate}</p>`;
+                }
+                html += '</div></div>';
+            }
+
+            // Confidence info
+            html += `<div class="alert alert-info small mb-0">
+                <strong>Confidence Level:</strong> ${rec.confidence_level} (${rec.confidence}%) | 
+                <strong>Status:</strong> Auto-generated recommendation
+            </div>`;
+
+            // Insert recommendations before the existing result card content
+            const medicineBox = resultCard.querySelector('#medicineBox');
+            if (medicineBox) {
+                medicineBox.insertAdjacentHTML('beforebegin', html);
+            }
+        }
+
         function changeLanguage(lang) {
             if (languageManager) {
                 languageManager.setLanguage(lang);
@@ -521,6 +675,12 @@
                     const advisory = generateAdvisory(data.prediction, language);
                     document.getElementById('advisoryText').textContent = advisory;
 
+                    // Display comprehensive recommendation (NEW)
+                    if (data.recommendation) {
+                        displayComprehensiveRecommendation(data.recommendation);
+                    }
+
+                    // Display medicine recommendation
                     if (data.medicine) {
                         displayMedicineRecommendation(data.medicine, language);
                     }
