@@ -58,15 +58,39 @@ const upload = multer({
     },
 });
 
+// ========== CLASS NAME MAPPING ==========
+// Map raw class names from model to display names for UI
+const classNameMapping = {
+    "brinjal_Healthy Leaf": "Brinjal Healthy Leaf",
+    "Grapes_Grape": "Grapes Healthy",
+    "Grapes_Grape___Black_rot": "Grapes Black Rot",
+    "Grapes_Grape___Esca_(Black_Measles)": "Grapes Esca (Black Measles)",
+    "Grapes_Grape___healthy": "Grapes Healthy",
+    "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": "Grapes Leaf Blight"
+};
+
+function getDisplayName(rawPrediction) {
+    return classNameMapping[rawPrediction] || rawPrediction;
+}
+
+function getRawPredictionKey(displayName) {
+    for (const [raw, display] of Object.entries(classNameMapping)) {
+        if (display === displayName) {
+            return raw;
+        }
+    }
+    return displayName;
+}
+
 // ========== PREDICTION FALLBACK (MOCK DATA) ==========
 function getFallbackPrediction(filename) {
-    // Fallback predictions based on filename pattern
+    // Fallback predictions based on filename pattern - using raw class names now
     const fallbackPredictions = {
-        "healthy": { prediction: "Brinjal Healthy Leaf", confidence: 92.5 },
-        "black_rot": { prediction: "Grapes Black Rot", confidence: 88.3 },
-        "esca": { prediction: "Grapes Esca (Black Measles)", confidence: 85.6 },
-        "leaf_blight": { prediction: "Grapes Leaf Blight", confidence: 87.9 },
-        "rot": { prediction: "Grapes Black Rot", confidence: 85.2 },
+        "healthy": { prediction: "brinjal_Healthy Leaf", confidence: 92.5 },
+        "black_rot": { prediction: "Grapes_Grape___Black_rot", confidence: 88.3 },
+        "esca": { prediction: "Grapes_Grape___Esca_(Black_Measles)", confidence: 85.6 },
+        "leaf_blight": { prediction: "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)", confidence: 87.9 },
+        "rot": { prediction: "Grapes_Grape___Black_rot", confidence: 85.2 },
     };
 
     const lowerFilename = filename.toLowerCase();
@@ -77,7 +101,7 @@ function getFallbackPrediction(filename) {
     }
 
     // Default fallback
-    return { prediction: "Unknown", confidence: 50.0 };
+    return { prediction: "Grapes_Grape", confidence: 50.0 };
 }
 
 // ========== ROUTES ==========
@@ -143,15 +167,18 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
             console.log(`📊 Fallback Prediction: ${prediction} (${confidence}%)`);
         }
 
-        // Get medicine recommendation
+        // Get medicine recommendation using raw prediction name
         const medicineRec = medicineRecommendations[prediction] || medicineRecommendations["Unknown"];
 
-        // Save to MySQL database
+        // Convert raw prediction to display name for UI
+        const displayPrediction = getDisplayName(prediction);
+
+        // Save to MySQL database (use display name for human readability)
         try {
             const connection = await pool.getConnection();
             const query =
                 "INSERT INTO predictions (image, result, confidence) VALUES (?, ?, ?)";
-            await connection.execute(query, [req.file.filename, prediction, confidence]);
+            await connection.execute(query, [req.file.filename, displayPrediction, confidence]);
             connection.release();
             console.log("✅ Prediction saved to database");
         } catch (dbError) {
@@ -166,7 +193,8 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
         res.json({
             success: true,
             image: req.file.filename,
-            prediction: prediction,
+            prediction: displayPrediction,  // Show display name to user
+            rawPrediction: prediction,       // Keep raw prediction for debugging
             confidence: confidence,
             medicine: medicineRec,
             flaskAvailable: flaskAvailable,
@@ -310,6 +338,14 @@ const medicineRecommendations = {
         ]
     }
 };
+
+// Create aliases for raw class names by pointing to display name keys
+medicineRecommendations["brinjal_Healthy Leaf"] = medicineRecommendations["Brinjal Healthy Leaf"];
+medicineRecommendations["Grapes_Grape"] = medicineRecommendations["Grapes Healthy"];
+medicineRecommendations["Grapes_Grape___healthy"] = medicineRecommendations["Grapes Healthy"];
+medicineRecommendations["Grapes_Grape___Black_rot"] = medicineRecommendations["Grapes Black Rot"];
+medicineRecommendations["Grapes_Grape___Esca_(Black_Measles)"] = medicineRecommendations["Grapes Esca (Black Measles)"];
+medicineRecommendations["Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)"] = medicineRecommendations["Grapes Leaf Blight"];
 
 // ========== WEATHER-BASED MEDICINE ADVISOR ==========
 function getWeatherBasedMedicine(cropType, weatherData) {
