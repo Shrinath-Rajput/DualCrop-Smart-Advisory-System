@@ -453,6 +453,173 @@
             box.style.display = 'block';
         }
 
+        // Display disease analysis in JSON format
+        function displayDiseaseAnalysis(analysis) {
+            const resultCard = document.getElementById('resultCard');
+            let html = '';
+
+            if (!analysis) return;
+
+            // Status badge with color
+            const statusColor = analysis.status === 'Healthy' ? 'success' : 'danger';
+            const severityColor = analysis.severity === 'None' ? 'success' :
+                                 analysis.severity === 'Low' ? 'info' :
+                                 analysis.severity === 'Medium' ? 'warning' : 'danger';
+
+            html += `
+                <div class="card mb-4" style="border-top: 4px solid var(--accent-${statusColor});">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h6 class="card-subtitle text-secondary">Analysis Result</h6>
+                                <h4 class="mb-2">${analysis.crop} - ${analysis.disease}</h4>
+                                <p class="text-muted small mb-0">${analysis.message || ''}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="badge bg-${statusColor} me-2">${analysis.status}</span>
+                                ${analysis.severity !== 'None' ? `<span class="badge bg-${severityColor}">${analysis.severity}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Symptoms section (if diseased)
+            if (analysis.symptoms && analysis.symptoms.length > 0) {
+                html += `
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-search"></i> Symptoms Observed</h6>
+                            <ul class="small mb-0">`;
+                analysis.symptoms.forEach(symptom => {
+                    html += `<li class="mb-2">${symptom}</li>`;
+                });
+                html += `</ul></div></div>`;
+            }
+
+            // Causes section (if diseased)
+            if (analysis.causes && analysis.causes.length > 0) {
+                html += `
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-virus"></i> Root Causes</h6>
+                            <ul class="small mb-0">`;
+                analysis.causes.forEach(cause => {
+                    html += `<li class="mb-2">${cause}</li>`;
+                });
+                html += `</ul></div></div>`;
+            }
+
+            // Medicines section
+            if (analysis.recommended_medicines && analysis.recommended_medicines.length > 0) {
+                html += `
+                    <div class="card mb-4" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-prescription-bottle"></i> Recommended Medicines</h6>`;
+                analysis.recommended_medicines.forEach((med, idx) => {
+                    html += `
+                        <div class="mb-3 pb-3 ${idx < analysis.recommended_medicines.length - 1 ? 'border-bottom' : ''}">
+                            <p class="small mb-1"><strong>💊 ${med.name}</strong></p>
+                            <ul class="small mb-0">
+                                <li>Usage: ${med.usage}</li>
+                                <li>Quantity: ${med.quantity}</li>
+                                ${med.timing ? `<li>Timing: ${med.timing}</li>` : ''}
+                            </ul>
+                        </div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // Organic solutions
+            if (analysis.organic_solutions && analysis.organic_solutions.length > 0) {
+                html += `
+                    <div class="card mb-4" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-leaf"></i> Organic Solutions</h6>
+                            <ul class="small mb-0">`;
+                analysis.organic_solutions.forEach(solution => {
+                    html += `<li class="mb-2">🌿 ${solution}</li>`;
+                });
+                html += `</ul></div></div>`;
+            }
+
+            // Prevention tips
+            if (analysis.prevention_tips && analysis.prevention_tips.length > 0) {
+                html += `
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-shield-alt"></i> Prevention Tips</h6>
+                            <ul class="small mb-0">`;
+                analysis.prevention_tips.forEach(tip => {
+                    html += `<li class="mb-2">${tip}</li>`;
+                });
+                html += `</ul></div></div>`;
+            }
+
+            // Farmer advice
+            if (analysis.farmer_advice) {
+                html += `
+                    <div class="card mb-4 border-info">
+                        <div class="card-body">
+                            <h6 class="card-title mb-2"><i class="fas fa-user-tie"></i> Farmer's Advisory</h6>
+                            <p class="small mb-0">"${analysis.farmer_advice}"</p>
+                        </div>
+                    </div>`;
+            }
+
+            // Care instructions
+            if (analysis.care_instructions) {
+                html += `
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-spa"></i> Care Instructions</h6>
+                            <div class="row g-2 small">`;
+                Object.entries(analysis.care_instructions).forEach(([key, value]) => {
+                    html += `
+                        <div class="col-md-6 mb-2">
+                            <p class="small mb-1"><strong>${key.replace(/_/g, ' ').toUpperCase()}:</strong></p>
+                            <p class="small text-muted mb-0">${value}</p>
+                        </div>`;
+                });
+                html += `</div></div></div>`;
+            }
+
+            // Yield impact section
+            if (analysis.yield_impact || analysis.expected_yield || analysis.cost_estimate || analysis.expected_recovery) {
+                html += `
+                    <div class="card mb-4" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><i class="fas fa-chart-line"></i> Impact & Recovery</h6>
+                            <div class="small">`;
+                if (analysis.expected_yield) {
+                    html += `<p class="mb-2">📊 <strong>Expected Yield:</strong> ${analysis.expected_yield}</p>`;
+                }
+                if (analysis.yield_impact) {
+                    html += `<p class="mb-2">⚠️ <strong>Untreated Impact:</strong> ${analysis.yield_impact}</p>`;
+                }
+                if (analysis.expected_recovery) {
+                    html += `<p class="mb-2">⏱️ <strong>Recovery Time:</strong> ${analysis.expected_recovery}</p>`;
+                }
+                if (analysis.cost_estimate) {
+                    html += `<p class="mb-0">💵 <strong>Treatment Cost:</strong> ${analysis.cost_estimate}</p>`;
+                }
+                html += `</div></div></div>`;
+            }
+
+            // Confidence and timestamp
+            html += `<div class="alert alert-info small mb-0">
+                <strong>Analysis Confidence:</strong> ${analysis.confidence} | 
+                <strong>Crop:</strong> ${analysis.crop} | 
+                <strong>Timestamp:</strong> ${new Date(analysis.analysis_timestamp).toLocaleString()}
+            </div>`;
+
+            // Insert analysis before result card
+            const medicineBox = resultCard.querySelector('#medicineBox');
+            if (medicineBox) {
+                medicineBox.insertAdjacentHTML('beforebegin', html);
+            }
+        }
+
         // Display comprehensive recommendations
         function displayComprehensiveRecommendation(rec) {
             const resultCard = document.getElementById('resultCard');
@@ -675,12 +842,17 @@
                     const advisory = generateAdvisory(data.prediction, language);
                     document.getElementById('advisoryText').textContent = advisory;
 
-                    // Display comprehensive recommendation (NEW)
+                    // Display disease analysis (NEW - from JSON database)
+                    if (data.analysis) {
+                        displayDiseaseAnalysis(data.analysis);
+                    }
+
+                    // Display comprehensive recommendation (for backward compatibility)
                     if (data.recommendation) {
                         displayComprehensiveRecommendation(data.recommendation);
                     }
 
-                    // Display medicine recommendation
+                    // Display medicine recommendation (legacy)
                     if (data.medicine) {
                         displayMedicineRecommendation(data.medicine, language);
                     }

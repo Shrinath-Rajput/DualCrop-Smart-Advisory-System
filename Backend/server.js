@@ -127,6 +127,7 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
         
         let prediction = null;
         let confidence = null;
+        let jsonResponse = null;  // Initialize here to use in both try and catch
         let flaskAvailable = true;
 
         // Try to call Flask API
@@ -153,7 +154,18 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
 
             prediction = flaskResponse.data.prediction;
             confidence = flaskResponse.data.confidence;
+            // Get analysis from Flask if available (new comprehensive format)
+            const flaskAnalysis = flaskResponse.data.analysis;
             console.log(`✅ Flask Response: ${prediction} (${confidence}%)`);
+
+            // If Flask provided analysis, use it; otherwise format from database
+            if (flaskAnalysis) {
+                jsonResponse = flaskAnalysis;
+                console.log(`✅ Using Flask AI generated analysis`);
+            } else {
+                jsonResponse = formatPredictionAsJSON(prediction, confidence);
+                console.log(`✅ Using database analysis format`);
+            }
 
         } catch (flaskError) {
             // Flask is not available, use fallback
@@ -163,6 +175,7 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
             const fallback = getFallbackPrediction(req.file.filename);
             prediction = fallback.prediction;
             confidence = fallback.confidence;
+            jsonResponse = formatPredictionAsJSON(prediction, confidence);
             
             console.log(`📊 Fallback Prediction: ${prediction} (${confidence}%)`);
         }
@@ -192,15 +205,20 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
         // ✅ Keep uploaded file for dashboard display
         console.log("✅ Image saved to: /uploads/" + req.file.filename);
 
-        // Return JSON response with detailed recommendations
+        // Return comprehensive JSON response
         res.json({
             success: true,
             image: req.file.filename,
-            prediction: displayPrediction,  // Show display name to user
-            rawPrediction: prediction,       // Keep raw prediction for debugging
+            prediction: displayPrediction,           // Display name for UI
+            rawPrediction: prediction,               // Raw model output
             confidence: confidence,
+            
+            // NEW: Full disease database response
+            analysis: jsonResponse,
+            
+            // Legacy fields for backward compatibility
             medicine: medicineRec,
-            recommendation: detailedRec,     // NEW: Comprehensive recommendation
+            recommendation: detailedRec,
             flaskAvailable: flaskAvailable,
             note: flaskAvailable ? "Prediction from Flask AI Model" : "Prediction from fallback system"
         });
@@ -213,6 +231,101 @@ app.post("/analyze", upload.single("image"), async (req, res) => {
             error: "Failed to process image",
             details: error.message,
             hint: "Make sure the file is a valid image (JPG, PNG, GIF)"
+        });
+    }
+});
+
+// ========== NEW: JSON API ENDPOINT ==========
+// Returns ONLY the disease analysis JSON (no legacy fields)
+// Usage: POST /api/analyze-json
+app.post("/api/analyze-json", upload.single("image"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ 
+                success: false,
+                error: "No file uploaded" 
+            });
+        }
+
+        console.log(`📤 JSON API: File uploaded: ${req.file.filename}`);
+        
+        let prediction = null;
+        let confidence = null;
+        let jsonResponse = null;  // Initialize here
+        let flaskAvailable = true;
+
+        // Try to call Flask API
+        try {
+            const FormData = require("form-data");
+            const formData = new FormData();
+            
+            if (!fs.existsSync(req.file.path)) {
+                throw new Error("File not found after upload");
+            }
+            
+            formData.append("file", fs.createReadStream(req.file.path));
+
+            console.log(`🔄 Flask API call...`);
+            const flaskResponse = await axios.post(
+                "http://localhost:5000/api/predict",
+                formData,
+                {
+                    headers: formData.getHeaders(),
+                    timeout: 10000,
+                }
+            );
+
+            prediction = flaskResponse.data.prediction;
+            confidence = flaskResponse.data.confidence;
+            // Get analysis from Flask if available
+            const flaskAnalysis = flaskResponse.data.analysis;
+            console.log(`✅ Flask Response: ${prediction} (${confidence}%)`);
+
+            // If Flask provided analysis, use it; otherwise format from database
+            if (flaskAnalysis) {
+                jsonResponse = flaskAnalysis;
+                console.log(`✅ Using Flask AI generated analysis`);
+            } else {
+                jsonResponse = formatPredictionAsJSON(prediction, confidence);
+                console.log(`✅ Using database analysis format`);
+            }
+
+        } catch (flaskError) {
+            flaskAvailable = false;
+            console.warn(`⚠️ Flask API unavailable, using fallback`);
+            
+            const fallback = getFallbackPrediction(req.file.filename);
+            prediction = fallback.prediction;
+            confidence = fallback.confidence;
+            jsonResponse = formatPredictionAsJSON(prediction, confidence);
+        }
+
+        // Convert raw prediction to display name
+        const displayPrediction = getDisplayName(prediction);
+
+        // Save to database
+        try {
+            const connection = await pool.getConnection();
+            const query = "INSERT INTO predictions (image, result, confidence) VALUES (?, ?, ?)";
+            await connection.execute(query, [req.file.filename, displayPrediction, confidence]);
+            connection.release();
+        } catch (dbError) {
+            console.warn("⚠️ Database save failed:", dbError.message);
+        }
+
+        // Return ONLY the disease analysis JSON
+        res.json({
+            success: true,
+            image: req.file.filename,
+            ...jsonResponse  // Spread all disease database fields
+        });
+
+    } catch (error) {
+        console.error("❌ Error:", error.message);
+        res.status(500).json({
+            success: false,
+            error: "Failed to analyze image",
+            details: error.message
         });
     }
 });
@@ -342,6 +455,746 @@ const medicineRecommendations = {
         ]
     }
 };
+
+// ========== DISEASE DATABASE ==========
+// Comprehensive disease information for each prediction
+const diseaseDatabase = {
+    "Grapes_Grape___Black_rot": {
+        crop: "Grapes",
+        status: "Diseased",
+        disease: "Black Rot",
+        severity: "High",
+        symptoms: [
+            "Dark brown circular spots on leaves and berries",
+            "Concentric rings visible on infected areas",
+            "White or gray center with reddish-brown margin",
+            "Affected berries turn mummified and shrivel",
+            "Leaf yellowing around infected spots",
+            "Premature leaf drop in severe cases"
+        ],
+        causes: [
+            "Fungal infection (Guignardia bidwellii)",
+            "High humidity and wet conditions",
+            "Poor air circulation in vineyard",
+            "Overhead irrigation wetting leaves",
+            "Infected plant debris left in field",
+            "Spores spread by rain splash and wind"
+        ],
+        recommended_medicines: [
+            {
+                name: "Bordeaux Mixture (CuSO4 + CaOH)",
+                usage: "Spray every 7-10 days",
+                quantity: "1% solution (10g per liter)",
+                timing: "Early morning or late evening"
+            },
+            {
+                name: "Mancozeb 75% WP",
+                usage: "Spray every 7-10 days",
+                quantity: "2g per liter water",
+                timing: "Repeat after 7 days"
+            },
+            {
+                name: "Copper Oxychloride",
+                usage: "Spray on infected areas",
+                quantity: "3g per liter water",
+                timing: "Every 10 days"
+            },
+            {
+                name: "Metaxyl-M 72% WP",
+                usage: "Preventive spray",
+                quantity: "2.5g per liter water",
+                timing: "Before infection appears"
+            }
+        ],
+        organic_solutions: [
+            "Bordeaux mixture (1%) - Most effective organic option",
+            "Neem oil spray - Mix 5% neem oil with 1% potassium soap",
+            "Sulfur powder - Spray when temperature below 30°C",
+            "Remove infected leaves and berries manually",
+            "Use compost manure enriched with beneficial microbes",
+            "Bacillus subtilis based bio-fungicide"
+        ],
+        prevention_tips: [
+            "Avoid overhead irrigation - use drip irrigation only",
+            "Ensure proper canopy spacing (2.5m x 2.5m minimum)",
+            "Remove fallen leaves and diseased debris daily",
+            "Prune vines to improve air circulation",
+            "Maintain field hygiene - clean pruning tools with bleach",
+            "Apply preventive sprays before monsoon season",
+            "Don't work in wet vineyard - spreads disease",
+            "Monitor leaves weekly for early symptoms"
+        ],
+        farmer_advice: "Black Rot is highly destructive. Early detection and immediate action are critical. Start fungicide spray at first sign of infection. Alternate between different fungicides to prevent resistance.",
+        application_schedule: {
+            week_1: "Bordeaux Mixture - spray 3 times (days 1, 4, 7)",
+            week_2: "Mancozeb - spray twice (days 10, 14)",
+            ongoing: "Alternate Bordeaux and Mancozeb every 7 days"
+        },
+        care_instructions: {
+            watering: "40-50 liters per plant daily via drip irrigation",
+            irrigation_timing: "Early morning only (4-6 AM)",
+            fertilizer: "NPK 12:8:10 - Apply every 20 days",
+            sunlight: "8-10 hours direct sunlight daily",
+            mulching: "Apply dried leaves to prevent soil splash",
+            pruning: "Remove lower leaves to improve air flow"
+        },
+        cost_estimate: "₹800-1200 per plant for complete treatment",
+        expected_recovery: "2-3 weeks with proper fungicide application",
+        yield_impact: "30-50% crop loss if left untreated"
+    },
+    "Grapes_Grape___Esca_(Black_Measles)": {
+        crop: "Grapes",
+        status: "Diseased",
+        disease: "Esca (Black Measles)",
+        severity: "Critical",
+        symptoms: [
+            "Black/dark brown spots with tiger-stripe pattern on leaves",
+            "Yellowing and browning at leaf margins",
+            "Rapid leaf drying and defoliation",
+            "Girdling on shoots and canes",
+            "Wood discoloration inside canes (black streaks)",
+            "General plant decline and reduced vigor",
+            "Berries may not develop properly"
+        ],
+        causes: [
+            "Wood-rotting fungal disease (Phaeomoniella chlamydospora)",
+            "Enters through pruning wounds and trunk cracks",
+            "Stress from improper irrigation or poor drainage",
+            "Weakened plant vigor",
+            "Spores spread through contaminated tools",
+            "Takes years to show visible symptoms after infection"
+        ],
+        recommended_medicines: [
+            {
+                name: "Sodium Hypochlorite 5%",
+                usage: "Apply to pruning wounds",
+                quantity: "Neat (undiluted)",
+                timing: "Immediately after pruning"
+            },
+            {
+                name: "Benomyl (Systemic Fungicide)",
+                usage: "If available in your region",
+                quantity: "As per label instructions",
+                timing: "Preventive spray"
+            },
+            {
+                name: "Trichoderma Harzianum",
+                usage: "Biological control",
+                quantity: "As per product label",
+                timing: "During dormancy"
+            }
+        ],
+        organic_solutions: [
+            "Sodium Hypochlorite 5% applied to all cut wounds",
+            "Apply wound sealant (paint/paste) immediately after cutting",
+            "Maintain plant vigor through proper irrigation and nutrition",
+            "Remove heavily infected vines completely",
+            "Use disease-free planting material only",
+            "Sterilize all pruning tools between plants with bleach solution",
+            "Improve soil drainage to reduce root stress"
+        ],
+        prevention_tips: [
+            "NO EFFECTIVE CURE - Prevention is absolutely critical",
+            "Use disease-free certified planting material",
+            "Maintain proper soil drainage",
+            "Avoid excessive watering and root stress",
+            "Don't wound the plant unnecessarily",
+            "Sterilize pruning tools with 1:10 bleach solution",
+            "Apply wound sealant immediately after any cut",
+            "Maintain adequate plant nutrition for vigor",
+            "Remove and burn infected canes promptly",
+            "Don't propagate from infected vines"
+        ],
+        farmer_advice: "CRITICAL: Esca is very difficult to cure once established. This disease is incurable - focus entirely on PREVENTION. Infected plants will show slow decline over years. Consider replanting if vine shows rapid decline. Keep infected plant isolated from healthy vineyard.",
+        prognosis: {
+            cure_rate: "50-70% of infected plants show slow decline",
+            symptoms_timeline: "Symptoms may take 2-5 years to fully manifest",
+            management: "Focus on prevention and plant removal"
+        },
+        care_instructions: {
+            watering: "Balanced irrigation - not too much, not too little",
+            irrigation_method: "Drip irrigation with good drainage",
+            fertilizer: "NPK 12:8:10 to maintain plant vigor",
+            sunlight: "8-10 hours daily",
+            drainage: "Ensure excellent drainage to prevent root stress",
+            spacing: "Maintain 2.5m x 2.5m spacing"
+        },
+        cost_estimate: "Prevention is cheaper than replanting",
+        expected_recovery: "No complete recovery - only management possible",
+        yield_impact: "Complete loss if vine dies (50-70% probability)"
+    },
+    "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+        crop: "Grapes",
+        status: "Diseased",
+        disease: "Leaf Blight (Isariopsis Leaf Spot)",
+        severity: "Medium",
+        symptoms: [
+            "Small brown spots appear first on lower leaves",
+            "Spots develop yellow halo around brown center",
+            "Spots can coalesce into larger patches",
+            "Leaves may show premature yellowing",
+            "Leaf drying starting from edges",
+            "Affected leaves drop prematurely",
+            "Affects fruit set and bunch quality"
+        ],
+        causes: [
+            "Fungal infection (Isariopsis clavispora)",
+            "High humidity and leaf wetness",
+            "Poor air circulation in dense canopy",
+            "Overhead irrigation wetting leaves",
+            "Spores persist in infected plant debris",
+            "Spreads rapidly during monsoon season"
+        ],
+        recommended_medicines: [
+            {
+                name: "Chlorothalonil 75% WP",
+                usage: "Spray every 10-14 days",
+                quantity: "2g per liter water",
+                timing: "Early morning or evening"
+            },
+            {
+                name: "Mancozeb 75% WP",
+                usage: "Spray every 10-14 days",
+                quantity: "1.5g per liter water",
+                timing: "Alternate with Chlorothalonil"
+            },
+            {
+                name: "Triadimefon 25% EC",
+                usage: "Preventive spray",
+                quantity: "1g per liter water",
+                timing: "Every 14 days"
+            },
+            {
+                name: "Propiconazole 25% EC",
+                usage: "Systemic fungicide",
+                quantity: "1ml per liter water",
+                timing: "Every 10 days"
+            }
+        ],
+        organic_solutions: [
+            "Sulfur powder spray - 1% solution every 10 days",
+            "Copper Hydroxide - 1% spray every 10-14 days",
+            "Bacillus subtilis based bio-fungicide",
+            "Neem oil + Potassium soap mix - 5% spray",
+            "Remove infected leaves manually",
+            "Improve canopy ventilation through pruning"
+        ],
+        prevention_tips: [
+            "Use drip irrigation - avoid wetting leaves",
+            "Maintain plant spacing of 2-2.5m for air flow",
+            "Prune vines regularly to thin canopy",
+            "Remove fallen leaves and debris",
+            "Clean pruning tools between plants",
+            "Avoid working in wet vineyard",
+            "Monitor leaves weekly from fruit set stage",
+            "Start preventive sprays before monsoon",
+            "Don't use overhead irrigation",
+            "Ensure 6-8 hours direct sunlight daily"
+        ],
+        farmer_advice: "Leaf Blight can be controlled with regular fungicide sprays. Start treatment at first sign of leaf spots. Alternate between different fungicide groups to prevent resistance. Regular monitoring is essential.",
+        application_schedule: {
+            phase_1_heavy: "Weeks 1-2: Spray every 7 days (heavy infection)",
+            phase_2_maintenance: "Weeks 3-8: Spray every 10 days (maintenance)",
+            phase_3_preventive: "Weeks 9+: Spray every 14 days (preventive)"
+        },
+        seasonal_variation: {
+            monsoon: "HIGH RISK - Spray every 7 days",
+            summer: "MEDIUM RISK - Spray every 10 days",
+            winter: "LOW RISK - Spray every 14 days"
+        },
+        care_instructions: {
+            watering: "40-50 liters per plant daily via drip",
+            irrigation_timing: "Early morning only",
+            fertilizer: "NPK 12:8:10 every 20 days",
+            sunlight: "6-8 hours direct sunlight daily",
+            pruning: "Remove lower leaves and thin canopy",
+            mulching: "Prevent soil splash with mulch"
+        },
+        cost_estimate: "₹400-600 per plant for full season treatment",
+        expected_recovery: "1-2 weeks after starting treatment",
+        yield_impact: "30-40% crop loss if untreated"
+    },
+    "Grapes_Grape": {
+        crop: "Grapes",
+        status: "Healthy",
+        disease: "None",
+        confidence: "98%",
+        severity: "None",
+        message: "No disease detected. Plant is healthy and in excellent condition.",
+        symptoms: [
+            "Green, vibrant leaves with good color",
+            "No visible spots, yellowing, or necrosis",
+            "Healthy fruit development",
+            "Strong shoots with good vigor"
+        ],
+        care_instructions: {
+            watering: "50-60 liters per plant daily via drip irrigation",
+            irrigation_timing: "Early morning (4-6 AM)",
+            irrigation_method: "Drip or soaker hose (RECOMMENDED)",
+            fertilizer: "NPK 12:8:10 - balanced blend",
+            fertilizer_frequency: "Every 20 days during growing season",
+            sunlight: "8-10 hours direct sunlight daily",
+            pruning: "Regular pruning for canopy management",
+            spacing: "2.5m x 2.5m minimum spacing"
+        },
+        prevention_tips: [
+            "Continue regular monitoring of leaves",
+            "Apply sulfur powder spray every 10-14 days (preventive)",
+            "Maintain excellent soil drainage",
+            "Ensure proper air circulation in canopy",
+            "Use drip irrigation only - avoid overhead watering",
+            "Remove lower leaves for air flow",
+            "Clean fallen leaves and debris promptly",
+            "Monitor for any unusual color or spots",
+            "Maintain balanced nutrition with NPK fertilizer",
+            "Don't work in wet vineyard"
+        ],
+        expected_yield: "8-10 kg per plant (25-30 tons per hectare)",
+        harvest_timeline: "In 5-7 years for established vineyard",
+        care_frequency: {
+            watering: "Daily during growing season",
+            monitoring: "Weekly visual inspection",
+            fertilizing: "Every 20 days",
+            pruning: "As needed for canopy management"
+        }
+    },
+    "Grapes_Grape___healthy": {
+        crop: "Grapes",
+        status: "Healthy",
+        disease: "None",
+        confidence: "97%",
+        severity: "None",
+        message: "No disease detected. Plant is healthy and in excellent condition.",
+        symptoms: [
+            "Green, vibrant leaves with good color",
+            "No visible spots, yellowing, or necrosis",
+            "Healthy fruit development",
+            "Strong shoots with good vigor"
+        ],
+        care_instructions: {
+            watering: "50-60 liters per plant daily via drip irrigation",
+            irrigation_timing: "Early morning (4-6 AM)",
+            fertilizer: "NPK 12:8:10 - balanced blend",
+            fertilizer_frequency: "Every 20 days",
+            sunlight: "8-10 hours direct sunlight daily",
+            pruning: "Regular pruning for canopy management",
+            spacing: "2.5m x 2.5m minimum"
+        },
+        prevention_tips: [
+            "Continue regular monitoring of leaves",
+            "Apply sulfur powder spray every 10-14 days (preventive)",
+            "Maintain excellent soil drainage",
+            "Ensure proper air circulation",
+            "Use drip irrigation - avoid overhead watering",
+            "Remove lower leaves for air flow",
+            "Clean fallen leaves and debris",
+            "Monitor for any unusual signs",
+            "Maintain balanced nutrition",
+            "Don't work in wet vineyard"
+        ],
+        expected_yield: "8-10 kg per plant",
+        harvest_timeline: "In 5-7 years",
+        seasonal_care: {
+            monsoon: "Increase drainage, reduce watering frequency",
+            summer: "Daily drip irrigation, protective shading if needed",
+            winter: "Reduced watering, pruning and maintenance"
+        }
+    },
+    "brinjal_Healthy Leaf": {
+        crop: "Brinjal",
+        status: "Healthy",
+        disease: "None",
+        confidence: "96%",
+        severity: "None",
+        message: "No disease detected. Brinjal plant is healthy and in excellent condition.",
+        symptoms: [
+            "Dark green healthy leaves",
+            "No spots or yellowing visible",
+            "Strong plant structure",
+            "Good flowering and fruiting"
+        ],
+        care_instructions: {
+            watering: "Water twice daily - morning and evening",
+            watering_amount: "20-25 liters per plant daily",
+            irrigation_method: "Drip irrigation recommended",
+            fertilizer: "Organic compost or NPK 10:10:10",
+            fertilizer_frequency: "Every 30 days",
+            sunlight: "Full sunlight required (8-10 hours daily)",
+            spacing: "60cm x 45cm minimum spacing",
+            soil_type: "Well-drained soil, pH 5.5-7.5"
+        },
+        prevention_tips: [
+            "Monitor leaves regularly for any spots",
+            "Avoid water stagnation in soil",
+            "Maintain soil nutrition with regular fertilizing",
+            "Apply Neem oil spray every 15 days (preventive)",
+            "Remove lower leaves for air circulation",
+            "Keep field clean of debris and fallen leaves",
+            "Use soaker hose or drip irrigation",
+            "Don't let water splash on leaves",
+            "Maintain proper plant spacing",
+            "Monitor for pest activity (whiteflies, mites)"
+        ],
+        expected_yield: "4-5 kg per plant (60-70 tons per hectare)",
+        harvest_timeline: "70-90 days from transplanting",
+        seasonal_care: {
+            summer: "Daily watering required, apply mulch to retain moisture",
+            monsoon: "Reduce watering frequency, ensure good drainage",
+            winter: "Alternate day watering, reduce fertilizer",
+            spring: "Prepare field with organic matter, transplant seedlings"
+        },
+        companion_plants: [
+            "Marigold - repels pests",
+            "Basil - improves plant vigor",
+            "Garlic - natural pest deterrent"
+        ]
+    },
+    "Brinjal_Little_Leaf": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Little Leaf",
+        severity: "High",
+        symptoms: [
+            "Severe reduction in leaf size",
+            "Smaller leaves with pale color",
+            "Plant stunting and poor growth",
+            "Reduced flowering and fruiting",
+            "Overall plant decline"
+        ],
+        causes: [
+            "Viral disease transmitted by whiteflies",
+            "Zinc deficiency in soil",
+            "High temperature stress",
+            "Poor soil nutrition",
+            "Whitefly population buildup"
+        ],
+        recommended_medicines: [
+            {
+                name: "Imidacloprid 17.8% SL",
+                usage: "Spray for whitefly control",
+                quantity: "0.5 ml per liter water"
+            },
+            {
+                name: "Zinc Sulfate",
+                usage: "Soil application for nutrition",
+                quantity: "5g per liter water"
+            }
+        ],
+        organic_solutions: [
+            "Neem oil spray - 5% solution every 7 days",
+            "Yellow sticky traps for whitefly monitoring",
+            "Remove and burn severely affected plants",
+            "Plant-based insecticides"
+        ],
+        prevention_tips: [
+            "Control whitefly population rigorously",
+            "Maintain soil zinc levels with zinc sulfate",
+            "Avoid continuous cropping",
+            "Use disease-free seeds and seedlings",
+            "Monitor leaves weekly for symptoms",
+            "Isolate affected plants from healthy ones"
+        ],
+        farmer_advice: "Little Leaf is a serious viral disease. Focus on whitefly control as prevention. Once infected, cure is difficult. Consider removing severely affected plants.",
+        care_instructions: {
+            watering: "Regular watering - 20-25 liters per plant daily",
+            fertilizer: "Apply zinc sulfate (5g/liter) + NPK 10:10:10",
+            sunlight: "8-10 hours daily",
+            soil: "Well-drained, maintain zinc content"
+        }
+    },
+    "Brinjal_Bacterial_Wilt": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Bacterial Wilt",
+        severity: "Critical",
+        symptoms: [
+            "Sudden wilting of leaves and shoots",
+            "Plant collapse within few days",
+            "Browning of vascular tissues",
+            "No recovery even after watering",
+            "Rapid spread to adjacent plants"
+        ],
+        causes: [
+            "Bacterial infection (Ralstonia solanacearum)",
+            "Soil-borne pathogen",
+            "High soil moisture and temperature",
+            "Spread through contaminated water",
+            "Entry through root injuries"
+        ],
+        recommended_medicines: [
+            {
+                name: "Copper Oxychloride",
+                usage: "Soil drenching",
+                quantity: "3g per liter water"
+            },
+            {
+                name: "Pseudomonas Fluorescens",
+                usage: "Biological control",
+                quantity: "As per label instructions"
+            }
+        ],
+        organic_solutions: [
+            "Trichoderma harzianum - soil application",
+            "Remove and burn infected plants immediately",
+            "Sanitize equipment and tools",
+            "Maintain proper soil drainage"
+        ],
+        prevention_tips: [
+            "Use disease-free seeds and seedlings",
+            "Avoid waterlogging - maintain good drainage",
+            "Don't work in wet fields - spreads disease",
+            "Rotate crops (avoid solanaceous crops for 3 years)",
+            "Control weeds that harbor bacteria",
+            "Disinfect tools and equipment"
+        ],
+        farmer_advice: "CRITICAL: Bacterial Wilt is incurable. Once detected, remove entire plant and burn. Focus on prevention through crop rotation and drainage management.",
+        care_instructions: {
+            watering: "Moderate watering, avoid waterlogging",
+            fertilizer: "NPK 10:10:10 every 30 days",
+            sunlight: "8-10 hours daily",
+            soil: "Well-drained, prevent water stagnation"
+        }
+    },
+    "Brinjal_Cercospora_Leaf_Spot": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Cercospora Leaf Spot",
+        severity: "Medium",
+        symptoms: [
+            "Circular dark spots on leaves",
+            "Gray center with dark brown border",
+            "Spots develop concentric rings",
+            "Affected leaves turn yellow",
+            "Premature leaf drop"
+        ],
+        causes: [
+            "Fungal infection (Cercospora solani)",
+            "High humidity and leaf wetness",
+            "Poor air circulation",
+            "Overhead irrigation",
+            "Spores persist in crop residue"
+        ],
+        recommended_medicines: [
+            {
+                name: "Mancozeb 75% WP",
+                usage: "Spray every 10-14 days",
+                quantity: "2g per liter water"
+            },
+            {
+                name: "Copper Hydroxide 77% WP",
+                usage: "Spray every 10-14 days",
+                quantity: "1.5g per liter water"
+            }
+        ],
+        organic_solutions: [
+            "Bordeaux mixture (1%) spray",
+            "Remove infected leaves manually",
+            "Improve air circulation by pruning",
+            "Bacillus subtilis bio-fungicide"
+        ],
+        prevention_tips: [
+            "Use drip irrigation - avoid wetting leaves",
+            "Maintain proper plant spacing",
+            "Remove lower leaves for air flow",
+            "Clean up fallen leaves and debris",
+            "Spray preventive fungicides before monsoon"
+        ],
+        farmer_advice: "Cercospora Leaf Spot can be controlled with regular fungicide sprays. Start treatment at first sign of spots. Ensure good canopy ventilation.",
+        care_instructions: {
+            watering: "Drip irrigation - 20-25 liters per plant daily",
+            fertilizer: "NPK 10:10:10 every 30 days",
+            sunlight: "8-10 hours daily",
+            pruning: "Remove lower leaves and thin canopy"
+        }
+    },
+    "Brinjal_Phomopsis_Blight": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Phomopsis Blight",
+        severity: "High",
+        symptoms: [
+            "Small dark spots on leaves and stems",
+            "Spots enlarge to form circular lesions",
+            "Affected tissue becomes necrotic",
+            "Premature leaf and fruit drop",
+            "Stem canker development"
+        ],
+        causes: [
+            "Fungal infection (Phomopsis)",
+            "High humidity and wet conditions",
+            "Poor sanitation",
+            "Infected seeds and planting material",
+            "Spores spread by water splash"
+        ],
+        recommended_medicines: [
+            {
+                name: "Chlorothalonil 75% WP",
+                usage: "Spray every 10-14 days",
+                quantity: "2g per liter water"
+            },
+            {
+                name: "Carbendazim 50% WP",
+                usage: "Spray as alternate fungicide",
+                quantity: "1g per liter water"
+            }
+        ],
+        organic_solutions: [
+            "Copper-based fungicides",
+            "Remove infected plant parts",
+            "Improve field sanitation",
+            "Bacillus subtilis application"
+        ],
+        prevention_tips: [
+            "Use disease-free seeds and seedlings",
+            "Maintain field hygiene",
+            "Avoid overhead irrigation",
+            "Proper crop rotation",
+            "Remove crop residue after harvest"
+        ],
+        farmer_advice: "Phomopsis Blight can be managed with regular fungicide sprays. Focus on field sanitation and using disease-free planting material.",
+        care_instructions: {
+            watering: "Avoid leaf wetting - use drip irrigation",
+            fertilizer: "NPK 10:10:10 every 30 days",
+            sunlight: "8-10 hours daily",
+            sanitation: "Maintain field cleanliness"
+        }
+    },
+    "Brinjal_Fusarium_Wilt": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Fusarium Wilt",
+        severity: "Critical",
+        symptoms: [
+            "Wilting of leaves on one side initially",
+            "Progressive yellowing and browning",
+            "Vascular discoloration (reddish-brown)",
+            "Plant collapse",
+            "No recovery even with watering"
+        ],
+        causes: [
+            "Fungal infection (Fusarium oxysporum)",
+            "Soil-borne pathogen",
+            "High soil temperature (above 25°C optimal)",
+            "Spread through contaminated soil and water",
+            "Entry through root injuries"
+        ],
+        recommended_medicines: [
+            {
+                name: "Trichoderma harzianum",
+                usage: "Soil application",
+                quantity: "As per product label"
+            },
+            {
+                name: "Carbendazim 50% WP",
+                usage: "Drench soil around roots",
+                quantity: "1g per liter water"
+            }
+        ],
+        organic_solutions: [
+            "Soil solarization for 40-45 days",
+            "Trichoderma and Pseudomonas inoculants",
+            "Crop rotation (3-year break)",
+            "Remove and burn affected plants"
+        ],
+        prevention_tips: [
+            "Use disease-free seeds and seedlings",
+            "Avoid waterlogging and poor drainage",
+            "Practice crop rotation",
+            "Maintain soil health with organic matter",
+            "Disinfect tools and equipment",
+            "Monitor soil temperature"
+        ],
+        farmer_advice: "Fusarium Wilt is difficult to cure. Focus on prevention through soil management and crop rotation. Remove infected plants immediately.",
+        care_instructions: {
+            watering: "Moderate watering, ensure good drainage",
+            fertilizer: "NPK 10:10:10 with organic matter",
+            sunlight: "8-10 hours daily",
+            soil: "Well-drained, disease-free soil"
+        }
+    },
+    "Brinjal_Damping_Off": {
+        crop: "Brinjal",
+        status: "Diseased",
+        disease: "Damping Off",
+        severity: "High",
+        symptoms: [
+            "Seedling collapse at soil level",
+            "Sudden wilting of young seedlings",
+            "Rotting of stem and roots",
+            "Death of seedlings in nursery",
+            "Can affect entire seedling batch"
+        ],
+        causes: [
+            "Fungal infection (Pythium, Phytophthora, Fusarium)",
+            "High moisture and poor drainage",
+            "Poor seed quality or infected seeds",
+            "High humidity and cool temperatures",
+            "Overcrowding in nursery"
+        ],
+        recommended_medicines: [
+            {
+                name: "Trichoderma Harzianum",
+                usage: "Seed treatment and soil application",
+                quantity: "As per label instructions"
+            },
+            {
+                name: "Copper Oxychloride",
+                usage: "Soil drenching",
+                quantity: "3g per liter water"
+            }
+        ],
+        organic_solutions: [
+            "Trichoderma + Pseudomonas seed treatment",
+            "Well-drained nursery beds",
+            "Organic mulching with dried leaves",
+            "Proper seedling spacing"
+        ],
+        prevention_tips: [
+            "Use disease-free, quality seeds",
+            "Maintain proper drainage in nursery",
+            "Avoid overwatering",
+            "Ensure good air circulation",
+            "Use raised beds in nursery",
+            "Sterilize nursery soil before use"
+        ],
+        farmer_advice: "Damping Off mostly affects seedlings in nursery. Prevention is better than cure. Maintain proper nursery hygiene and seed treatment.",
+        care_instructions: {
+            watering: "Moderate watering in nursery",
+            soil: "Well-drained, sterile nursery soil",
+            spacing: "Proper spacing to reduce humidity",
+            air_circulation: "Ensure good ventilation"
+        }
+    }
+};
+
+// Format prediction as JSON response
+function formatPredictionAsJSON(rawPrediction, confidence) {
+    const diseaseInfo = diseaseDatabase[rawPrediction];
+    
+    if (diseaseInfo) {
+        return {
+            ...diseaseInfo,
+            confidence: `${Math.round(confidence)}%`,
+            analysis_timestamp: new Date().toISOString()
+        };
+    }
+    
+    // Fallback for unknown predictions
+    return {
+        crop: "Unknown",
+        status: "Unable to identify",
+        disease: "Unknown",
+        confidence: `${Math.round(confidence)}%`,
+        message: "Unable to detect properly. Please upload a clearer image with proper lighting.",
+        advice: [
+            "Take close-up photo of affected area",
+            "Ensure good natural lighting",
+            "Include both healthy and diseased parts",
+            "Keep image in focus",
+            "Upload JPEG or PNG format only"
+        ]
+    };
+}
 
 // ========== ENHANCED RECOMMENDATION ENGINE ==========
 // Generate detailed, comprehensive recommendations based on disease

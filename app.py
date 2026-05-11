@@ -95,15 +95,23 @@ def predict():
 
         prediction = str(result[0])
         confidence = float(result[1])
+        analysis = result[2] if len(result) > 2 else None
 
         # cleanup
         if os.path.exists(filepath):
             os.remove(filepath)
 
-        return jsonify({
+        # Return comprehensive JSON response with analysis
+        response_data = {
             "prediction": prediction,
             "confidence": confidence
-        })
+        }
+        
+        # Add analysis if available
+        if analysis:
+            response_data["analysis"] = analysis
+
+        return jsonify(response_data)
 
     except Exception as e:
         print("❌ Prediction Error:", e)
