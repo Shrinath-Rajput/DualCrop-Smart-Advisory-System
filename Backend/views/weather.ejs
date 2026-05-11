@@ -78,15 +78,6 @@
 
                 <!-- WEATHER RESULTS -->
                 <div class="col-lg-6">
-                    <!-- Error Alert -->
-                    <div id="weatherError" class="alert alert-danger d-flex align-items-start" style="display: none;" role="alert">
-                        <i class="fas fa-exclamation-circle me-3 mt-1" style="font-size: 1.25rem;"></i>
-                        <div>
-                            <h5 class="alert-heading">Error</h5>
-                            <p id="weatherErrorMessage" class="mb-0"></p>
-                        </div>
-                    </div>
-
                     <!-- Weather Display -->
                     <div id="weatherDisplay" style="display: none;">
                         <!-- Current Weather -->
@@ -253,7 +244,6 @@
             
             document.getElementById('weatherLoading').style.display = 'block';
             document.getElementById('weatherDisplay').style.display = 'none';
-            document.getElementById('weatherError').style.display = 'none';
 
             try {
                 const response = await fetch(`/api/weather`, {
@@ -267,10 +257,10 @@
                     displayWeather(data);
                     document.getElementById('weatherDisplay').style.display = 'block';
                 } else {
-                    showWeatherError(data.error || 'Could not fetch weather data');
+                    alert(data.error || 'Could not fetch weather data');
                 }
             } catch (error) {
-                showWeatherError('Error: ' + error.message);
+                alert('Error: ' + error.message);
             } finally {
                 document.getElementById('weatherLoading').style.display = 'none';
             }
@@ -386,10 +376,7 @@
             }
         }
 
-        function showWeatherError(msg) {
-            document.getElementById('weatherErrorMessage').textContent = msg;
-            document.getElementById('weatherError').style.display = 'block';
-        }
+
 
         function changeLanguage(lang) {
             if (languageManager) {
