@@ -1,0 +1,374 @@
+{
+  "diseases": {
+    "grapes_healthy": {
+      "crop": "Grapes",
+      "disease_name": "Healthy",
+      "status": "Healthy",
+      "severity": "None",
+      "confidence_range": [95, 99],
+      "symptoms": ["Green leaves", "No discoloration", "Normal growth"],
+      "causes": ["Normal healthy plant"],
+      "recommended_medicines": [],
+      "dosage": [],
+      "usage": [],
+      "organic_solutions": ["Continue regular care", "Ensure proper watering"],
+      "prevention_tips": ["Maintain proper irrigation", "Ensure good drainage", "Keep field clean"],
+      "farmer_advice": "Plant is healthy. Continue regular maintenance practices.",
+      "message": "No disease detected. Plant is healthy."
+    },
+    "grapes_black_rot": {
+      "crop": "Grapes",
+      "disease_name": "Black Rot",
+      "status": "Diseased",
+      "severity": "High",
+      "confidence_range": [85, 98],
+      "symptoms": [
+        "Black-brown circular spots on leaves",
+        "Berries turn brown then black",
+        "Spots have concentric rings",
+        "Infected berries shrivel",
+        "Leaves may have yellow halo around spots"
+      ],
+      "causes": [
+        "Fungal infection (Guignardia bidwellii)",
+        "Warm, wet weather conditions",
+        "Poor air circulation",
+        "Spores spread through rain splash"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Mancozeb",
+          "quantity": "2g per liter",
+          "usage": "Spray every 7-10 days"
+        },
+        {
+          "name": "Sulfur",
+          "quantity": "3g per liter",
+          "usage": "Spray every 14 days"
+        },
+        {
+          "name": "Bordeaux Mixture",
+          "quantity": "1% solution",
+          "usage": "Spray at disease onset"
+        }
+      ],
+      "organic_solutions": [
+        "Neem oil spray (3%)",
+        "Sulfur dust application",
+        "Copper fungicide",
+        "Baking soda spray (1 tbsp per liter)"
+      ],
+      "prevention_tips": [
+        "Remove infected plant parts immediately",
+        "Improve air circulation by pruning",
+        "Avoid overhead watering",
+        "Mulch around plants",
+        "Sanitize pruning tools between cuts",
+        "Destroy infected clusters"
+      ],
+      "farmer_advice": "Start fungicide spray immediately. Remove all infected berries and leaves. Repeat application every 7-10 days. Ensure proper drainage in vineyard."
+    },
+    "grapes_esca": {
+      "crop": "Grapes",
+      "disease_name": "Esca (Black Measles)",
+      "status": "Diseased",
+      "severity": "Critical",
+      "confidence_range": [80, 96],
+      "symptoms": [
+        "Leaves show tiger-stripe pattern",
+        "Black spots on berries",
+        "Leaves may have red or brown discoloration",
+        "Sudden wilting of vines",
+        "Wood discoloration inside canes",
+        "Brown necrosis inside wood"
+      ],
+      "causes": [
+        "Complex fungal infection (multiple pathogens)",
+        "Enters through pruning wounds",
+        "Develops slowly inside wood",
+        "Stress conditions trigger symptoms"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Carbendazim",
+          "quantity": "1ml per liter",
+          "usage": "Spray affected vines immediately after pruning"
+        },
+        {
+          "name": "Propiconazole",
+          "quantity": "1ml per liter",
+          "usage": "Apply to pruning wounds"
+        },
+        {
+          "name": "Thiophanate-methyl",
+          "quantity": "2g per liter",
+          "usage": "Spray every 10 days"
+        }
+      ],
+      "organic_solutions": [
+        "Remove infected canes immediately",
+        "Paint pruning wounds with tree wound dressing",
+        "Neem-based fungicide",
+        "Activated charcoal application on cuts"
+      ],
+      "prevention_tips": [
+        "Prune during dry season",
+        "Seal all pruning wounds with wound dressing",
+        "Remove completely infected canes",
+        "Sterilize pruning equipment",
+        "Avoid water stress during critical periods",
+        "Maintain vineyard hygiene"
+      ],
+      "farmer_advice": "This is a serious disease. Prune out all infected wood. Seal wounds immediately. Consider removing severely affected vines. Practice strict sanitation."
+    },
+    "grapes_leaf_blight": {
+      "crop": "Grapes",
+      "disease_name": "Leaf Blight (Isariopsis Leaf Spot)",
+      "status": "Diseased",
+      "severity": "Medium",
+      "confidence_range": [82, 95],
+      "symptoms": [
+        "Brown circular spots on leaves",
+        "Spots have concentric rings",
+        "Yellow halo around lesions",
+        "Spots enlarge and merge",
+        "Leaves become brown and papery",
+        "Premature defoliation",
+        "Spots may appear on petioles"
+      ],
+      "causes": [
+        "Fungal infection (Isariopsis species)",
+        "High humidity and warm temperature",
+        "Overhead irrigation",
+        "Poor air circulation",
+        "Spores spread by rain splash"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Mancozeb",
+          "quantity": "2g per liter",
+          "usage": "Spray every 7-10 days starting at disease onset"
+        },
+        {
+          "name": "Metalaxyl",
+          "quantity": "2ml per liter",
+          "usage": "Alternate with Mancozeb"
+        },
+        {
+          "name": "Chlorothalonil",
+          "quantity": "2ml per liter",
+          "usage": "Spray at 14-day intervals"
+        }
+      ],
+      "organic_solutions": [
+        "Neem oil (3%) spray",
+        "Sulfur dust application",
+        "Potassium permanganate solution (2g per liter)",
+        "Bacillus subtilis-based biopesticide"
+      ],
+      "prevention_tips": [
+        "Avoid overhead irrigation",
+        "Improve air circulation",
+        "Remove infected leaves promptly",
+        "Space vines adequately",
+        "Mulch to prevent soil splash",
+        "Destroy infected plant material"
+      ],
+      "farmer_advice": "Begin fungicide application as soon as spots appear. Avoid wet foliage. Improve air circulation by pruning. Repeat spray every 7-10 days until disease subsides."
+    },
+    "brinjal_healthy": {
+      "crop": "Brinjal",
+      "disease_name": "Healthy",
+      "status": "Healthy",
+      "severity": "None",
+      "confidence_range": [94, 99],
+      "symptoms": ["Green glossy leaves", "Purple/dark fruits", "Normal growth"],
+      "causes": ["Normal healthy plant"],
+      "recommended_medicines": [],
+      "dosage": [],
+      "usage": [],
+      "organic_solutions": ["Continue regular care", "Maintain irrigation"],
+      "prevention_tips": ["Regular watering", "Good drainage", "Weeding maintenance"],
+      "farmer_advice": "Plant is healthy. Continue regular care and maintenance.",
+      "message": "No disease detected. Plant is healthy."
+    },
+    "brinjal_leaf_spot": {
+      "crop": "Brinjal",
+      "disease_name": "Leaf Spot",
+      "status": "Diseased",
+      "severity": "High",
+      "confidence_range": [83, 97],
+      "symptoms": [
+        "Small brown spots on leaves",
+        "Yellow halo around lesions",
+        "Spots enlarge gradually",
+        "Centers turn grayish-white",
+        "Tiny black dots in center (fungal bodies)",
+        "Affected leaves curl and drop",
+        "Can appear on stems and fruits"
+      ],
+      "causes": [
+        "Fungal infection (Phomopsis/Colletotrichum)",
+        "High humidity (>90%)",
+        "Overhead watering",
+        "Poor air circulation",
+        "Spores spread through water splash and wind"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Mancozeb",
+          "quantity": "2g per liter",
+          "usage": "Spray every 7 days"
+        },
+        {
+          "name": "Carbendazim",
+          "quantity": "1ml per liter",
+          "usage": "Alternate with Mancozeb weekly"
+        },
+        {
+          "name": "Chlorothalonil",
+          "quantity": "2ml per liter",
+          "usage": "Spray at 10-day intervals"
+        }
+      ],
+      "organic_solutions": [
+        "Neem oil spray (3%)",
+        "Copper sulfate (0.5%) spray",
+        "Sulfur dust application",
+        "Garlic extract spray"
+      ],
+      "prevention_tips": [
+        "Avoid overhead watering, use drip irrigation",
+        "Provide adequate spacing between plants",
+        "Remove infected leaves immediately",
+        "Sanitize tools between plants",
+        "Mulch around plants",
+        "Ensure good air circulation"
+      ],
+      "farmer_advice": "Start fungicide spray immediately. Reduce watering frequency and use drip irrigation. Remove infected leaves. Spray every 7 days until disease control."
+    },
+    "brinjal_wilt": {
+      "crop": "Brinjal",
+      "disease_name": "Wilt",
+      "status": "Diseased",
+      "severity": "Critical",
+      "confidence_range": [80, 95],
+      "symptoms": [
+        "Sudden wilting of plants",
+        "Leaves lose turgidity",
+        "Yellowing of lower leaves",
+        "Plant becomes completely wilted",
+        "Brown discoloration in vascular tissues",
+        "Stunted growth",
+        "Plant death within weeks"
+      ],
+      "causes": [
+        "Bacterial infection (Ralstonia solanacearum)",
+        "Soil-borne fungal pathogens",
+        "Contaminated water and tools",
+        "Enters through roots",
+        "Spreads through vascular system"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Streptocycline",
+          "quantity": "2ml per liter",
+          "usage": "Drench soil around base every 7 days"
+        },
+        {
+          "name": "Copper Oxychloride",
+          "quantity": "3g per liter",
+          "usage": "Soil drench twice weekly"
+        },
+        {
+          "name": "Pseudomonas fluorescens (Bioagent)",
+          "quantity": "10ml per liter",
+          "usage": "Apply as soil drench"
+        }
+      ],
+      "organic_solutions": [
+        "Trichoderma harzianum application to soil",
+        "Bacillus subtilis bioagent",
+        "Adjust soil pH (6.0-7.0)",
+        "Solarization of soil before planting"
+      ],
+      "prevention_tips": [
+        "Use disease-free seeds",
+        "Ensure good drainage",
+        "Sanitize tools and equipment",
+        "Remove and destroy infected plants immediately",
+        "Rotate crops (avoid solanaceous crops for 3 years)",
+        "Use sterilized growing medium"
+      ],
+      "farmer_advice": "Remove and destroy infected plants immediately. Do not attempt to save wilted plants. Use resistant varieties. Sanitize soil thoroughly. Practice crop rotation for 3 years."
+    },
+    "brinjal_mosaic": {
+      "crop": "Brinjal",
+      "disease_name": "Mosaic Virus",
+      "status": "Diseased",
+      "severity": "High",
+      "confidence_range": [85, 96],
+      "symptoms": [
+        "Mosaic pattern on leaves (light and dark patches)",
+        "Leaf distortion and curling",
+        "Mottled appearance on leaves",
+        "Reduced fruit size",
+        "Discolored fruits with ring patterns",
+        "Stunted growth",
+        "Yellowing of affected areas"
+      ],
+      "causes": [
+        "Viral infection (Tobacco Mosaic Virus or Cucumber Mosaic Virus)",
+        "Transmitted by aphids and whiteflies",
+        "Spread through infected seeds",
+        "Contaminated tools and hands"
+      ],
+      "recommended_medicines": [
+        {
+          "name": "Neem oil",
+          "quantity": "3%",
+          "usage": "Spray every 7 days to control vectors"
+        },
+        {
+          "name": "Imidacloprid",
+          "quantity": "0.3ml per liter",
+          "usage": "Spray for insect vector control"
+        },
+        {
+          "name": "Lambda-cyhalothrin",
+          "quantity": "1ml per liter",
+          "usage": "Spray every 10-14 days"
+        }
+      ],
+      "organic_solutions": [
+        "Neem oil spray (5%)",
+        "Garlic extract spray",
+        "Insecticidal soap",
+        "Remove infected plants early"
+      ],
+      "prevention_tips": [
+        "Use disease-free seeds",
+        "Control aphid and whitefly populations",
+        "Remove weeds that harbor virus",
+        "Sanitize all tools",
+        "Don't touch plants when wet",
+        "Keep field free of volunteer plants"
+      ],
+      "farmer_advice": "Remove diseased plants immediately - they cannot be cured. Focus on controlling aphids and whiteflies. Use resistant varieties. Ensure proper sanitation practices."
+    }
+  },
+  "crop_info": {
+    "Grapes": {
+      "diseases": ["Healthy", "Black Rot", "Esca (Black Measles)", "Leaf Blight (Isariopsis Leaf Spot)"],
+      "optimal_temp": "20-25°C",
+      "optimal_humidity": "60-70%",
+      "water_requirement": "600-1000mm annually"
+    },
+    "Brinjal": {
+      "diseases": ["Healthy", "Leaf Spot", "Wilt", "Mosaic Virus"],
+      "optimal_temp": "20-30°C",
+      "optimal_humidity": "70-80%",
+      "water_requirement": "500-750mm annually"
+    }
+  }
+}

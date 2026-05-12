@@ -1,0 +1,113 @@
+{
+  "overall_accuracy": 0.0,
+  "total_tests": 8,
+  "class_results": {
+    "Grapes_Grape___Black_rot": {
+      "correct": 0,
+      "total": 867,
+      "accuracy": 0.0
+    },
+    "Grapes_Grape___Esca_(Black_Measles)": {
+      "correct": 0,
+      "total": 1034,
+      "accuracy": 0.0
+    },
+    "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+      "correct": 0,
+      "total": 796,
+      "accuracy": 0.0
+    },
+    "Grapes_Grape___healthy": {
+      "correct": 0,
+      "total": 316,
+      "accuracy": 0.0
+    },
+    "brinjal_Healthy Leaf": {
+      "correct": 0,
+      "total": 394,
+      "accuracy": 0.0
+    }
+  },
+  "predictions": [
+    {
+      "image": "artifacts/test\\brinjal_Healthy Leaf\\healthyleaf_aug0448.jpg",
+      "true_class": "brinjal_Healthy Leaf",
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Black_rot\\54c4b168-dee9-4c20-8b41-3aed28fd3aca___FAM_B.Rot 5089.JPG",
+      "true_class": "Grapes_Grape___Black_rot",
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Esca_(Black_Measles)\\91aee938-b6eb-41f6-aee8-d5a929fe27c9___FAM_B.Msls 4087.JPG",
+      "true_class": "Grapes_Grape___Esca_(Black_Measles)",
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___healthy\\8fc498ea-cad4-48cd-9fea-af07f803a63b___Mt.N.V_HL 6198.JPG",
+      "true_class": "Grapes_Grape___healthy",
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)\\c80548a9-7ac3-45cd-a4ca-7675fcdd8491___FAM_L.Blight 4658.JPG",
+      "true_class": "Grapes_Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Esca_(Black_Measles)\\e4bedd05-5a16-4e64-8645-270831e82db0___FAM_B.Msls 0885.JPG",
+      "true_class": null,
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Black_rot\\3f70c9d3-cf8a-43c3-87e3-c7a788579e7a___FAM_B.Rot 3534.JPG",
+      "true_class": null,
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    },
+    {
+      "image": "artifacts/test\\Grapes_Grape___Black_rot\\fac73f65-5442-4cf7-b1cf-eaabf4704758___FAM_B.Rot 0724.JPG",
+      "true_class": null,
+      "predicted_class": "Grapes",
+      "confidence": "59.43%",
+      "crop": "Unknown",
+      "status": "Unknown",
+      "disease": "Grapes",
+      "correct": false
+    }
+  ]
+}
