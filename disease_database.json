@@ -1,22 +1,22 @@
 {
   "diseases": {
-    "grapes_healthy": {
+    "Grapes_Diseases_Healthy": {
       "crop": "Grapes",
       "disease_name": "Healthy",
       "status": "Healthy",
       "severity": "None",
       "confidence_range": [95, 99],
-      "symptoms": ["Green leaves", "No discoloration", "Normal growth"],
-      "causes": ["Normal healthy plant"],
+      "symptoms": ["Green vibrant leaves", "No visible spots or discoloration", "Normal healthy growth", "Good fruit development"],
+      "causes": ["Plant is healthy"],
       "recommended_medicines": [],
       "dosage": [],
       "usage": [],
-      "organic_solutions": ["Continue regular care", "Ensure proper watering"],
-      "prevention_tips": ["Maintain proper irrigation", "Ensure good drainage", "Keep field clean"],
-      "farmer_advice": "Plant is healthy. Continue regular maintenance practices.",
-      "message": "No disease detected. Plant is healthy."
+      "organic_solutions": ["Continue regular monitoring", "Maintain proper irrigation"],
+      "prevention_tips": ["Continue regular monitoring of leaves", "Apply sulfur powder spray every 10-14 days (preventive)", "Maintain excellent soil drainage", "Ensure proper air circulation in canopy", "Use drip irrigation only"],
+      "farmer_advice": "Your grapes are in excellent health. Plant is healthy and in excellent condition.",
+      "message": "No disease detected. Plant is healthy and in excellent condition."
     },
-    "grapes_black_rot": {
+    "Grapes_Diseases_Black Rot": {
       "crop": "Grapes",
       "disease_name": "Black Rot",
       "status": "Diseased",
@@ -68,7 +68,7 @@
       ],
       "farmer_advice": "Start fungicide spray immediately. Remove all infected berries and leaves. Repeat application every 7-10 days. Ensure proper drainage in vineyard."
     },
-    "grapes_esca": {
+    "Grapes_Diseases_Black Measles": {
       "crop": "Grapes",
       "disease_name": "Esca (Black Measles)",
       "status": "Diseased",
@@ -121,9 +121,9 @@
       ],
       "farmer_advice": "This is a serious disease. Prune out all infected wood. Seal wounds immediately. Consider removing severely affected vines. Practice strict sanitation."
     },
-    "grapes_leaf_blight": {
+    "Grapes_Diseases_Isariopsis Leaf Spot": {
       "crop": "Grapes",
-      "disease_name": "Leaf Blight (Isariopsis Leaf Spot)",
+      "disease_name": "Isariopsis Leaf Spot",
       "status": "Diseased",
       "severity": "Medium",
       "confidence_range": [82, 95],
@@ -176,196 +176,58 @@
       ],
       "farmer_advice": "Begin fungicide application as soon as spots appear. Avoid wet foliage. Improve air circulation by pruning. Repeat spray every 7-10 days until disease subsides."
     },
-    "brinjal_healthy": {
+    "Binjal_Diseases_brinjal_little_leaf": {
       "crop": "Brinjal",
-      "disease_name": "Healthy",
-      "status": "Healthy",
-      "severity": "None",
-      "confidence_range": [94, 99],
-      "symptoms": ["Green glossy leaves", "Purple/dark fruits", "Normal growth"],
-      "causes": ["Normal healthy plant"],
-      "recommended_medicines": [],
-      "dosage": [],
-      "usage": [],
-      "organic_solutions": ["Continue regular care", "Maintain irrigation"],
-      "prevention_tips": ["Regular watering", "Good drainage", "Weeding maintenance"],
-      "farmer_advice": "Plant is healthy. Continue regular care and maintenance.",
-      "message": "No disease detected. Plant is healthy."
-    },
-    "brinjal_leaf_spot": {
-      "crop": "Brinjal",
-      "disease_name": "Leaf Spot",
+      "disease_name": "Little Leaf Disease",
       "status": "Diseased",
       "severity": "High",
-      "confidence_range": [83, 97],
-      "symptoms": [
-        "Small brown spots on leaves",
-        "Yellow halo around lesions",
-        "Spots enlarge gradually",
-        "Centers turn grayish-white",
-        "Tiny black dots in center (fungal bodies)",
-        "Affected leaves curl and drop",
-        "Can appear on stems and fruits"
-      ],
-      "causes": [
-        "Fungal infection (Phomopsis/Colletotrichum)",
-        "High humidity (>90%)",
-        "Overhead watering",
-        "Poor air circulation",
-        "Spores spread through water splash and wind"
-      ],
+      "confidence_range": [85, 98],
+      "symptoms": ["Significantly reduced leaf size (little leaf)", "Yellow discoloration between leaf veins", "Interveinal chlorosis", "Plant growth severely stunted", "Poor fruit development"],
+      "causes": ["Phytoplasma infection (mycoplasma-like organism)", "Transmitted by leafhopper insects", "High temperatures accelerate symptoms", "Poor soil nutrition"],
       "recommended_medicines": [
         {
-          "name": "Mancozeb",
-          "quantity": "2g per liter",
-          "usage": "Spray every 7 days"
+          "name": "Tetracycline Antibiotics (Doxycycline injection)",
+          "quantity": "Foliar spray: 10ml per 10 liters",
+          "usage": "Spray on affected plants every 7-10 days"
         },
         {
-          "name": "Carbendazim",
-          "quantity": "1ml per liter",
-          "usage": "Alternate with Mancozeb weekly"
+          "name": "Insecticide for Leafhopper Control",
+          "quantity": "Imidacloprid 17.8SL: 1ml per liter",
+          "usage": "Spray to control leafhopper vectors every 10 days"
         },
         {
-          "name": "Chlorothalonil",
+          "name": "Chlorpyrifos",
           "quantity": "2ml per liter",
-          "usage": "Spray at 10-day intervals"
+          "usage": "Control leafhopper population"
         }
       ],
       "organic_solutions": [
-        "Neem oil spray (3%)",
-        "Copper sulfate (0.5%) spray",
-        "Sulfur dust application",
-        "Garlic extract spray"
-      ],
-      "prevention_tips": [
-        "Avoid overhead watering, use drip irrigation",
-        "Provide adequate spacing between plants",
-        "Remove infected leaves immediately",
-        "Sanitize tools between plants",
-        "Mulch around plants",
-        "Ensure good air circulation"
-      ],
-      "farmer_advice": "Start fungicide spray immediately. Reduce watering frequency and use drip irrigation. Remove infected leaves. Spray every 7 days until disease control."
-    },
-    "brinjal_wilt": {
-      "crop": "Brinjal",
-      "disease_name": "Wilt",
-      "status": "Diseased",
-      "severity": "Critical",
-      "confidence_range": [80, 95],
-      "symptoms": [
-        "Sudden wilting of plants",
-        "Leaves lose turgidity",
-        "Yellowing of lower leaves",
-        "Plant becomes completely wilted",
-        "Brown discoloration in vascular tissues",
-        "Stunted growth",
-        "Plant death within weeks"
-      ],
-      "causes": [
-        "Bacterial infection (Ralstonia solanacearum)",
-        "Soil-borne fungal pathogens",
-        "Contaminated water and tools",
-        "Enters through roots",
-        "Spreads through vascular system"
-      ],
-      "recommended_medicines": [
-        {
-          "name": "Streptocycline",
-          "quantity": "2ml per liter",
-          "usage": "Drench soil around base every 7 days"
-        },
-        {
-          "name": "Copper Oxychloride",
-          "quantity": "3g per liter",
-          "usage": "Soil drench twice weekly"
-        },
-        {
-          "name": "Pseudomonas fluorescens (Bioagent)",
-          "quantity": "10ml per liter",
-          "usage": "Apply as soil drench"
-        }
-      ],
-      "organic_solutions": [
-        "Trichoderma harzianum application to soil",
-        "Bacillus subtilis bioagent",
-        "Adjust soil pH (6.0-7.0)",
-        "Solarization of soil before planting"
-      ],
-      "prevention_tips": [
-        "Use disease-free seeds",
-        "Ensure good drainage",
-        "Sanitize tools and equipment",
+        "Neem oil (3%) spray every 7 days to control leafhoppers",
+        "Yellow sticky traps to catch leafhoppers",
         "Remove and destroy infected plants immediately",
-        "Rotate crops (avoid solanaceous crops for 3 years)",
-        "Use sterilized growing medium"
-      ],
-      "farmer_advice": "Remove and destroy infected plants immediately. Do not attempt to save wilted plants. Use resistant varieties. Sanitize soil thoroughly. Practice crop rotation for 3 years."
-    },
-    "brinjal_mosaic": {
-      "crop": "Brinjal",
-      "disease_name": "Mosaic Virus",
-      "status": "Diseased",
-      "severity": "High",
-      "confidence_range": [85, 96],
-      "symptoms": [
-        "Mosaic pattern on leaves (light and dark patches)",
-        "Leaf distortion and curling",
-        "Mottled appearance on leaves",
-        "Reduced fruit size",
-        "Discolored fruits with ring patterns",
-        "Stunted growth",
-        "Yellowing of affected areas"
-      ],
-      "causes": [
-        "Viral infection (Tobacco Mosaic Virus or Cucumber Mosaic Virus)",
-        "Transmitted by aphids and whiteflies",
-        "Spread through infected seeds",
-        "Contaminated tools and hands"
-      ],
-      "recommended_medicines": [
-        {
-          "name": "Neem oil",
-          "quantity": "3%",
-          "usage": "Spray every 7 days to control vectors"
-        },
-        {
-          "name": "Imidacloprid",
-          "quantity": "0.3ml per liter",
-          "usage": "Spray for insect vector control"
-        },
-        {
-          "name": "Lambda-cyhalothrin",
-          "quantity": "1ml per liter",
-          "usage": "Spray every 10-14 days"
-        }
-      ],
-      "organic_solutions": [
-        "Neem oil spray (5%)",
-        "Garlic extract spray",
-        "Insecticidal soap",
-        "Remove infected plants early"
+        "Plant barrier crops to prevent leafhopper migration"
       ],
       "prevention_tips": [
-        "Use disease-free seeds",
-        "Control aphid and whitefly populations",
-        "Remove weeds that harbor virus",
-        "Sanitize all tools",
-        "Don't touch plants when wet",
-        "Keep field free of volunteer plants"
+        "Control leafhopper populations with regular spraying",
+        "Use yellow sticky traps for monitoring",
+        "Remove infected plants immediately to prevent spread",
+        "Avoid planting near diseased plants",
+        "Maintain plant vigor with proper nutrition",
+        "Spray imidacloprid regularly during growing season"
       ],
-      "farmer_advice": "Remove diseased plants immediately - they cannot be cured. Focus on controlling aphids and whiteflies. Use resistant varieties. Ensure proper sanitation practices."
+      "farmer_advice": "This is a serious viral-like disease spread by leafhoppers. Remove infected plants immediately. Control leafhopper population with regular insecticide sprays. Start treatment early for better results.",
+      "message": "Brinjal Little Leaf Disease detected. This disease significantly reduces plant vigor and fruit production."
     }
   },
   "crop_info": {
     "Grapes": {
-      "diseases": ["Healthy", "Black Rot", "Esca (Black Measles)", "Leaf Blight (Isariopsis Leaf Spot)"],
+      "diseases": ["Healthy", "Black Rot", "Esca (Black Measles)", "Isariopsis Leaf Spot"],
       "optimal_temp": "20-25°C",
       "optimal_humidity": "60-70%",
       "water_requirement": "600-1000mm annually"
     },
     "Brinjal": {
-      "diseases": ["Healthy", "Leaf Spot", "Wilt", "Mosaic Virus"],
+      "diseases": ["Little Leaf Disease"],
       "optimal_temp": "20-30°C",
       "optimal_humidity": "70-80%",
       "water_requirement": "500-750mm annually"

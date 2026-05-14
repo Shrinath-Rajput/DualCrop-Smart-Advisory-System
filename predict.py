@@ -133,8 +133,20 @@ class CropDiseasePredictorPro:
         predicted_class = self.classes[predicted_idx]
         confidence_score = float(predictions[0][predicted_idx])
         
-        # Get disease info
+        logger.info(f"Prediction: {predicted_class} with confidence {confidence_score:.2%}")
+        
+        # Get disease info - use the exact class name from model
         disease_info = self.disease_database.get(predicted_class, {})
+        
+        if not disease_info:
+            logger.warning(f"⚠️  Disease info not found for class: {predicted_class}")
+            disease_info = {
+                'crop': self._extract_crop_type(predicted_class),
+                'disease_name': predicted_class,
+                'status': 'Unknown',
+                'severity': 'Unknown',
+                'message': f'Prediction: {predicted_class}'
+            }
         
         # Build result
         result = {
@@ -157,6 +169,14 @@ class CropDiseasePredictorPro:
         }
         
         return result
+    
+    def _extract_crop_type(self, class_name):
+        """Extract crop type from class name"""
+        if 'Grapes' in class_name:
+            return 'Grapes'
+        elif 'Binjal' in class_name or 'Brinjal' in class_name:
+            return 'Brinjal'
+        return 'Unknown'
     
     def _format_top_predictions(self, predictions, top_n=5):
         """Format top N predictions"""
