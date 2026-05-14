@@ -6,6 +6,11 @@ Orchestrates the complete ML workflow: Data Ingestion → Data Transformation �
 import os
 import sys
 
+# Add project root to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from src.Components.data_ingestion import DataIngestion
 from src.Components.data_transformation import DataTransformation
 from src.Components.model_trainer import ModelTrainer
@@ -103,16 +108,17 @@ class TrainPipeline:
     def run_step_3_model_training(self):
         """
         STEP 3: Model Training
-        Builds and trains transfer learning model (MobileNetV2 or ResNet50)
+        Builds and trains EfficientNetB0 transfer learning model for disease classification
         """
         try:
             logging.info("\n" + "=" * 70)
             logging.info("🤖 STEP 3: MODEL TRAINING")
             logging.info("=" * 70)
-            logging.info("Purpose: Train transfer learning model for crop disease classification")
-            logging.info("Model: MobileNetV2 with custom top layers")
-            logging.info("Optimizer: Adam")
+            logging.info("Purpose: Train EfficientNetB0 model for disease classification")
+            logging.info("Model: EfficientNetB0 with custom top layers")
+            logging.info("Optimizer: Adam (lr=0.001)")
             logging.info("Loss: Categorical Crossentropy")
+            logging.info("Epochs: 20")
 
             # Train model
             self.model = self.model_trainer.initiate_model_trainer(
@@ -121,7 +127,8 @@ class TrainPipeline:
             )
 
             logging.info("\n✅ MODEL TRAINING COMPLETED")
-            logging.info(f"   💾 Model saved: artifacts/model.h5")
+            logging.info(f"   💾 Model saved: artifacts/crop_disease_model.h5")
+            logging.info(f"   📛 Classes saved: artifacts/class_names.json")
             logging.info(f"   📊 History saved: artifacts/history.json")
             logging.info("=" * 70)
 
@@ -165,7 +172,8 @@ class TrainPipeline:
             logging.info("\n📂 Generated Artifacts:")
             logging.info("   • artifacts/train/ - Training dataset")
             logging.info("   • artifacts/test/ - Testing dataset")
-            logging.info("   • artifacts/model.h5 - Trained model")
+            logging.info("   • artifacts/crop_disease_model.h5 - Trained EfficientNetB0 model")
+            logging.info("   • artifacts/class_names.json - Disease class names mapping")
             logging.info("   • artifacts/history.json - Training history")
             logging.info("\n🎯 Next Steps:")
             logging.info("   1. Run predictions: python src/pipeline/predict_pipeline.py")

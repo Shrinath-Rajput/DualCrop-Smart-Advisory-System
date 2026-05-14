@@ -2,6 +2,11 @@ import os
 import sys
 from dataclasses import dataclass
 
+# Add project root to path for imports
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from src.exception import CustomException
@@ -52,6 +57,7 @@ class DataTransformation:
         try:
             logging.info("Creating ImageDataGenerator with augmentation")
 
+            # Training data generator with augmentation
             train_datagen = ImageDataGenerator(
                 rescale=1./255,
                 rotation_range=20,
@@ -63,11 +69,17 @@ class DataTransformation:
                 fill_mode='nearest'
             )
 
+            # Test data generator - only rescaling, no augmentation
             test_datagen = ImageDataGenerator(
                 rescale=1./255
             )
 
             logging.info("✅ ImageDataGenerator created successfully")
+            logging.info("   • Rotation range: 20°")
+            logging.info("   • Zoom range: 0.2")
+            logging.info("   • Horizontal flip: Enabled")
+            logging.info("   • Shear range: 0.2")
+            
             return train_datagen, test_datagen
 
         except Exception as e:
