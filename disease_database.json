@@ -60,7 +60,7 @@
       "causes": ["Plant is healthy"],
       "message": "No disease detected. Your brinjal plant is healthy and in excellent condition."
     },
-    "Brinjal_brinjal_little_leaf": {
+    "Brinjal_Little_Leaf": {
       "crop": "Brinjal",
       "disease_name": "Little Leaf",
       "status": "Diseased",
@@ -71,6 +71,30 @@
       "symptoms": ["Leaves become abnormally small", "Excessive branching", "Stunted growth", "Poor fruit development", "Yellowing of leaves", "Sparse foliage"],
       "causes": ["Nutrient deficiency (Zinc)", "Viral infection transmitted by mites", "Unfavorable environmental conditions"],
       "message": "Little Leaf disease detected. This is a serious condition. Apply zinc sulfate spray and control insect vectors."
+    },
+    "Brinjal_Leaf_Spot": {
+      "crop": "Brinjal",
+      "disease_name": "Leaf Spot",
+      "status": "Diseased",
+      "severity": "Medium",
+      "medicine": "Mancozeb 75% WP (2g/L) or Copper Fungicide (1%)",
+      "treatment": "Remove infected leaves immediately. Apply fungicide every 10-14 days. Maintain good air circulation. Remove and destroy infected plant parts.",
+      "prevention": "Improve air circulation through proper spacing, avoid overhead watering, sanitize tools, apply preventive sprays, remove fallen leaves",
+      "symptoms": ["Small circular spots on leaves", "Brown or dark spots with concentric rings", "Yellow halo around spots", "Progressive leaf yellowing and drop", "Spots on stems and fruit"],
+      "causes": ["Fungal infection (Colletotrichum species)", "High humidity and wet conditions", "Poor air circulation", "Leaf wetness duration"],
+      "message": "Leaf Spot disease detected. Apply fungicide treatment and improve air circulation."
+    },
+    "Brinjal_Blight": {
+      "crop": "Brinjal",
+      "disease_name": "Blight",
+      "status": "Diseased",
+      "severity": "High",
+      "medicine": "Metalaxyl + Mancozeb 75% WP or Phosphonite fungicide",
+      "treatment": "Remove severely affected plants. Apply fungicide immediately. Improve drainage. Reduce irrigation frequency. Apply every 7-10 days.",
+      "prevention": "Use resistant varieties, ensure proper drainage, avoid excessive watering, improve air circulation, apply preventive fungicides during rainy season",
+      "symptoms": ["Water-soaked lesions on leaves", "Soft, watery stem rot", "Sudden wilting", "Brown discoloration of stems", "Fruit rot with soft spots"],
+      "causes": ["Fungal infection (Phytophthora species)", "Waterlogged soil", "Poor drainage", "High moisture and humidity"],
+      "message": "Blight disease detected. This is serious. Improve drainage immediately and apply fungicide."
     }
   }
 }
