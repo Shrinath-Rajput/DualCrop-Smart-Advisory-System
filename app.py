@@ -10,7 +10,7 @@ import json
 import logging
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
-from predict_improved import ImprovedCropDiseasePredictor
+from predict import CropDiseasePredictor
 from datetime import datetime
 import traceback
 
@@ -28,12 +28,13 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize predictor globally
 try:
-    predictor = ImprovedCropDiseasePredictor()
+    predictor = CropDiseasePredictor()
     PREDICTOR_READY = True
-    logger.info("✓ Two-stage predictor initialized successfully")
+    logger.info("✓ Disease predictor initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize predictor: {e}")
     logger.error(f"Make sure to run train_improved.py first to generate models")
+    predictor = None
     PREDICTOR_READY = False
 
 # Allowed file extensions
