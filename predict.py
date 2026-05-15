@@ -44,8 +44,8 @@ class CropDiseasePredictor:
     """PRODUCTION-READY Crop Disease Prediction Engine"""
     
     # Model and resource paths
-    MODEL_PATH = "artifacts/crop_disease_model.h5"
-    MODEL_PATH_KERAS = "artifacts/crop_disease_model.keras"
+    MODEL_PATH = "artifacts/best_model.keras"  # NEW: Optimized trained model
+    MODEL_PATH_H5 = "artifacts/crop_disease_model.h5"  # Fallback: Old format
     CLASSES_PATH = "artifacts/class_names.json"
     DISEASE_DB_PATH = "disease_database.json"
     
@@ -77,19 +77,19 @@ class CropDiseasePredictor:
         """Load trained TensorFlow/Keras model from artifacts folder"""
         model_path = None
         
-        # Try .keras format first (TensorFlow 2.11+)
-        if os.path.exists(self.MODEL_PATH_KERAS):
-            model_path = self.MODEL_PATH_KERAS
-        # Fall back to .h5 format
-        elif os.path.exists(self.MODEL_PATH):
+        # Try best_model.keras first (NEW: Optimized model)
+        if os.path.exists(self.MODEL_PATH):
             model_path = self.MODEL_PATH
+        # Fall back to old .h5 format
+        elif os.path.exists(self.MODEL_PATH_H5):
+            model_path = self.MODEL_PATH_H5
         else:
             raise FileNotFoundError(
                 f"Model files not found!\n"
                 f"Checked paths:\n"
-                f"  - {self.MODEL_PATH_KERAS}\n"
                 f"  - {self.MODEL_PATH}\n"
-                f"Please train the model first using: python train_improved.py"
+                f"  - {self.MODEL_PATH_H5}\n"
+                f"Please train the model first using: python train_unified.py"
             )
         
         try:
@@ -213,11 +213,12 @@ class CropDiseasePredictor:
         """
         Parse class name to extract crop type and disease name
         
-        Expected class name format: "Crop_Prefix_DiseaseType"
-        Examples:
-        - "Binjal_Diseases_brinjal_little_leaf" → ("Brinjal", "Little Leaf")
-        - "Grapes_Diseases_Black Rot" → ("Grapes", "Black Rot")
-        - "Grapes_Diseases_Healthy" → ("Grapes", "Healthy")
+        NEW format (from optimized training):
+        - "Brinjal_Healthy" → ("Brinjal", "Healthy")
+        - "Brinjal_Little_Leaf" → ("Brinjal", "Little Leaf")
+        - "Brinjal_Leaf_Spot" → ("Brinjal", "Leaf Spot")
+        - "Grapes_Black_Measles" → ("Grapes", "Black Measles")
+        - "Grapes_Isariopsis_Leaf_Spot" → ("Grapes", "Isariopsis Leaf Spot")
         
         Args:
             class_name: Full class name from model
@@ -233,19 +234,13 @@ class CropDiseasePredictor:
             return "Unknown", class_name
         
         # First part is crop name (Brinjal or Grapes)
-        crop_raw = parts[0]
-        crop = "Brinjal" if crop_raw == "Binjal" else crop_raw
+        crop = parts[0]
         
-        # Extract disease name after "Diseases_"
-        if "Diseases" in class_name:
-            disease_raw = class_name.split("Diseases_", 1)[1]
-            # Convert underscore format to title case
-            if disease_raw == "brinjal_little_leaf":
-                disease = "Little Leaf"
-            else:
-                disease = disease_raw
-        else:
-            disease = "_".join(parts[1:])
+        # Rest is disease name - join with spaces
+        disease_parts = parts[1:]
+        disease = " ".join(disease_parts)  # Convert underscores to spaces
+        
+        logger.debug(f"Parsed class '{class_name}' → crop='{crop}', disease='{disease}'")
         
         return crop, disease
     
@@ -269,28 +264,18 @@ class CropDiseasePredictor:
         
         Database key mapping:
         - "Grapes_Healthy", "Grapes_Black Rot", "Grapes_Black Measles", etc.
-        - "Brinjal_Healthy", "Brinjal_brinjal_little_leaf"
+        - "Brinjal_Healthy", "Brinjal_Little_Leaf"
         
         Args:
-            predicted_class: Full class name from model
+            predicted_class: Full class name from model (NEW format)
             crop: Extracted crop type
             is_healthy: Whether prediction is healthy
             
         Returns:
             Dict: Disease information (or defaults if not found)
         """
-        # Extract disease part for database lookup
-        disease_part = predicted_class.split("Diseases_", 1)[-1] if "Diseases_" in predicted_class else predicted_class
-        
-        # Build possible database keys
-        if is_healthy:
-            db_key = f"{crop}_Healthy"
-        else:
-            # Try direct key first
-            if disease_part == "brinjal_little_leaf":
-                db_key = f"{crop}_brinjal_little_leaf"
-            else:
-                db_key = f"{crop}_{disease_part}"
+        # Use predicted_class directly as database key (NEW format)
+        db_key = predicted_class  # "Brinjal_Little_Leaf" or "Grapes_Black_Measles", etc.
         
         # Look up in database
         if db_key in self.disease_database:
@@ -326,7 +311,8 @@ class CropDiseasePredictor:
             }
     
     def _build_treatment_recommendations(self, crop: str, disease_name: str, 
-                                        is_healthy: bool, disease_info: Dict) -> Dict:
+                                        is_healthy: bool, disease_info: Dict, 
+                                        predicted_class: str = "") -> Dict:
         """
         Build comprehensive treatment recommendations with agricultural expertise
         
@@ -356,7 +342,7 @@ class CropDiseasePredictor:
         else:
             # BRINJAL-specific recommendations
             if crop == "Brinjal":
-                if "little_leaf" in disease_name.lower():
+                if "little_leaf" in disease_name.lower() or "Little Leaf" in disease_name:
                     recommendations["overall"] = "Little Leaf disease detected. Requires immediate zinc supplementation and insect vector control."
                     recommendations["scientific_treatment"] = (
                         "1. Apply Zinc Sulfate (0.5%) as foliar spray 2-3 times at 10-15 day intervals\n"
@@ -383,7 +369,7 @@ class CropDiseasePredictor:
             
             # GRAPES-specific recommendations
             elif crop == "Grapes":
-                if "Black Rot" in disease_name:
+                if "Black Rot" in disease_name or "Black_Rot" in predicted_class:
                     recommendations["overall"] = "Black Rot disease detected. Requires immediate fungicide treatment."
                     recommendations["scientific_treatment"] = (
                         "1. Apply Mancozeb 75% WP (2g/L) immediately\n"
@@ -402,7 +388,7 @@ class CropDiseasePredictor:
                     recommendations["fungicide"] = "Mancozeb 75% or Copper fungicide"
                     recommendations["irrigation_advice"] = "Use drip irrigation only, avoid wetting foliage, water early morning"
                     
-                elif "Black Measles" in disease_name or "Esca" in disease_name:
+                elif "Black Measles" in disease_name or "Black_Measles" in predicted_class or "Esca" in disease_name:
                     recommendations["overall"] = "Esca (Black Measles) detected. This is serious. Requires urgent professional intervention."
                     recommendations["scientific_treatment"] = (
                         "1. Apply Carbendazim 50% WP (1ml/L) to pruning wounds immediately\n"
@@ -421,7 +407,8 @@ class CropDiseasePredictor:
                     recommendations["fungicide"] = "Carbendazim or Propiconazole (apply to pruning wounds)"
                     recommendations["irrigation_advice"] = "Maintain consistent moisture, avoid stress conditions, apply during dormancy"
                     
-                elif "Leaf Spot" in disease_name or "Isariopsis" in disease_name:
+                elif "Leaf Spot" in disease_name or "Leaf_Spot" in predicted_class or "Isariopsis" in disease_name or "Isariopsis_Leaf_Spot" in predicted_class:
+                    recommendations["overall"] = "Leaf Blight (Isariopsis) detected. Moderate severity - manageable with fungicide."
                     recommendations["overall"] = "Leaf Blight (Isariopsis) detected. Moderate severity - manageable with fungicide."
                     recommendations["scientific_treatment"] = (
                         "1. Apply Mancozeb 75% WP (2g/L) or Sulfur (3g/L)\n"
@@ -546,7 +533,7 @@ class CropDiseasePredictor:
             # Step 6: Build comprehensive recommendations
             logger.info("Step 6: Building treatment recommendations...")
             recommendations = self._build_treatment_recommendations(
-                crop, disease, is_healthy, disease_info
+                crop, disease, is_healthy, disease_info, predicted_class
             )
             
             # Step 7: Assemble complete response
