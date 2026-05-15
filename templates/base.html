@@ -117,12 +117,12 @@
 </head>
 <body>
     <header>
-        <a href="{{ url_for('home') }}" class="logo">
+        <a href="{{ url_for('index') }}" class="logo">
             <span class="logo-emoji">🌾</span>
             <span>DualCrop Advisory</span>
         </a>
         <nav>
-            <a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">🏠 Home</a>
+            <a href="{{ url_for('index') }}" class="{% block nav_home %}{% endblock %}">🏠 Home</a>
             <a href="{{ url_for('dashboard') }}" class="{% block nav_dashboard %}{% endblock %}">📊 Dashboard</a>
             <a href="{{ url_for('history') }}" class="{% block nav_history %}{% endblock %}">📋 History</a>
             <a href="{{ url_for('about') }}" class="{% block nav_about %}{% endblock %}">ℹ️ About</a>

@@ -1,6 +1,8 @@
 """
 Flask Web Application - Crop Disease Prediction System
 Complete production-ready web application with UI
+
+Using the improved two-stage prediction system
 """
 
 import os
@@ -8,7 +10,7 @@ import json
 import logging
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
-from predict import CropDiseasePredictorPro
+from predict_improved import ImprovedCropDiseasePredictor
 from datetime import datetime
 import traceback
 
@@ -26,11 +28,12 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize predictor globally
 try:
-    predictor = CropDiseasePredictorPro()
+    predictor = ImprovedCropDiseasePredictor()
     PREDICTOR_READY = True
-    logger.info("✓ Predictor initialized successfully")
+    logger.info("✓ Two-stage predictor initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize predictor: {e}")
+    logger.error(f"Make sure to run train_improved.py first to generate models")
     PREDICTOR_READY = False
 
 # Allowed file extensions

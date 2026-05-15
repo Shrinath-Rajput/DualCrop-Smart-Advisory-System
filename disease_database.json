@@ -1,236 +1,76 @@
 {
   "diseases": {
-    "Grapes_Diseases_Healthy": {
+    "Grapes_Healthy": {
       "crop": "Grapes",
       "disease_name": "Healthy",
       "status": "Healthy",
       "severity": "None",
-      "confidence_range": [95, 99],
+      "medicine": "None",
+      "treatment": "None",
+      "prevention": "Continue regular monitoring, apply preventive sulfur spray every 14 days",
       "symptoms": ["Green vibrant leaves", "No visible spots or discoloration", "Normal healthy growth", "Good fruit development"],
       "causes": ["Plant is healthy"],
-      "recommended_medicines": [],
-      "dosage": [],
-      "usage": [],
-      "organic_solutions": ["Continue regular monitoring", "Maintain proper irrigation"],
-      "prevention_tips": ["Continue regular monitoring of leaves", "Apply sulfur powder spray every 10-14 days (preventive)", "Maintain excellent soil drainage", "Ensure proper air circulation in canopy", "Use drip irrigation only"],
-      "farmer_advice": "Your grapes are in excellent health. Plant is healthy and in excellent condition.",
-      "message": "No disease detected. Plant is healthy and in excellent condition."
+      "message": "No disease detected. Your grape plant is healthy and in excellent condition."
     },
-    "Grapes_Diseases_Black Rot": {
+    "Grapes_Black Rot": {
       "crop": "Grapes",
       "disease_name": "Black Rot",
       "status": "Diseased",
       "severity": "High",
-      "confidence_range": [85, 98],
-      "symptoms": [
-        "Black-brown circular spots on leaves",
-        "Berries turn brown then black",
-        "Spots have concentric rings",
-        "Infected berries shrivel",
-        "Leaves may have yellow halo around spots"
-      ],
-      "causes": [
-        "Fungal infection (Guignardia bidwellii)",
-        "Warm, wet weather conditions",
-        "Poor air circulation",
-        "Spores spread through rain splash"
-      ],
-      "recommended_medicines": [
-        {
-          "name": "Mancozeb",
-          "quantity": "2g per liter",
-          "usage": "Spray every 7-10 days"
-        },
-        {
-          "name": "Sulfur",
-          "quantity": "3g per liter",
-          "usage": "Spray every 14 days"
-        },
-        {
-          "name": "Bordeaux Mixture",
-          "quantity": "1% solution",
-          "usage": "Spray at disease onset"
-        }
-      ],
-      "organic_solutions": [
-        "Neem oil spray (3%)",
-        "Sulfur dust application",
-        "Copper fungicide",
-        "Baking soda spray (1 tbsp per liter)"
-      ],
-      "prevention_tips": [
-        "Remove infected plant parts immediately",
-        "Improve air circulation by pruning",
-        "Avoid overhead watering",
-        "Mulch around plants",
-        "Sanitize pruning tools between cuts",
-        "Destroy infected clusters"
-      ],
-      "farmer_advice": "Start fungicide spray immediately. Remove all infected berries and leaves. Repeat application every 7-10 days. Ensure proper drainage in vineyard."
+      "medicine": "Mancozeb 75% WP (2g/L) or Copper Fungicide",
+      "treatment": "Remove infected leaves and berries immediately. Apply fungicide every 7-10 days. Remove and destroy infected plant parts.",
+      "prevention": "Improve air circulation by pruning, avoid overhead watering, sanitize pruning tools, apply preventive sprays before infection occurs",
+      "symptoms": ["Black-brown circular spots on leaves", "Berries turn brown then black", "Spots have concentric rings", "Infected berries shrivel and mummify", "Yellow halo around spots"],
+      "causes": ["Fungal infection (Guignardia bidwellii)", "Warm, wet weather conditions", "Poor air circulation", "Spores spread through rain splash"],
+      "message": "Black Rot disease detected. Immediate action required. Start fungicide treatment immediately."
     },
-    "Grapes_Diseases_Black Measles": {
+    "Grapes_Black Measles": {
       "crop": "Grapes",
       "disease_name": "Esca (Black Measles)",
       "status": "Diseased",
       "severity": "Critical",
-      "confidence_range": [80, 96],
-      "symptoms": [
-        "Leaves show tiger-stripe pattern",
-        "Black spots on berries",
-        "Leaves may have red or brown discoloration",
-        "Sudden wilting of vines",
-        "Wood discoloration inside canes",
-        "Brown necrosis inside wood"
-      ],
-      "causes": [
-        "Complex fungal infection (multiple pathogens)",
-        "Enters through pruning wounds",
-        "Develops slowly inside wood",
-        "Stress conditions trigger symptoms"
-      ],
-      "recommended_medicines": [
-        {
-          "name": "Carbendazim",
-          "quantity": "1ml per liter",
-          "usage": "Spray affected vines immediately after pruning"
-        },
-        {
-          "name": "Propiconazole",
-          "quantity": "1ml per liter",
-          "usage": "Apply to pruning wounds"
-        },
-        {
-          "name": "Thiophanate-methyl",
-          "quantity": "2g per liter",
-          "usage": "Spray every 10 days"
-        }
-      ],
-      "organic_solutions": [
-        "Remove infected canes immediately",
-        "Paint pruning wounds with tree wound dressing",
-        "Neem-based fungicide",
-        "Activated charcoal application on cuts"
-      ],
-      "prevention_tips": [
-        "Prune during dry season",
-        "Seal all pruning wounds with wound dressing",
-        "Remove completely infected canes",
-        "Sterilize pruning equipment",
-        "Avoid water stress during critical periods",
-        "Maintain vineyard hygiene"
-      ],
-      "farmer_advice": "This is a serious disease. Prune out all infected wood. Seal wounds immediately. Consider removing severely affected vines. Practice strict sanitation."
+      "medicine": "Carbendazim 50% WP (1ml/L) or Propiconazole 25% EC",
+      "treatment": "Apply fungicide to pruning wounds immediately after pruning. Remove severely affected vines. Prune during dry season only.",
+      "prevention": "Prune only during dry periods, apply fungicide to wounds immediately after pruning, remove and destroy infected wood, avoid stress conditions",
+      "symptoms": ["Leaves show tiger-stripe or mottled pattern", "Black spots on berries", "Sudden wilting of vines", "Wood discoloration inside canes", "Brown necrosis inside wood", "Canker formation on trunk"],
+      "causes": ["Complex fungal infection (Phaeomoniella chlamydospora, Phaeoacremonium spp.)", "Enters through pruning wounds", "Develops slowly inside wood", "Stress conditions trigger symptoms"],
+      "message": "Esca (Black Measles) detected - this is a serious fungal disease. Professional intervention strongly recommended."
     },
-    "Grapes_Diseases_Isariopsis Leaf Spot": {
+    "Grapes_Isariopsis Leaf Spot": {
       "crop": "Grapes",
-      "disease_name": "Isariopsis Leaf Spot",
+      "disease_name": "Leaf Blight (Isariopsis Leaf Spot)",
       "status": "Diseased",
       "severity": "Medium",
-      "confidence_range": [82, 95],
-      "symptoms": [
-        "Brown circular spots on leaves",
-        "Spots have concentric rings",
-        "Yellow halo around lesions",
-        "Spots enlarge and merge",
-        "Leaves become brown and papery",
-        "Premature defoliation",
-        "Spots may appear on petioles"
-      ],
-      "causes": [
-        "Fungal infection (Isariopsis species)",
-        "High humidity and warm temperature",
-        "Overhead irrigation",
-        "Poor air circulation",
-        "Spores spread by rain splash"
-      ],
-      "recommended_medicines": [
-        {
-          "name": "Mancozeb",
-          "quantity": "2g per liter",
-          "usage": "Spray every 7-10 days starting at disease onset"
-        },
-        {
-          "name": "Metalaxyl",
-          "quantity": "2ml per liter",
-          "usage": "Alternate with Mancozeb"
-        },
-        {
-          "name": "Chlorothalonil",
-          "quantity": "2ml per liter",
-          "usage": "Spray at 14-day intervals"
-        }
-      ],
-      "organic_solutions": [
-        "Neem oil (3%) spray",
-        "Sulfur dust application",
-        "Potassium permanganate solution (2g per liter)",
-        "Bacillus subtilis-based biopesticide"
-      ],
-      "prevention_tips": [
-        "Avoid overhead irrigation",
-        "Improve air circulation",
-        "Remove infected leaves promptly",
-        "Space vines adequately",
-        "Mulch to prevent soil splash",
-        "Destroy infected plant material"
-      ],
-      "farmer_advice": "Begin fungicide application as soon as spots appear. Avoid wet foliage. Improve air circulation by pruning. Repeat spray every 7-10 days until disease subsides."
+      "medicine": "Mancozeb 75% WP (2g/L) or Sulfur dust (3g/L)",
+      "treatment": "Remove infected leaves, improve air circulation, apply fungicide every 10-14 days, use sulfur as preventive measure",
+      "prevention": "Maintain proper spacing for air circulation, avoid overhead watering, apply sulfur or copper fungicides preventively, remove fallen leaves",
+      "symptoms": ["Small brown spots on leaves", "Spots have concentric rings", "Leaves turn yellow and drop", "Spots on fruit cluster stems", "Progressive leaf yellowing"],
+      "causes": ["Fungal infection (Isariopsis species)", "High humidity and wet conditions", "Poor air circulation", "Overcrowding in vineyard"],
+      "message": "Leaf Blight detected. Start fungicide treatment. Improve vineyard air circulation."
     },
-    "Binjal_Diseases_brinjal_little_leaf": {
+    "Brinjal_Healthy": {
       "crop": "Brinjal",
-      "disease_name": "Little Leaf Disease",
+      "disease_name": "Healthy",
+      "status": "Healthy",
+      "severity": "None",
+      "medicine": "None",
+      "treatment": "None",
+      "prevention": "Continue regular monitoring, maintain proper spacing, ensure good air circulation",
+      "symptoms": ["Green vibrant leaves", "No visible spots or discoloration", "Normal healthy growth", "Good fruit development"],
+      "causes": ["Plant is healthy"],
+      "message": "No disease detected. Your brinjal plant is healthy and in excellent condition."
+    },
+    "Brinjal_brinjal_little_leaf": {
+      "crop": "Brinjal",
+      "disease_name": "Little Leaf",
       "status": "Diseased",
       "severity": "High",
-      "confidence_range": [85, 98],
-      "symptoms": ["Significantly reduced leaf size (little leaf)", "Yellow discoloration between leaf veins", "Interveinal chlorosis", "Plant growth severely stunted", "Poor fruit development"],
-      "causes": ["Phytoplasma infection (mycoplasma-like organism)", "Transmitted by leafhopper insects", "High temperatures accelerate symptoms", "Poor soil nutrition"],
-      "recommended_medicines": [
-        {
-          "name": "Tetracycline Antibiotics (Doxycycline injection)",
-          "quantity": "Foliar spray: 10ml per 10 liters",
-          "usage": "Spray on affected plants every 7-10 days"
-        },
-        {
-          "name": "Insecticide for Leafhopper Control",
-          "quantity": "Imidacloprid 17.8SL: 1ml per liter",
-          "usage": "Spray to control leafhopper vectors every 10 days"
-        },
-        {
-          "name": "Chlorpyrifos",
-          "quantity": "2ml per liter",
-          "usage": "Control leafhopper population"
-        }
-      ],
-      "organic_solutions": [
-        "Neem oil (3%) spray every 7 days to control leafhoppers",
-        "Yellow sticky traps to catch leafhoppers",
-        "Remove and destroy infected plants immediately",
-        "Plant barrier crops to prevent leafhopper migration"
-      ],
-      "prevention_tips": [
-        "Control leafhopper populations with regular spraying",
-        "Use yellow sticky traps for monitoring",
-        "Remove infected plants immediately to prevent spread",
-        "Avoid planting near diseased plants",
-        "Maintain plant vigor with proper nutrition",
-        "Spray imidacloprid regularly during growing season"
-      ],
-      "farmer_advice": "This is a serious viral-like disease spread by leafhoppers. Remove infected plants immediately. Control leafhopper population with regular insecticide sprays. Start treatment early for better results.",
-      "message": "Brinjal Little Leaf Disease detected. This disease significantly reduces plant vigor and fruit production."
-    }
-  },
-  "crop_info": {
-    "Grapes": {
-      "diseases": ["Healthy", "Black Rot", "Esca (Black Measles)", "Isariopsis Leaf Spot"],
-      "optimal_temp": "20-25°C",
-      "optimal_humidity": "60-70%",
-      "water_requirement": "600-1000mm annually"
-    },
-    "Brinjal": {
-      "diseases": ["Little Leaf Disease"],
-      "optimal_temp": "20-30°C",
-      "optimal_humidity": "70-80%",
-      "water_requirement": "500-750mm annually"
+      "medicine": "Zinc Sulfate (0.5%) foliar spray or Borax solution; Imidacloprid 17.8SL (1ml/L)",
+      "treatment": "Spray zinc sulfate solution 2-3 times at 10-15 day intervals. Control insect vectors (whiteflies, mites). Remove severely affected plants.",
+      "prevention": "Use resistant varieties, control whiteflies and spider mites with insecticides, improve plant nutrition, ensure proper zinc availability",
+      "symptoms": ["Leaves become abnormally small", "Excessive branching", "Stunted growth", "Poor fruit development", "Yellowing of leaves", "Sparse foliage"],
+      "causes": ["Nutrient deficiency (Zinc)", "Viral infection transmitted by mites", "Unfavorable environmental conditions"],
+      "message": "Little Leaf disease detected. This is a serious condition. Apply zinc sulfate spray and control insect vectors."
     }
   }
 }
